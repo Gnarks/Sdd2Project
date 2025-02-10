@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = "Sdd2Project"
-include("graphical","console")
+include("graphical","console", "shared")

@@ -1,6 +1,6 @@
-
 plugins {
-    application
+    id("java")
+    id("application")
 }
 
 repositories {
@@ -8,6 +8,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":shared"))
 }
 
 sourceSets {
