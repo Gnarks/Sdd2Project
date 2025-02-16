@@ -3,6 +3,7 @@ package shared;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 public class Example {
 
     public String getGreeting() {
@@ -34,12 +35,9 @@ public class Example {
         
         
         Segment[] data = new Segment[]{AB,CD,EF,GH,JK};
-        ArrayList<ArrayList<Segment>> distrib = IA.locationSegment(data); 
-        
-        System.out.println("align:" + distrib.get(0));
-        System.out.println("d_minus" + distrib.get(1));
-        System.out.println("d_plus" + distrib.get(2));
-
+        ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
+        BSP bsp = new BSP(segments, 0);
+        System.out.println(bsp.getHead());
     }
 
 }
