@@ -94,7 +94,7 @@ public class Segment {
   
   /**
    * Function to define the intersection between the segment's line and another
-   *@param Segment the sefment to define the intersection with 
+   *@param Segment the segment to define the intersection with 
    */
   public Point interSeg(Segment seg){
     if(seg.getLine()[0]==this.line[0]){
@@ -106,8 +106,8 @@ public class Segment {
   }
   /**
    * align :  the segments that are aligned with the current segment
-   * d_minus : the segment that are on the d- part of the segment
-   * d_plus : the segment that are on the d+ part of the segment
+   * d_minus : the segments that are on the d- part of the segment
+   * d_plus : the segments that are on the d+ part of the segment
    */
   public ArrayList<ArrayList<Segment>> locationSegment(ArrayList<Segment> data){
     ArrayList<Segment> align = new ArrayList<>();

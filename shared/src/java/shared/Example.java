@@ -2,7 +2,6 @@ package shared;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
 public class Example {
 
@@ -36,7 +35,7 @@ public class Example {
         
         Segment[] data = new Segment[]{AB,CD,EF,GH,JK};
         ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
-        BSP bsp = new BSP(segments, 0);
+        BSP bsp = new BSP(segments, new RandomMethod());
         System.out.println(bsp.getHead());
     }
 
