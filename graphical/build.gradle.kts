@@ -17,7 +17,7 @@ sourceSets {
             setSrcDirs(listOf("src/main/java"))
         }
         resources {
-            setSrcDirs(listOf("src/main/resources"))
+            setSrcDirs(listOf("src/resources", "../shared/src/ressources"))
         }
     }
 }
