@@ -1,6 +1,5 @@
 package shared;
 
-import java.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -36,18 +35,20 @@ public class BSP {
     }
   }
 
-  public BSP(ArrayList<Segment> data,int method){
+  public BSP(ArrayList<Segment> data, GenerationMethod generationMethod){
     if (data.size() == 0){this.head = null;}
     else if(data.size() == 1){
       this.head = new Node(data,true);
     } else{
 
-      Segment segment = chosedSegment(data, method);
+      Segment segment = generationMethod.getSegment(data);
+      // pourquoi arrayList ? c'est obli taille 2 ?
+      // le nom locationSegment est pas clair
       ArrayList<ArrayList<Segment>> locSegment = segment.locationSegment(data);
 
       this.head = new Node(locSegment.get(0),false);
-      BSP leftSon = new BSP(locSegment.get(1),method);
-      BSP rightSon = new BSP(locSegment.get(2),method);
+      BSP leftSon = new BSP(locSegment.get(1),generationMethod);
+      BSP rightSon = new BSP(locSegment.get(2),generationMethod);
       this.head.leftSon = leftSon.head;
       this.head.rightSon = rightSon.head;
     }
@@ -56,18 +57,4 @@ public class BSP {
   public Node getHead(){
     return this.head;
   }
-  public Segment chosedSegment(ArrayList<Segment> data, int method){
-    switch (method) {
-      case 0:
-        Random rand = new Random();
-        int random = rand.nextInt(data.size());
-        return data.get(random);
-
-      case 1:
-        return data.get(0);
-      default:
-        return null;
-    }
-  }
-
 }
