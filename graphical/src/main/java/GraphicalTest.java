@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -16,7 +18,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+import shared.SceneFinder;
+import java.io.IOException;
 
 public class GraphicalTest extends Application {
 
@@ -63,15 +66,33 @@ public class GraphicalTest extends Application {
 
   private VBox getSceneParam(){
 
-    // the file Selector thingy
+    // getting the scenes names and paths
+    ArrayList<String> sceneNames = new ArrayList<>();
+    ArrayList<String> scenesFullPath = new ArrayList<>();
+    SceneFinder sc = new SceneFinder();
+
+    try {
+      scenesFullPath = sc.findScenes();
+      sceneNames = new ArrayList<>();
+      
+      for (String fullPath : scenesFullPath){
+        sceneNames.add(fullPath.substring(fullPath.indexOf("scenes/") + 7));
+      }
+    }
+    catch (IOException e){
+      System.out.println(e.toString());
+    }
+
+    // the file Selector Hbox
     Label fileText = new Label("File to load : ");
-    ChoiceBox<String> fileSelector = new ChoiceBox<String>(FXCollections.observableArrayList("first/octogone.txt", "first/rectogone.txt", "Third"));
+    ChoiceBox<String> fileSelector = new ChoiceBox<String>(FXCollections.observableArrayList(sceneNames));
     HBox fileHbox = new HBox();
     fileHbox.getChildren().add(fileText);
     fileHbox.getChildren().add(fileSelector);
 
-    // GenerationMethod thingy
+    // GenerationMethod Hbox
     Label generationText = new Label("Generation method : ");
+    // TODO find all the methods 
     ChoiceBox<String> generationSelector = new ChoiceBox<String>(FXCollections.observableArrayList("Random", "First", "Asked method"));
     HBox generationHbox = new HBox();
     generationHbox.getChildren().add(generationText);
@@ -192,5 +213,4 @@ public class GraphicalTest extends Application {
     grid.getChildren().add(unsetEyeInfo);
     return grid;
   }
-
-}
+} 
