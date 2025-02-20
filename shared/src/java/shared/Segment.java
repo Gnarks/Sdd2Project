@@ -72,6 +72,16 @@ public class Segment {
             0 if the point belongs to the segment's line
   */
   public int locationPoint(Point point){
+    if(this.line[0] == 0){
+      if(point.y > this.line[1]){
+        return -1;
+      }
+      if(point.y < this.line[1]){
+        return 1;
+      } else {
+        return 0;
+      }
+    }
     double x = (point.y - this.line[1])/this.line[0];
     if (point.x < x){
       return -1;
@@ -84,7 +94,7 @@ public class Segment {
   
   /**
    * Function to define the intersection between the segment's line and another
-   *@param Segment the sefment to define the intersection with 
+   *@param Segment the segment to define the intersection with 
    */
   public Point interSeg(Segment seg){
     if(seg.getLine()[0]==this.line[0]){
@@ -96,15 +106,15 @@ public class Segment {
   }
   /**
    * align :  the segments that are aligned with the current segment
-   * d_minus : the segment that are on the d- part of the segment
-   * d_plus : the segment that are on the d+ part of the segment
+   * d_minus : the segments that are on the d- part of the segment
+   * d_plus : the segments that are on the d+ part of the segment
    */
-  public ArrayList<ArrayList<Segment>> locationSegment(Segment[] data){
+  public ArrayList<ArrayList<Segment>> locationSegment(ArrayList<Segment> data){
     ArrayList<Segment> align = new ArrayList<>();
     ArrayList<Segment> d_minus = new ArrayList<>();
     ArrayList<Segment> d_plus = new ArrayList<>();
 
-    for (Segment seg : data) {
+    data.forEach(seg-> {
       Point inter = this.interSeg(seg); 
       int locationStart= this.locationPoint(seg.getStart());
       int locationEnd = this.locationPoint(seg.getEnd());
@@ -132,7 +142,7 @@ public class Segment {
       if(!areEqual(seg.getEnd() ,inter)){}
         if (locationEnd == -1){ d_minus.add(endSeg);} else { d_plus.add(endSeg);}
      }
-    }
+    });
     return new ArrayList<>(List.of(align,d_minus,d_plus));
   }
   /**
