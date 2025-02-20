@@ -3,6 +3,7 @@ package shared;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import shared.generation.RandomMethod;
 public class Example {
 
     public String getGreeting() {

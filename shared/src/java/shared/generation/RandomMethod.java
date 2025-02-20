@@ -1,7 +1,8 @@
-package shared;
+package shared.generation;
 
 import java.util.Random;
 import java.util.ArrayList;
+import shared.*;
 
 public class RandomMethod implements GenerationMethod
 {

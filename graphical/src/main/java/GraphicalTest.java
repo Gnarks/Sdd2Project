@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
@@ -19,6 +20,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import shared.SceneFinder;
+import shared.generation.GenerationEnum;
+
 import java.io.IOException;
 
 public class GraphicalTest extends Application {
@@ -92,8 +95,15 @@ public class GraphicalTest extends Application {
 
     // GenerationMethod Hbox
     Label generationText = new Label("Generation method : ");
+    
     // TODO find all the methods 
-    ChoiceBox<String> generationSelector = new ChoiceBox<String>(FXCollections.observableArrayList("Random", "First", "Asked method"));
+    String[] enums = Arrays.stream(GenerationEnum.class.getEnumConstants()).map(Enum::name).toArray(String[]::new);
+    ArrayList<String> stringEnum = new ArrayList<>(); 
+
+    for (String e : enums){
+      stringEnum.add(e.toLowerCase());
+    }
+    ChoiceBox<String> generationSelector = new ChoiceBox<String>(FXCollections.observableArrayList(stringEnum));
     HBox generationHbox = new HBox();
     generationHbox.getChildren().add(generationText);
     generationHbox.getChildren().add(generationSelector);

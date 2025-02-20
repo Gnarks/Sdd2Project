@@ -2,6 +2,7 @@ package shared;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import shared.generation.*;
 
 public class BSP {
  private Node head;
