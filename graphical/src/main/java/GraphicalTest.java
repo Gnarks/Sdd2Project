@@ -7,8 +7,11 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.converter.NumberStringConverter;
 import shared.scene.SceneFinder;
+import shared.Point;
 import shared.generation.GenerationEnum;
+
 
 
 public class GraphicalTest extends Application {
@@ -26,7 +29,7 @@ public class GraphicalTest extends Application {
     VBox sceneParam = createSceneParam();
 
     // bottom right parameters for the eye component (position angle fov )
-    //GridPane eyeParam = getEyeParam();
+    HBox eyeParam = createEyeParam();
 
     // drawScene 
     AnchorPane drawScene = new AnchorPane();
@@ -34,7 +37,7 @@ public class GraphicalTest extends Application {
     GridPane gridPane = new GridPane();
     gridPane.add(sceneParam, 0, 0);
     gridPane.add(drawScene, 0,1);
-    //gridPane.add(eyeParam, 1,1);
+    gridPane.add(eyeParam, 1,1);
 
     stage.setScene(new Scene(gridPane));
     stage.show();
@@ -43,103 +46,28 @@ public class GraphicalTest extends Application {
   public static void main(String[] args) {
     launch();
   }
-
   
+  // creates the left panel 
   private VBox createSceneParam(){
 
     Button loadButton = new Button("LOAD");
     loadButton.setOnAction(e -> loadScene());
 
-    // left panel (Scene Param)
-    VBox sceneParam = new VBox();
-    sceneParam.getChildren().add(createFileParam());
-    sceneParam.getChildren().add(createGenerationParam());
-    sceneParam.getChildren().add(loadButton);
-    sceneParam.getChildren().add(createRadioButtons());
+    Node fileParam = createFileParam();
+    Node generationParam = createGenerationParam();
+    Node radioButtons = createRadioButtons();
 
-    return sceneParam;
+    return new VBox(fileParam, generationParam, loadButton, radioButtons);
   }
 
-  /**private GridPane getEyeParam(){
-
-    // X textField
-    // TODO make the textField change if the cursor is on the draw pane
-    Label xLabel = new Label("X : ");
-    xField = new TextField();
-    HBox xHBox = new HBox();
-    xHBox.getChildren().add(xLabel);
-    xHBox.getChildren().add(xField);
+  private HBox createEyeParam(){
+    Node coordonatesParam = createCoordonatesParam();
+    Node viewParam = createViewParam();
+    Node eyeButtons = createEyeButtons();
 
 
-    // Y textField 
-    // TODO make the textField change if the cursor is on the draw pane
-    Label yLabel = new Label("Y : ");
-    yField = new TextField();
-    HBox yHBox= new HBox();
-    yHBox.getChildren().add(yLabel);
-    yHBox.getChildren().add(yField);
-
-
-    // angle TextField
-    // TODO make the textField change if the cursor is on the draw pane
-    Label angleLabel = new Label("Angle : ");
-    angleField = new TextField();
-    HBox angleHbox= new HBox();
-    angleHbox.getChildren().add(angleLabel);
-    angleHbox.getChildren().add(angleField);
-
-    // fov TextField
-    // TODO make the textField change if the cursor is on the draw pane
-    Label fovLabel = new Label("FOV : ");
-    fovField = new TextField();
-    HBox fovHbox= new HBox();
-    fovHbox.getChildren().add(fovLabel);
-    fovHbox.getChildren().add(fovField);
-
-
-    // set eye info button 
-    Button setEyeInfo = new Button("Set"); 
-    setEyeInfo.setOnAction((ActionEvent e ) -> {
-      
-      // TODO : create an eye component with the field infos 
-    });
-
-
-    // unset eye info button
-    Button unsetEyeInfo = new Button("Unset"); 
-    unsetEyeInfo.setOnAction((ActionEvent e ) -> {
-      
-      // TODO : delete the eye component
-    });
-
-
-
-
-    //setting the grid pane 
-    GridPane grid = new GridPane();
-    grid.setPadding(new Insets(10, 10, 10, 10));
-    grid.setVgap(20);
-    grid.setHgap(20);
-
-    GridPane.setConstraints(xHBox, 0, 0);
-    grid.getChildren().add(xHBox);
-
-    GridPane.setConstraints(yHBox, 0, 1);
-    grid.getChildren().add(yHBox);
-
-    GridPane.setConstraints(angleHbox, 1, 0);
-    grid.getChildren().add(angleHbox);
-
-    GridPane.setConstraints(fovHbox, 1, 1);
-    grid.getChildren().add(fovHbox);
-
-    GridPane.setConstraints(setEyeInfo, 2, 0);
-    grid.getChildren().add(setEyeInfo);
-
-    GridPane.setConstraints(unsetEyeInfo, 2, 1);
-    grid.getChildren().add(unsetEyeInfo);
-    return grid;
-  } **/
+    return new HBox(coordonatesParam, viewParam, eyeButtons);
+  }
 
 
   private Node createFileParam(){
@@ -155,10 +83,7 @@ public class GraphicalTest extends Application {
     fileSelector.setConverter(new FileConverter());
     fileSelector.valueProperty().bindBidirectional(sceneOptions.fileLocProperty());
 
-    HBox fileHbox = new HBox();
-    fileHbox.getChildren().add(fileText);
-    fileHbox.getChildren().add(fileSelector);
-    return fileHbox;
+    return new HBox(fileText, fileSelector);
   }
 
   private Node createGenerationParam(){
@@ -171,15 +96,7 @@ public class GraphicalTest extends Application {
     generationSelector.setConverter(new GenerationEnumConverter());
     generationSelector.valueProperty().bindBidirectional(sceneOptions.generationMethodProperty());
 
-    HBox generationHbox = new HBox();
-    generationHbox.getChildren().add(generationText);
-    generationHbox.getChildren().add(generationSelector);
-
-    return generationHbox;
-  }
-
-  private void loadScene(){
-    // TODO load the scene here with param generation and file 
+    return new HBox(generationText, generationSelector);
   }
 
 
@@ -202,11 +119,82 @@ public class GraphicalTest extends Application {
           }
       });
 
-    VBox vb = new VBox();
-    vb.getChildren().add(topView);
-    vb.getChildren().add(eyeView);
-
-    return vb;
+    return new VBox(topView, eyeView);
 
   }
+
+  // creates the x and y textFields
+  private Node createCoordonatesParam(){
+    //TODO set scene coordonate limits  
+    Point limits = new Point(500,500);
+
+    Label xLabel = new Label("X : ");
+    // textField limited by the coordonates of the borders
+    LimitedTextField xField = new LimitedTextField(limits.x);
+
+    xField.textProperty().bindBidirectional(sceneOptions.getEye().xProperty(), new NumberStringConverter());
+    HBox xBox = new HBox(xLabel, xField);
+
+    Label yLabel = new Label("Y : ");
+    LimitedTextField yField = new LimitedTextField(limits.y);
+    // textField limited by the coordonates of the borders
+    yField.textProperty().bindBidirectional(sceneOptions.getEye().yProperty(), new NumberStringConverter());
+    HBox yBox = new HBox(yLabel, yField);
+    
+    return new VBox(xBox, yBox);
+  }
+
+
+  // creates the angle and fov textFields
+  private Node createViewParam(){
+
+    // angle TextField
+    Label angleLabel = new Label("Angle : ");
+    LimitedTextField angleField = new LimitedTextField(360d);
+
+    // textField limited by the coordonates of the borders
+    angleField.textProperty().bindBidirectional(sceneOptions.getEye().angleProperty(), new NumberStringConverter());
+    HBox angleHbox= new HBox(angleLabel, angleField);
+
+    // fov TextField
+    Label fovLabel = new Label("FOV : ");
+    LimitedTextField fovField = new LimitedTextField(180d);
+
+    fovField.textProperty().bindBidirectional(sceneOptions.getEye().fovProperty(), new CoordonateConverter(180));
+    HBox fovHbox= new HBox(fovLabel, fovField);
+
+    return new VBox(angleHbox, fovHbox);
+
+  }
+
+  // creates the two eye buttons
+  private Node createEyeButtons(){
+
+    // set eye info button 
+    Button setEyeButton = new Button("Set"); 
+    setEyeButton.setOnAction(e -> setEye());
+
+
+    // unset eye info button
+    Button unsetEyeButton = new Button("Unset"); 
+    unsetEyeButton.setOnAction( e -> unsetEye());
+
+    return new VBox(setEyeButton, unsetEyeButton);
+
+  }
+
+  private void loadScene(){
+    System.out.println(sceneOptions.getEye().getX() + "x and y" + sceneOptions.getEye().getY());
+    // TODO load the scene here with param generation and file 
+  }
+
+
+  private void setEye(){
+
+      // TODO : create an eye component with the field infos 
+  }
+  private void unsetEye(){
+      // TODO : delete the eye component
+  }
+
 } 
