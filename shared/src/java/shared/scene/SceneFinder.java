@@ -1,4 +1,4 @@
-package shared;
+package shared.scene;
 
 import java.io.File;
 import java.io.IOException;

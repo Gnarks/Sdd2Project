@@ -1,12 +1,13 @@
-package shared;
+package shared.scene;
 
 import java.awt.Color;
 import java.io.*;
 import java.util.ArrayList;
+import shared.*;
 
 public class SceneReader{
 
-  public ArrayList<Segment> read  (String fileName) throws IOException{
+  public Scene read (String fileName){
 
     try {
       BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -15,12 +16,22 @@ public class SceneReader{
       boolean first= true;
 
       ArrayList<Segment> segList = new ArrayList<>();
+      Point topLeft = null;
+      Point topRight = null;
+      Point bottomLeft = null;
+      Point bottomRight = null;
 
       while ((read = reader.readLine()) != null){
 
         String[] line = read.split(" ");  
         if (first){
           first = false;
+          double a = Double.parseDouble(line[1]);
+          double b = Double.parseDouble(line[2]);
+          topLeft = new Point(-a, -b);
+          topRight = new Point(a, -b);
+          bottomLeft = new Point(-a, b);
+          bottomRight = new Point(a, b);
           continue;
         }
 
@@ -68,12 +79,13 @@ public class SceneReader{
       }
       reader.close();
 
-      return segList;
+      return new Scene(segList, topLeft, topRight, bottomLeft, bottomRight);
 
     }
     catch (IOException a) {
-      throw a;
+      a.printStackTrace();
     }
+    return null;
   }
 
 }
