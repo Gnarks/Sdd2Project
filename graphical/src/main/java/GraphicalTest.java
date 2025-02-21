@@ -1,65 +1,42 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import shared.SceneFinder;
+import shared.scene.SceneFinder;
 import shared.generation.GenerationEnum;
 
-import java.io.IOException;
 
 public class GraphicalTest extends Application {
 
-  // setting class variables because they need to be accessed through multiple 
-  // functions (change the string value based on the mouse position)
-  private TextField xField;
-  private TextField yField;
-  private TextField angleField;
-  private TextField fovField;
-
-
-
-
+  // all the sceneoptions in FX properties
+  private SceneOptions sceneOptions;
 
   @Override
-  public void start(Stage stage) {
+  public void start(Stage stage){
+
+    // the scene parameters
+    sceneOptions = new SceneOptions();
 
     // top left parameters for the scene (file to load, view, Generation method)
-    VBox sceneParam = getSceneParam();
+    VBox sceneParam = createSceneParam();
+
     // bottom right parameters for the eye component (position angle fov )
-    GridPane eyeParam = getEyeParam();
+    //GridPane eyeParam = getEyeParam();
 
     // drawScene 
     AnchorPane drawScene = new AnchorPane();
-    // TODO load and draw the draw scene 
-
-
 
     GridPane gridPane = new GridPane();
-
     gridPane.add(sceneParam, 0, 0);
     gridPane.add(drawScene, 0,1);
-    gridPane.add(eyeParam, 1,1);
+    //gridPane.add(eyeParam, 1,1);
 
-
-    Scene scene = new Scene(gridPane);
-    stage.setScene(scene);
+    stage.setScene(new Scene(gridPane));
     stage.show();
   }
 
@@ -67,83 +44,23 @@ public class GraphicalTest extends Application {
     launch();
   }
 
-  private VBox getSceneParam(){
+  
+  private VBox createSceneParam(){
 
-    // getting the scenes names and paths
-    ArrayList<String> sceneNames = new ArrayList<>();
-    ArrayList<String> scenesFullPath = new ArrayList<>();
-    SceneFinder sc = new SceneFinder();
-
-    try {
-      scenesFullPath = sc.findScenes();
-      sceneNames = new ArrayList<>();
-      
-      for (String fullPath : scenesFullPath){
-        sceneNames.add(fullPath.substring(fullPath.indexOf("scenes/") + 7));
-      }
-    }
-    catch (IOException e){
-      System.out.println(e.toString());
-    }
-
-    // the file Selector Hbox
-    Label fileText = new Label("File to load : ");
-    ChoiceBox<String> fileSelector = new ChoiceBox<String>(FXCollections.observableArrayList(sceneNames));
-    HBox fileHbox = new HBox();
-    fileHbox.getChildren().add(fileText);
-    fileHbox.getChildren().add(fileSelector);
-
-    // GenerationMethod Hbox
-    Label generationText = new Label("Generation method : ");
-    
-    // TODO find all the methods 
-    String[] enums = Arrays.stream(GenerationEnum.class.getEnumConstants()).map(Enum::name).toArray(String[]::new);
-    ArrayList<String> stringEnum = new ArrayList<>(); 
-
-    for (String e : enums){
-      stringEnum.add(e.toLowerCase());
-    }
-    ChoiceBox<String> generationSelector = new ChoiceBox<String>(FXCollections.observableArrayList(stringEnum));
-    HBox generationHbox = new HBox();
-    generationHbox.getChildren().add(generationText);
-    generationHbox.getChildren().add(generationSelector);
-
-
-    // Load button
     Button loadButton = new Button("LOAD");
-    loadButton.setOnAction((ActionEvent e ) -> {
-      
-      // TODO : load here the scene 
-    });
-
-    // radio Button for the view
-    final ToggleGroup viewGroup = new ToggleGroup();
-    RadioButton topView = new RadioButton(" top view ");
-    topView.setToggleGroup(viewGroup);
-    topView.setSelected(true);
-    RadioButton eyeView = new RadioButton(" eye view ");
-    eyeView.setToggleGroup(viewGroup);
-    // changing views  
-    viewGroup.selectedToggleProperty().addListener(
-    (ObservableValue<? extends Toggle> ov, Toggle old_toggle, 
-        Toggle new_toggle) -> {
-        if (viewGroup.getSelectedToggle() != null) {
-          // TODO : change the drawing scene here
-          }
-      });
+    loadButton.setOnAction(e -> loadScene());
 
     // left panel (Scene Param)
     VBox sceneParam = new VBox();
-    sceneParam.getChildren().add(fileHbox);
-    sceneParam.getChildren().add(generationHbox);
+    sceneParam.getChildren().add(createFileParam());
+    sceneParam.getChildren().add(createGenerationParam());
     sceneParam.getChildren().add(loadButton);
-    sceneParam.getChildren().add(topView);
-    sceneParam.getChildren().add(eyeView);
+    sceneParam.getChildren().add(createRadioButtons());
 
     return sceneParam;
   }
 
-  private GridPane getEyeParam(){
+  /**private GridPane getEyeParam(){
 
     // X textField
     // TODO make the textField change if the cursor is on the draw pane
@@ -222,5 +139,74 @@ public class GraphicalTest extends Application {
     GridPane.setConstraints(unsetEyeInfo, 2, 1);
     grid.getChildren().add(unsetEyeInfo);
     return grid;
+  } **/
+
+
+  private Node createFileParam(){
+
+    // getting the scenes names and paths
+    SceneFinder sc = new SceneFinder();
+
+    // the file Selector Hbox
+    Label fileText = new Label("File to load : ");
+    ChoiceBox<String> fileSelector = new ChoiceBox<String>(FXCollections.observableArrayList(sc.findScenes()));
+
+    // links the fileSelector and the sceneOptions.fileLocProperty
+    fileSelector.setConverter(new FileConverter());
+    fileSelector.valueProperty().bindBidirectional(sceneOptions.fileLocProperty());
+
+    HBox fileHbox = new HBox();
+    fileHbox.getChildren().add(fileText);
+    fileHbox.getChildren().add(fileSelector);
+    return fileHbox;
+  }
+
+  private Node createGenerationParam(){
+
+    // GenerationMethod Hbox
+    Label generationText = new Label("Generation method : ");
+
+    ChoiceBox<GenerationEnum> generationSelector = new ChoiceBox<GenerationEnum>(FXCollections.observableArrayList(Arrays.asList(GenerationEnum.class.getEnumConstants())));
+
+    generationSelector.setConverter(new GenerationEnumConverter());
+    generationSelector.valueProperty().bindBidirectional(sceneOptions.generationMethodProperty());
+
+    HBox generationHbox = new HBox();
+    generationHbox.getChildren().add(generationText);
+    generationHbox.getChildren().add(generationSelector);
+
+    return generationHbox;
+  }
+
+  private void loadScene(){
+    // TODO load the scene here with param generation and file 
+  }
+
+
+  private Node createRadioButtons(){
+    // radio Button for the view
+    
+    final ToggleGroup viewGroup = new ToggleGroup();
+    RadioButton topView = new RadioButton("top view");
+    topView.setToggleGroup(viewGroup);
+    topView.setSelected(true);
+    RadioButton eyeView = new RadioButton("eye view");
+    eyeView.setToggleGroup(viewGroup);
+    
+    // changing views  
+    viewGroup.selectedToggleProperty().addListener(
+    (ObservableValue<? extends Toggle> ov, Toggle old_toggle, 
+        Toggle new_toggle) -> {
+        if (viewGroup.getSelectedToggle() != null) {
+          sceneOptions.setViewType(((RadioButton) viewGroup.getSelectedToggle()).getText());
+          }
+      });
+
+    VBox vb = new VBox();
+    vb.getChildren().add(topView);
+    vb.getChildren().add(eyeView);
+
+    return vb;
+
   }
 } 
