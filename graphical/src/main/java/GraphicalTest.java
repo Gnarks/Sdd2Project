@@ -1,6 +1,8 @@
 import java.util.Arrays;
 
 import javafx.application.Application;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.*;
@@ -9,8 +11,10 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import shared.scene.SceneFinder;
-import shared.Point;
+import shared.scene.SceneReader;
+import shared.BSP;
 import shared.generation.GenerationEnum;
+import shared.generation.GenerationMethod;
 
 
 
@@ -18,11 +22,13 @@ public class GraphicalTest extends Application {
 
   // all the sceneoptions in FX properties
   private SceneOptions sceneOptions;
+  private shared.scene.Scene drawScene; 
+  private BSP bsp;
 
   @Override
   public void start(Stage stage){
 
-    // the scene parameters
+    // initiate the scene parameters
     sceneOptions = new SceneOptions();
 
     // top left parameters for the scene (file to load, view, Generation method)
@@ -32,11 +38,11 @@ public class GraphicalTest extends Application {
     HBox eyeParam = createEyeParam();
 
     // drawScene 
-    AnchorPane drawScene = new AnchorPane();
+    AnchorPane sceneAnchor = new AnchorPane();
 
     GridPane gridPane = new GridPane();
     gridPane.add(sceneParam, 0, 0);
-    gridPane.add(drawScene, 0,1);
+    gridPane.add(sceneAnchor, 0,1);
     gridPane.add(eyeParam, 1,1);
 
     stage.setScene(new Scene(gridPane));
@@ -51,13 +57,15 @@ public class GraphicalTest extends Application {
   private VBox createSceneParam(){
 
     Button loadButton = new Button("LOAD");
-    loadButton.setOnAction(e -> loadScene());
+    Label state = new Label("");
+    loadButton.setOnAction(e -> state.setText(loadScene()));
+    HBox buttonHbox = new HBox(loadButton,state);
 
     Node fileParam = createFileParam();
     Node generationParam = createGenerationParam();
     Node radioButtons = createRadioButtons();
 
-    return new VBox(fileParam, generationParam, loadButton, radioButtons);
+    return new VBox(fileParam, generationParam, buttonHbox, radioButtons);
   }
 
   private HBox createEyeParam(){
@@ -65,13 +73,11 @@ public class GraphicalTest extends Application {
     Node viewParam = createViewParam();
     Node eyeButtons = createEyeButtons();
 
-
     return new HBox(coordonatesParam, viewParam, eyeButtons);
   }
 
 
   private Node createFileParam(){
-
     // getting the scenes names and paths
     SceneFinder sc = new SceneFinder();
 
@@ -87,7 +93,6 @@ public class GraphicalTest extends Application {
   }
 
   private Node createGenerationParam(){
-
     // GenerationMethod Hbox
     Label generationText = new Label("Generation method : ");
 
@@ -120,23 +125,22 @@ public class GraphicalTest extends Application {
       });
 
     return new VBox(topView, eyeView);
-
   }
 
   // creates the x and y textFields
   private Node createCoordonatesParam(){
-    //TODO set scene coordonate limits  
-    Point limits = new Point(500,500);
-
     Label xLabel = new Label("X : ");
     // textField limited by the coordonates of the borders
-    LimitedTextField xField = new LimitedTextField(limits.x);
+    DoubleProperty xLimit = sceneOptions.getEye().xLimitProperty();
 
+    LimitedTextField xField = new LimitedTextField(xLimit);
     xField.textProperty().bindBidirectional(sceneOptions.getEye().xProperty(), new NumberStringConverter());
     HBox xBox = new HBox(xLabel, xField);
 
     Label yLabel = new Label("Y : ");
-    LimitedTextField yField = new LimitedTextField(limits.y);
+
+    DoubleProperty yLimit = sceneOptions.getEye().xLimitProperty();
+    LimitedTextField yField = new LimitedTextField(yLimit);
     // textField limited by the coordonates of the borders
     yField.textProperty().bindBidirectional(sceneOptions.getEye().yProperty(), new NumberStringConverter());
     HBox yBox = new HBox(yLabel, yField);
@@ -147,10 +151,9 @@ public class GraphicalTest extends Application {
 
   // creates the angle and fov textFields
   private Node createViewParam(){
-
     // angle TextField
     Label angleLabel = new Label("Angle : ");
-    LimitedTextField angleField = new LimitedTextField(360d);
+    LimitedTextField angleField = new LimitedTextField(new SimpleDoubleProperty(360d));
 
     // textField limited by the coordonates of the borders
     angleField.textProperty().bindBidirectional(sceneOptions.getEye().angleProperty(), new NumberStringConverter());
@@ -158,34 +161,54 @@ public class GraphicalTest extends Application {
 
     // fov TextField
     Label fovLabel = new Label("FOV : ");
-    LimitedTextField fovField = new LimitedTextField(180d);
+    LimitedTextField fovField = new LimitedTextField(new SimpleDoubleProperty(180d));
 
     fovField.textProperty().bindBidirectional(sceneOptions.getEye().fovProperty(), new CoordonateConverter(180));
     HBox fovHbox= new HBox(fovLabel, fovField);
 
     return new VBox(angleHbox, fovHbox);
-
   }
 
   // creates the two eye buttons
   private Node createEyeButtons(){
-
     // set eye info button 
     Button setEyeButton = new Button("Set"); 
     setEyeButton.setOnAction(e -> setEye());
-
 
     // unset eye info button
     Button unsetEyeButton = new Button("Unset"); 
     unsetEyeButton.setOnAction( e -> unsetEye());
 
     return new VBox(setEyeButton, unsetEyeButton);
-
   }
 
-  private void loadScene(){
-    System.out.println(sceneOptions.getEye().getX() + "x and y" + sceneOptions.getEye().getY());
-    // TODO load the scene here with param generation and file 
+  private String loadScene(){
+
+    if (sceneOptions.getFileLoc().length() == 0)
+      return "please select a file to load";
+
+    SceneReader sr = new SceneReader();
+    shared.scene.Scene loadedScene = sr.read(sceneOptions.getFileLoc());
+
+    if (loadedScene == null)
+      return "Not Loaded Correctly";
+
+    drawScene = loadedScene;
+    sceneOptions.getEye().setxLimit(drawScene.getCorners()[1].x);
+    sceneOptions.getEye().setyLimit(drawScene.getCorners()[2].y);
+
+    if (!loadBsp())
+      return "Failled loading the BSP";
+
+    return "Succes !";
+  }
+
+  private boolean loadBsp(){
+    BSP loadedBsp = new BSP(drawScene.getSegList(), GenerationMethod.enumToGenerationMethod(sceneOptions.getGenerationMethod()));
+
+    bsp = loadedBsp; 
+    return true;
+
   }
 
 

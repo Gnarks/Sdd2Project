@@ -15,10 +15,12 @@ public class SceneOptions{
 
   private final EyeProperty eye = new EyeProperty(); 
 
-
-
   public EyeProperty getEye() {
     return eye;
+  }
+
+  public String getFileLoc(){
+    return fileLoc.get();
   }
 
   public StringProperty fileLocProperty() {

@@ -12,6 +12,35 @@ public class EyeProperty{
 
   private final DoubleProperty angle = new SimpleDoubleProperty(0); 
 
+  private final DoubleProperty xLimit = new SimpleDoubleProperty(0);
+
+  private final DoubleProperty yLimit = new SimpleDoubleProperty(0);
+
+
+
+  public DoubleProperty yLimitProperty(){
+    return yLimit;
+  }
+  
+  public double getyLimit(){
+    return yLimit.get();
+  }
+
+  public void setyLimit(double yLimit){
+    this.yLimit.set(yLimit);
+  }
+
+  public DoubleProperty xLimitProperty(){
+    return xLimit;
+  }
+  
+  public double getxLimit(){
+    return xLimit.get();
+  }
+
+  public void setxLimit(double xLimit){
+    this.xLimit.set(xLimit);
+  }
 
   public DoubleProperty xProperty(){
     return x;

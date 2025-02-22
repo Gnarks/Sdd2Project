@@ -1,11 +1,12 @@
 
+import javafx.beans.property.DoubleProperty;
 import javafx.scene.control.*;
 
 public class LimitedTextField extends TextField {
 
-  private Double limit;
+  private DoubleProperty limit;
 
-  public LimitedTextField(Double limit){
+  public LimitedTextField(DoubleProperty limit){
     this.limit = limit;
   }
 
@@ -16,8 +17,8 @@ public class LimitedTextField extends TextField {
   {
       super.replaceText(start, end, text);
 
-      if (text.length() != 0 && Double.parseDouble(super.getText()) > limit){
-        super.setText(String.valueOf(limit));
+      if (text.length() != 0 && Double.parseDouble(super.getText()) > limit.get()){
+        super.setText(String.valueOf(limit.get()));
       }
     }
   }
@@ -29,8 +30,8 @@ public class LimitedTextField extends TextField {
   (text.charAt(0) == '.' && !super.getText().contains(".")))))
   {
       super.replaceSelection(text);
-      if (text.length() != 0 && Double.parseDouble(super.getText()) > limit){
-        super.setText(String.valueOf(limit));
+      if (text.length() != 0 && Double.parseDouble(super.getText()) > limit.get()){
+        super.setText(String.valueOf(limit.get()));
       }
     }
   }
