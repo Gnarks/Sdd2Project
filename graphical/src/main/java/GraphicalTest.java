@@ -196,10 +196,10 @@ public class GraphicalTest extends Application {
     drawScene = loadedScene;
     sceneOptions.getEye().setxLimit(drawScene.getCorners()[1].x);
     sceneOptions.getEye().setyLimit(drawScene.getCorners()[2].y);
-
+/**
     if (!loadBsp())
       return "Failled loading the BSP";
-
+**/
     return "Succes !";
   }
 
