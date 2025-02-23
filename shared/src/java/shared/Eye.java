@@ -10,4 +10,12 @@ public class Eye {
     this.angle = angle%360;
     this.fov = fov%90;
   }
+
+  public Point getPosition(){
+    return this.position;
+  }
+
+  public double getAngle(){
+    return this.angle;
+  }
 }

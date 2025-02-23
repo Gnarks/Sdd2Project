@@ -109,7 +109,7 @@ public class Segment {
    * d_minus : the segments that are on the d- part of the segment
    * d_plus : the segments that are on the d+ part of the segment
    */
-  public ArrayList<ArrayList<Segment>> locationSegment(ArrayList<Segment> data){
+  public ArrayList<ArrayList<Segment>> generateNode(ArrayList<Segment> data){
     ArrayList<Segment> align = new ArrayList<>();
     ArrayList<Segment> d_minus = new ArrayList<>();
     ArrayList<Segment> d_plus = new ArrayList<>();
@@ -158,6 +158,7 @@ public class Segment {
   public boolean areEqual(Point p1, Point p2){
     return Math.abs(p1.x - p2.x) < 1E-14 && Math.abs(p1.y - p2.y) < 1E-14;
   }
+
 
   public String toString(){
     return "Start: "+ start + " | End: "+ end + " | Color: " + color.toString();
