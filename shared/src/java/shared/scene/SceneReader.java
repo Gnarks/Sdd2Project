@@ -36,42 +36,42 @@ public class SceneReader{
         }
 
 
-        Color color;
+        String color;
         //Bleu, Rouge, Orange, Jaune, Noir, Violet, Marron, Vert, Gris et Rose
         switch (line[4]){
           case "Bleu":
-            color = Color.BLUE;
+            color = "blue";
             break;
           case "Rouge":
-            color = Color.RED;
+            color = "red";
             break;
           case "Orange":
-            color = Color.ORANGE;
+            color = "orange";
             break;
           case "Jaune":
-            color = Color.YELLOW;
+            color = "yellow";
             break;
           case "Noir":
-            color = Color.BLACK;
+            color = "black";
             break;
           case "Violet":
-            color = Color.MAGENTA;
+            color = "magenta";
             break;
           case "Marron":
-            color = new Color(102,51,0);
+            color = "brown";
             break;
           case "Vert":
-            color = Color.GREEN;
+            color = "green";
             break;
           case "Gris":
-            color = Color.GRAY;
+            color = "gray";
             break;
           case "Rose":
-            color = Color.PINK;
+            color = "pink";
             break;
           default:
             // ERROR COLOR = CYAN
-            color = Color.CYAN;
+            color = "cyan";
             break;
         }
 

@@ -25,13 +25,13 @@ public class Example {
         Point K = new Point(4,2);
         Color color = Color.RED;
         
-        Segment AB = new Segment(A,B,color);
-        Segment CD = new Segment(C,D,color);
-        Segment EF = new Segment(E,F,color);
-        Segment GH = new Segment(G,H,color);
-        Segment JK = new Segment(J,K,color);
+        Segment AB = new Segment(A,B,"red");
+        Segment CD = new Segment(C,D,"red");
+        Segment EF = new Segment(E,F,"red");
+        Segment GH = new Segment(G,H,"red");
+        Segment JK = new Segment(J,K,"red");
 
-        Segment IA = new Segment(A,I,color);
+        Segment IA = new Segment(A,I,"red");
         
         
         Segment[] data = new Segment[]{AB,CD,EF,GH,JK};
