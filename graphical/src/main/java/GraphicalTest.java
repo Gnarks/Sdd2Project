@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.Arrays;
 
 import javafx.application.Application;
@@ -8,13 +9,14 @@ import javafx.collections.FXCollections;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import shared.scene.SceneFinder;
 import shared.scene.SceneReader;
 import shared.BSP;
 import shared.generation.GenerationEnum;
-import shared.generation.GenerationMethod;
 
 
 
@@ -22,15 +24,12 @@ public class GraphicalTest extends Application {
 
   // all the sceneoptions in FX properties
   private SceneOptions sceneOptions;
-  private shared.scene.Scene drawScene; 
   private BSP bsp;
 
   @Override
   public void start(Stage stage){
-
     // initiate the scene parameters
     sceneOptions = new SceneOptions();
-
     // top left parameters for the scene (file to load, view, Generation method)
     VBox sceneParam = createSceneParam();
 
@@ -38,11 +37,11 @@ public class GraphicalTest extends Application {
     HBox eyeParam = createEyeParam();
 
     // drawScene 
-    AnchorPane sceneAnchor = new AnchorPane();
+    ScrollPane sceneAnchor = createDrawScene();
 
     GridPane gridPane = new GridPane();
     gridPane.add(sceneParam, 0, 0);
-    gridPane.add(sceneAnchor, 0,1);
+    gridPane.add(sceneAnchor, 1,0);
     gridPane.add(eyeParam, 1,1);
 
     stage.setScene(new Scene(gridPane));
@@ -182,6 +181,17 @@ public class GraphicalTest extends Application {
     return new VBox(setEyeButton, unsetEyeButton);
   }
 
+  private ScrollPane createDrawScene(){
+    ScrollPane sPane = new ScrollPane();
+    sPane.setStyle("-fx-border-color: black; -fx-border-width: 1px 1px 1px 0px");
+    
+    sceneOptions.DrawSceneNodeProperty().addListener(e -> {
+      sPane.setContent(sceneOptions.getDrawSceneNode());
+    });
+
+    return sPane;
+  }
+
   private String loadScene(){
 
     if (sceneOptions.getFileLoc().length() == 0)
@@ -193,24 +203,35 @@ public class GraphicalTest extends Application {
     if (loadedScene == null)
       return "Not Loaded Correctly";
 
-    drawScene = loadedScene;
-    sceneOptions.getEye().setxLimit(drawScene.getCorners()[1].x);
-    sceneOptions.getEye().setyLimit(drawScene.getCorners()[2].y);
-/**
-    if (!loadBsp())
+    sceneOptions.getEye().setxLimit(loadedScene.getCorners()[1].x);
+    sceneOptions.getEye().setyLimit(loadedScene.getCorners()[2].y);
+
+    Pane pane = new Pane();
+
+    for (shared.Segment seg : loadedScene.getSegList()) {
+      //adding 100 to include all segments (not on the edge of the pane)
+      double initX = seg.getStart().x + loadedScene.getCorners()[3].x + 100;
+      double initY = seg.getStart().y+ loadedScene.getCorners()[3].y + 100;
+      double finalX = seg.getEnd().x + loadedScene.getCorners()[3].x + 100;
+      double finalY = seg.getEnd().y + loadedScene.getCorners()[3].y + 100;
+
+      Line line = new Line(initX, initY, finalX, finalY);
+      line.setStroke(Paint.valueOf(seg.getColor()));
+      pane.getChildren().add(line);
+    }
+
+    // giving space at the end of the pane too // TODO FIND HOW + ZOOM
+    //pane.setMinSize(loadedScene.getCorners()[3].x + 200, loadedScene.getCorners()[3].y + 200);
+
+    sceneOptions.setDrawSceneNode(pane);
+/*
+    //load the bsp 
+    bsp = new BSP(drawScene.getSegList(), GenerationMethod.enumToGenerationMethod(sceneOptions.getGenerationMethod()));
+
       return "Failled loading the BSP";
-**/
+*/
     return "Succes !";
   }
-
-  private boolean loadBsp(){
-    BSP loadedBsp = new BSP(drawScene.getSegList(), GenerationMethod.enumToGenerationMethod(sceneOptions.getGenerationMethod()));
-
-    bsp = loadedBsp; 
-    return true;
-
-  }
-
 
   private void setEye(){
 

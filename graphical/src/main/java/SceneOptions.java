@@ -1,7 +1,11 @@
 import javafx.beans.property.SimpleObjectProperty;
+
+import java.util.ArrayList;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.Node;
 import shared.generation.GenerationEnum;
 
 public class SceneOptions{
@@ -15,8 +19,24 @@ public class SceneOptions{
 
   private final EyeProperty eye = new EyeProperty(); 
 
+  private ObjectProperty<Node> drawScene = new SimpleObjectProperty<Node>();
+
   public EyeProperty getEye() {
     return eye;
+  }
+
+
+
+  public Node getDrawSceneNode(){
+    return drawScene.get();
+  }
+
+  public ObjectProperty<Node> DrawSceneNodeProperty() {
+    return drawScene;
+  }
+
+  public void setDrawSceneNode(Node drawScene) {
+    this.drawScene.set(drawScene);
   }
 
   public String getFileLoc(){
