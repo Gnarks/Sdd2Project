@@ -1,6 +1,4 @@
-import java.awt.Color;
 import java.util.Arrays;
-
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -16,6 +14,7 @@ import javafx.util.converter.NumberStringConverter;
 import shared.scene.SceneFinder;
 import shared.scene.SceneReader;
 import shared.BSP;
+import shared.Point;
 import shared.generation.GenerationEnum;
 
 
@@ -206,6 +205,8 @@ public class GraphicalTest extends Application {
 
 
     Pane pane = new Pane();
+    
+
 
     for (shared.Segment seg : loadedScene.getSegList()) {
       //adding 100 to include all segments (not on the edge of the pane)
@@ -218,6 +219,12 @@ public class GraphicalTest extends Application {
       line.setStroke(Paint.valueOf(seg.getColor()));
       pane.getChildren().add(line);
     }
+    sceneOptions.getEye().eyeNodeProperty().addListener( e -> {
+      if (sceneOptions.getEye().isDrawn){
+        pane.getChildren().removeLast();
+      }
+      pane.getChildren().add(sceneOptions.getEye().getEyeNode()); 
+    });
 
     pane.setMinSize(loadedScene.getCorners()[3].x*2.2, loadedScene.getCorners()[3].y*2.2 );
     sceneOptions.setDrawSceneNode(pane);
@@ -234,10 +241,29 @@ public class GraphicalTest extends Application {
   }
 
   private void setEye(){
-
+    
+    DrawEye();
       // TODO : create an eye component with the field infos 
   }
+  
+  private void DrawEye(){
+    Point pos = new Point(sceneOptions.getEye().getX(), sceneOptions.getEye().getY());
+    double initAngle = ( sceneOptions.getEye().getAngle() +90) %360;
+    double fov = sceneOptions.getEye().getFov();
+    double[] angles = {Math.toRadians((initAngle - fov) % 360), Math.toRadians((initAngle + fov) % 360)};
+    // arbitrary length of the segments showing the angles
+    double length = 30;
+
+    Line leftLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[0])), pos.y + (length * Math.cos(angles[0])));
+    Line rightLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[1])), pos.y + (length * Math.cos(angles[1])));
+
+    sceneOptions.getEye().setEyeNode(new Pane(leftLine, rightLine)); 
+    sceneOptions.getEye().isDrawn = true;
+    
+  }
+
   private void unsetEye(){
+
       // TODO : delete the eye component
   }
 

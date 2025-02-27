@@ -1,5 +1,8 @@
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.Node;
 
 public class EyeProperty{
 
@@ -15,8 +18,23 @@ public class EyeProperty{
   private final DoubleProperty xLimit = new SimpleDoubleProperty(0);
 
   private final DoubleProperty yLimit = new SimpleDoubleProperty(0);
+   
+  private final ObjectProperty<Node> eyeNode = new SimpleObjectProperty<Node>();
+
+  public boolean isDrawn = false;
 
 
+  public Node getEyeNode(){
+    return eyeNode.get();
+  }
+
+  public ObjectProperty<Node> eyeNodeProperty() {
+    return eyeNode;
+  }
+
+  public void setEyeNode(Node eye) {
+    this.eyeNode.set(eye);
+  }
 
   public DoubleProperty yLimitProperty(){
     return yLimit;
