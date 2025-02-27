@@ -187,6 +187,7 @@ public class GraphicalTest extends Application {
     
     sceneOptions.DrawSceneNodeProperty().addListener(e -> {
       sPane.setContent(sceneOptions.getDrawSceneNode());
+      sPane.setMinSize(sceneOptions.getEye().getxLimit(), sceneOptions.getEye().getyLimit());
     });
 
     return sPane;
@@ -203,27 +204,26 @@ public class GraphicalTest extends Application {
     if (loadedScene == null)
       return "Not Loaded Correctly";
 
-    sceneOptions.getEye().setxLimit(loadedScene.getCorners()[1].x);
-    sceneOptions.getEye().setyLimit(loadedScene.getCorners()[2].y);
 
     Pane pane = new Pane();
 
     for (shared.Segment seg : loadedScene.getSegList()) {
       //adding 100 to include all segments (not on the edge of the pane)
-      double initX = seg.getStart().x + loadedScene.getCorners()[3].x + 100;
-      double initY = seg.getStart().y+ loadedScene.getCorners()[3].y + 100;
-      double finalX = seg.getEnd().x + loadedScene.getCorners()[3].x + 100;
-      double finalY = seg.getEnd().y + loadedScene.getCorners()[3].y + 100;
+      double initX = seg.getStart().x + loadedScene.getCorners()[3].x*1.1;
+      double initY = seg.getStart().y + loadedScene.getCorners()[3].y*1.1;
+      double finalX = seg.getEnd().x + loadedScene.getCorners()[3].x*1.1;
+      double finalY = seg.getEnd().y + loadedScene.getCorners()[3].y*1.1;
 
       Line line = new Line(initX, initY, finalX, finalY);
       line.setStroke(Paint.valueOf(seg.getColor()));
       pane.getChildren().add(line);
     }
 
-    // giving space at the end of the pane too // TODO FIND HOW + ZOOM
-    //pane.setMinSize(loadedScene.getCorners()[3].x + 200, loadedScene.getCorners()[3].y + 200);
-
+    pane.setMinSize(loadedScene.getCorners()[3].x*2.2, loadedScene.getCorners()[3].y*2.2 );
     sceneOptions.setDrawSceneNode(pane);
+
+    sceneOptions.getEye().setxLimit(Math.round(loadedScene.getCorners()[3].x*2.2));
+    sceneOptions.getEye().setyLimit(Math.round(loadedScene.getCorners()[3].y*2.2));
 /*
     //load the bsp 
     bsp = new BSP(drawScene.getSegList(), GenerationMethod.enumToGenerationMethod(sceneOptions.getGenerationMethod()));
