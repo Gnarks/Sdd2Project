@@ -11,41 +11,31 @@ public class Example {
 
     public static void main() {
         System.out.println(new Example().getGreeting());
-        Point A = new Point(-2,0);
-        Point B = new Point(-1,1);
-        Point C = new Point(8,1);
-        Point D = new Point(9,2);
-        Point E = new Point(-9,2);
-        Point F = new Point(-8,1);
-        Point G = new Point(1,1);
-        Point H = new Point(2,2);
-        Point I = new Point(2,0);
-        Point J = new Point(2,4);
-        Point K = new Point(4,2);
-        Color color = Color.BLUE;
         
-        Segment AB = new Segment(A,B,color);
-        Segment CD = new Segment(C,D,color);
-        Segment EF = new Segment(E,F,color);
-        Segment GH = new Segment(G,H,color);
-        Segment JK = new Segment(J,K,color);
+        Point A = new Point(0,0);
+        Point B = new Point(5,0);
+        Point C = new Point(6,6);
+        Point D = new Point(7,7);
+        Point E = new Point(-1,-2);
+        Point F = new Point(-2,-1);
 
-        Segment IA = new Segment(A,I,color);
-        Segment test = new Segment(B,G,Color.RED);
-        Segment CG = new Segment(G,C,Color.BLUE);
 
-        Segment[] data = new Segment[]{AB,GH,JK};
-        Segment[] data2 = new Segment[]{IA,test};
+        Segment AB = new Segment(A,B,Color.RED);
+        Segment CD = new Segment(C,D,Color.BLACK);
+        Segment EF = new Segment(F,E,Color.BLUE);
+
+        Segment[] data = new Segment[]{AB,CD,EF};
         
           
-        Point eue = new Point(0,6);
-        Eye p = new Eye(eue,270,90);
-        ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data2));  
+        Point eue = new Point(10,10);
+        Eye p = new Eye(eue,225,45);
+        ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
         BSP bsp = new BSP(segments, new FirstMethod());
-        double[] range = new double[]{4,3};
+        double[] range = new double[]{10,10};
 
         System.out.println(bsp.getHead());
         EyeSegment pSeg = bsp.painterAlgorithm(p,range);
+        System.out.println(pSeg);
     }
 
 }

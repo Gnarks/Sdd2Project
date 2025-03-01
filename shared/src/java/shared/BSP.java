@@ -76,32 +76,53 @@ public class BSP {
       return new EyeSegment(eyeSeg);
     }
     int eyePos = this.head.data.get(0).locationPoint(p.getPosition());
+    int vision = p.seeNode(this.head.data.get(0));
+    EyeSegment eyeSegRight = null;
+    EyeSegment eyeSegLeft = null;
+    if(vision == -1 || vision == 0){
+    eyeSegRight = this.head.rightSon.painterAlgorithm(p,range);}
+    
+  
+    if(vision == 1 || vision == 0){
+    eyeSegLeft = this.head.leftSon.painterAlgorithm(p,range);}
+
+    ArrayList<Segment> eyeSeg = new ArrayList<Segment>(Arrays.asList(drawNode(p,this.head.data,range)));
+    sortSegments(eyeSeg);
+    
     if(eyePos == -1){
-      EyeSegment eyeSegRight = this.head.rightSon.painterAlgorithm(p,range);
-      ArrayList<Segment> eyeSeg = new ArrayList<Segment>(Arrays.asList(drawNode(p,this.head.data,range)));
-      sortSegments(eyeSeg);
-      
       EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
+      if(vision == 1 || vision == 0){
       eyeSegRight.mergeParts(eyeSegHead);
-      EyeSegment eyeSegLeft = this.head.leftSon.painterAlgorithm(p,range);
       eyeSegRight.mergeParts(eyeSegLeft);
       
-      return eyeSegRight;
+      return eyeSegRight;}
+
+      eyeSegHead.mergeParts(eyeSegLeft);
+      return eyeSegHead;
     }
-    if(eyePos == 1){
-      EyeSegment eyeSegLeft = this.head.leftSon.painterAlgorithm(p,range);
-      ArrayList<Segment> eyeSeg = new ArrayList<Segment>(Arrays.asList(drawNode(p,this.head.data,range)));
-      sortSegments(eyeSeg);
-      
+    else if(eyePos == 1){
       EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
+      if(vision == -1 || vision == 0){
       eyeSegLeft.mergeParts(eyeSegHead);
-      EyeSegment eyeSegRight = this.head.rightSon.painterAlgorithm(p,range);
       eyeSegLeft.mergeParts(eyeSegRight);
       
+      return eyeSegLeft;}
+
+      eyeSegHead.mergeParts(eyeSegRight);
+      return eyeSegHead;
+
+    }
+
+    else{
+      if (vision == 0){
+        eyeSegRight.mergeParts(eyeSegLeft);
+        return eyeSegRight;
+      }
+      if(vision == 1){
+        return eyeSegRight;
+      }
       return eyeSegLeft;
     }
-    return this.head.leftSon.painterAlgorithm(p,range);
-
   }
   
   public Segment[] drawNode(Eye p,ArrayList<Segment> data, double[] range){
@@ -121,13 +142,16 @@ public class BSP {
     Segment line = new Segment(point1,point2,Color.RED);  
 
     for (int i = 0; i < data.size(); i++){
-      Segment seg = data.get(i);
+      Segment segment = data.get(i);
+      Segment seg = p.seeSegment(segment);
+      if(seg != null){
       Segment seg1 = new Segment(p.getPosition(),seg.getStart(),Color.RED);
       Segment seg2 = new Segment(p.getPosition(),seg.getEnd(),Color.RED);
       Point inter1 = seg1.interSeg(line);
       Point inter2 = seg2.interSeg(line);
 
       proj[i] = new Segment(inter1,inter2,seg.getColor());
+      }
     };
     return proj;
     }
@@ -139,7 +163,9 @@ public class BSP {
         } else {
           return 1;
         }
-      });}
+      });
+  }
+
 
 
 }

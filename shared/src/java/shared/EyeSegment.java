@@ -19,6 +19,8 @@ public class EyeSegment {
   public void mergeParts(EyeSegment segments){
     ArrayList<Segment> merged = new ArrayList<>();
     ArrayList<Segment> toMerge = segments.getParts();
+    System.out.println(toMerge+"aa");
+    System.out.println(parts +"AA");
     if (toMerge.size() == 0){
       return;
     }
