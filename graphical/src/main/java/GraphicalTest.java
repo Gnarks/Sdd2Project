@@ -8,12 +8,15 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import shared.scene.SceneFinder;
 import shared.scene.SceneReader;
 import shared.BSP;
+import shared.Eye;
 import shared.Point;
 import shared.generation.GenerationEnum;
 
@@ -69,7 +72,7 @@ public class GraphicalTest extends Application {
   private HBox createEyeParam(){
     Node coordonatesParam = createCoordonatesParam();
     Node viewParam = createViewParam();
-    Node eyeButtons = createEyeButtons();
+    Node eyeButtons = createEyeButton();
 
     return new HBox(coordonatesParam, viewParam, eyeButtons);
   }
@@ -168,16 +171,13 @@ public class GraphicalTest extends Application {
   }
 
   // creates the two eye buttons
-  private Node createEyeButtons(){
+  private Node createEyeButton(){
     // set eye info button 
     Button setEyeButton = new Button("Set"); 
     setEyeButton.setOnAction(e -> setEye());
+    
 
-    // unset eye info button
-    Button unsetEyeButton = new Button("Unset"); 
-    unsetEyeButton.setOnAction( e -> unsetEye());
-
-    return new VBox(setEyeButton, unsetEyeButton);
+    return new VBox(setEyeButton, new Label("Eye parameters"));
   }
 
   private ScrollPane createDrawScene(){
@@ -206,8 +206,6 @@ public class GraphicalTest extends Application {
 
     Pane pane = new Pane();
     
-
-
     for (shared.Segment seg : loadedScene.getSegList()) {
       //adding 100 to include all segments (not on the edge of the pane)
       double initX = seg.getStart().x + loadedScene.getCorners()[3].x*1.1;
@@ -243,7 +241,13 @@ public class GraphicalTest extends Application {
   private void setEye(){
     
     DrawEye();
-      // TODO : create an eye component with the field infos 
+    Point pos = new Point(sceneOptions.getEye().getX(), sceneOptions.getEye().getY());
+    double initAngle = ( sceneOptions.getEye().getAngle() +90) %360;
+    double fov = sceneOptions.getEye().getFov();
+    Eye eye = new Eye(pos, initAngle, fov);
+    
+    // TODO get the drawnSegment from the eye pov
+    
   }
   
   private void DrawEye(){
@@ -256,15 +260,16 @@ public class GraphicalTest extends Application {
 
     Line leftLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[0])), pos.y + (length * Math.cos(angles[0])));
     Line rightLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[1])), pos.y + (length * Math.cos(angles[1])));
+    double essai = initAngle -fov -90;
+    Arc arc = new Arc(pos.x,pos.y, 15, 15,essai , fov*2);
 
-    sceneOptions.getEye().setEyeNode(new Pane(leftLine, rightLine)); 
+    System.out.printf(" fov %s\n", fov);
+    System.out.printf("init %s avec essai : %s\n", initAngle, essai);
+
+    arc.setType(ArcType.ROUND);
+
+    sceneOptions.getEye().setEyeNode(new Pane(leftLine, rightLine, arc)); 
     sceneOptions.getEye().isDrawn = true;
     
   }
-
-  private void unsetEye(){
-
-      // TODO : delete the eye component
-  }
-
 } 
