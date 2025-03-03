@@ -17,20 +17,21 @@ public class EyeSegment {
     this.parts = parts;
   }
   public void mergeParts(EyeSegment segments){
+    if (segments == null){    
+      return;}
     ArrayList<Segment> merged = new ArrayList<>();
     ArrayList<Segment> toMerge = segments.getParts();
-    System.out.println(toMerge+"aa");
-    System.out.println(parts +"AA");
     if (toMerge.size() == 0){
       return;
     }
     int j = 0;
     for (int i = 0; i < toMerge.size(); i++) {
       Segment seg = toMerge.get(i);
-      while(j<this.parts.size() && parts.get(j).getEnd().x < seg.getStart().x) {
+      while(j<this.parts.size() && parts.get(j).getEnd().x <= seg.getStart().x) {
         merged.add(this.parts.get(j));
         j++;        
       }
+
       if(j< this.parts.size()){
         if(this.parts.get(j).getStart().x < seg.getStart().x){
           Segment temp = new Segment(this.parts.get(j).getStart().x,this.parts.get(j).getStart().y,seg.getStart().x,seg.getStart().y,this.parts.get(j).getColor());

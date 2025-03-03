@@ -93,6 +93,7 @@ public class BSP {
       EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
       if(vision == 1 || vision == 0){
       eyeSegRight.mergeParts(eyeSegHead);
+      sortSegments(eyeSegLeft.getParts());
       eyeSegRight.mergeParts(eyeSegLeft);
       
       return eyeSegRight;}
@@ -103,8 +104,9 @@ public class BSP {
     else if(eyePos == 1){
       EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
       if(vision == -1 || vision == 0){
-      eyeSegLeft.mergeParts(eyeSegHead);
-      eyeSegLeft.mergeParts(eyeSegRight);
+        eyeSegLeft.mergeParts(eyeSegHead);
+        sortSegments(eyeSegLeft.getParts());
+        eyeSegLeft.mergeParts(eyeSegRight);
       
       return eyeSegLeft;}
 

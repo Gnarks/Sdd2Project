@@ -13,11 +13,11 @@ public class Example {
         System.out.println(new Example().getGreeting());
         
         Point A = new Point(0,0);
-        Point B = new Point(5,0);
+        Point B = new Point(0,5);
         Point C = new Point(6,6);
         Point D = new Point(7,7);
-        Point E = new Point(-1,-2);
-        Point F = new Point(-2,-1);
+        Point E = new Point(-2,-3);
+        Point F = new Point(1,-3);
 
 
         Segment AB = new Segment(A,B,Color.RED);

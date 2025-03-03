@@ -26,7 +26,14 @@ public class Eye {
     double alpha = Math.atan(Math.toRadians(line.getLine()[0])); 
     double limit = 180+alpha;
 
+
     if(loc == 1){
+      if(line.isVertical()){
+        if(angle > 90 && angle < 270){
+          return 0;
+        }
+        return 1;
+      }
       if (line.getLine()[0] >= 0){
         if(angle > limit && ((angle-fov)%360 >= limit || angle+fov <= alpha+360)){return 1;} 
       }
@@ -35,6 +42,12 @@ public class Eye {
       }
     }
     if (loc == -1){
+      if(line.isVertical()){
+        if(Math.cos(Math.toRadians(angle)) > 1){
+          return 0;
+        }
+        return -1;
+      }
       if(line.getLine()[0]>=0){
         if(angle <= limit && ((angle+fov)%360 <= limit || angle-fov >= alpha)){return -1;} 
       }
@@ -47,7 +60,6 @@ public class Eye {
   }
 
   public Segment seeSegment(Segment seg){
-    System.out.println(seg);
     int[] fovLine = fovLine();
     double angleRight = Math.toRadians(angle-fov);
     double angleLeft = Math.toRadians(angle+fov);
