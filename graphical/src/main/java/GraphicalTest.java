@@ -17,8 +17,10 @@ import shared.scene.SceneFinder;
 import shared.scene.SceneReader;
 import shared.BSP;
 import shared.Eye;
+import shared.EyeSegment;
 import shared.Point;
 import shared.generation.GenerationEnum;
+import shared.generation.GenerationMethod;
 
 
 
@@ -183,10 +185,21 @@ public class GraphicalTest extends Application {
   private ScrollPane createDrawScene(){
     ScrollPane sPane = new ScrollPane();
     sPane.setStyle("-fx-border-color: black; -fx-border-width: 1px 1px 1px 0px");
-    
+
     sceneOptions.DrawSceneNodeProperty().addListener(e -> {
       sPane.setContent(sceneOptions.getDrawSceneNode());
       sPane.setMinSize(sceneOptions.getEye().getxLimit(), sceneOptions.getEye().getyLimit());
+    });
+
+    sceneOptions.viewTypeProperty().addListener(e -> {
+      if (sceneOptions.getViewType() == "eye view"){
+        System.out.println("EYE VIEW enabled ");
+        sPane.setContent(sceneOptions.getEyeSceneNode());
+      }
+      else{
+        sPane.setContent(sceneOptions.getDrawSceneNode());
+        sPane.setMinSize(sceneOptions.getEye().getxLimit(), sceneOptions.getEye().getyLimit());
+      }
     });
 
     return sPane;
@@ -229,12 +242,10 @@ public class GraphicalTest extends Application {
 
     sceneOptions.getEye().setxLimit(Math.round(loadedScene.getCorners()[3].x*2.2));
     sceneOptions.getEye().setyLimit(Math.round(loadedScene.getCorners()[3].y*2.2));
-/*
     //load the bsp 
-    bsp = new BSP(drawScene.getSegList(), GenerationMethod.enumToGenerationMethod(sceneOptions.getGenerationMethod()));
+    
+    bsp = new BSP(loadedScene.getSegList(), GenerationMethod.enumToGenerationMethod(sceneOptions.getGenerationMethod()));
 
-      return "Failled loading the BSP";
-*/
     return "Succes !";
   }
 
@@ -246,9 +257,27 @@ public class GraphicalTest extends Application {
     double fov = sceneOptions.getEye().getFov();
     Eye eye = new Eye(pos, initAngle, fov);
     
+    double[] range = {sceneOptions.getEye().getxLimit(), sceneOptions.getEye().getyLimit()};
+
+    EyeSegment eyePov = bsp.painterAlgorithm(eye, range);
+    Pane p = new Pane();
+
     // TODO get the drawnSegment from the eye pov
-    
+    for (shared.Segment seg: eyePov.getParts()) {
+      //adding 100 to include all segments (not on the edge of the pane)
+      double initX = seg.getStart().x;
+      double initY = seg.getStart().y;
+      double finalX = seg.getEnd().x;
+      double finalY = seg.getEnd().y;
+
+      Line line = new Line(initX, initY, finalX, finalY);
+      line.setStroke(Paint.valueOf(seg.getColor()));
+      p.getChildren().add(line);
+    }
+
+    sceneOptions.setEyeSceneNode(p);
   }
+  
   
   private void DrawEye(){
     Point pos = new Point(sceneOptions.getEye().getX(), sceneOptions.getEye().getY());
@@ -262,14 +291,8 @@ public class GraphicalTest extends Application {
     Line rightLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[1])), pos.y + (length * Math.cos(angles[1])));
     double essai = initAngle -fov -90;
     Arc arc = new Arc(pos.x,pos.y, 15, 15,essai , fov*2);
-
-    System.out.printf(" fov %s\n", fov);
-    System.out.printf("init %s avec essai : %s\n", initAngle, essai);
-
     arc.setType(ArcType.ROUND);
-
     sceneOptions.getEye().setEyeNode(new Pane(leftLine, rightLine, arc)); 
     sceneOptions.getEye().isDrawn = true;
-    
   }
 } 
