@@ -1,14 +1,17 @@
 import java.io.IOException;
 import java.util.ArrayList;
 
+import shared.Example;
 import shared.SceneReader;
 import shared.Segment;
 import shared.Example;
 
 public class ConsoleTest{
 
-    public static void main(String[] args){
-        System.out.println("yipie");
+  public static void main(String[] args) throws IOException{
+    System.out.println("yipie");
+
+    Example.main();
   }
 }
 
