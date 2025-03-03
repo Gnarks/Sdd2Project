@@ -1,9 +1,8 @@
 package shared;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
-import shared.generation.RandomMethod;
+import shared.generation.*;
 public class Example {
 
     public String getGreeting() {
@@ -12,32 +11,31 @@ public class Example {
 
     public static void main() {
         System.out.println(new Example().getGreeting());
+        
         Point A = new Point(0,0);
-        Point B = new Point(-1,1);
-        Point C = new Point(8,1);
-        Point D = new Point(9,2);
-        Point E = new Point(-9,2);
-        Point F = new Point(-8,1);
-        Point G = new Point(1,1);
-        Point H = new Point(2,2);
-        Point I = new Point(5,5);
-        Point J = new Point(2,4);
-        Point K = new Point(4,2);
-        Color color = Color.RED;
-        
-        Segment AB = new Segment(A,B,"red");
-        Segment CD = new Segment(C,D,"red");
-        Segment EF = new Segment(E,F,"red");
-        Segment GH = new Segment(G,H,"red");
-        Segment JK = new Segment(J,K,"red");
+        Point B = new Point(0,5);
+        Point C = new Point(6,6);
+        Point D = new Point(7,7);
+        Point E = new Point(-2,-3);
+        Point F = new Point(1,-3);
 
-        Segment IA = new Segment(A,I,"red");
+
+        Segment AB = new Segment(A,B,"red");
+        Segment CD = new Segment(C,D,"black");
+        Segment EF = new Segment(F,E,"blue");
+
+        Segment[] data = new Segment[]{AB,CD,EF};
         
-        
-        Segment[] data = new Segment[]{AB,CD,EF,GH,JK};
+          
+        Point eue = new Point(10,10);
+        Eye p = new Eye(eue,225,45);
         ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
-        BSP bsp = new BSP(segments, new RandomMethod());
+        BSP bsp = new BSP(segments, new FirstMethod());
+        double[] range = new double[]{10,10};
+
         System.out.println(bsp.getHead());
+        EyeSegment pSeg = bsp.painterAlgorithm(p,range);
+        System.out.println(pSeg);
     }
 
 }

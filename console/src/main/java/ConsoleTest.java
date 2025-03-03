@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
 
+import shared.Example;
 import shared.Segment;
 import shared.Example;
 
