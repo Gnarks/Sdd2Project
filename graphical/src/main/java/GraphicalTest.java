@@ -1,6 +1,4 @@
-import java.awt.Color;
 import java.util.Arrays;
-
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -10,12 +8,16 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import shared.scene.SceneFinder;
 import shared.scene.SceneReader;
 import shared.BSP;
+import shared.Eye;
+import shared.Point;
 import shared.generation.GenerationEnum;
 
 
@@ -70,7 +72,7 @@ public class GraphicalTest extends Application {
   private HBox createEyeParam(){
     Node coordonatesParam = createCoordonatesParam();
     Node viewParam = createViewParam();
-    Node eyeButtons = createEyeButtons();
+    Node eyeButtons = createEyeButton();
 
     return new HBox(coordonatesParam, viewParam, eyeButtons);
   }
@@ -169,16 +171,13 @@ public class GraphicalTest extends Application {
   }
 
   // creates the two eye buttons
-  private Node createEyeButtons(){
+  private Node createEyeButton(){
     // set eye info button 
     Button setEyeButton = new Button("Set"); 
     setEyeButton.setOnAction(e -> setEye());
+    
 
-    // unset eye info button
-    Button unsetEyeButton = new Button("Unset"); 
-    unsetEyeButton.setOnAction( e -> unsetEye());
-
-    return new VBox(setEyeButton, unsetEyeButton);
+    return new VBox(setEyeButton, new Label("Eye parameters"));
   }
 
   private ScrollPane createDrawScene(){
@@ -187,6 +186,7 @@ public class GraphicalTest extends Application {
     
     sceneOptions.DrawSceneNodeProperty().addListener(e -> {
       sPane.setContent(sceneOptions.getDrawSceneNode());
+      sPane.setMinSize(sceneOptions.getEye().getxLimit(), sceneOptions.getEye().getyLimit());
     });
 
     return sPane;
@@ -203,27 +203,32 @@ public class GraphicalTest extends Application {
     if (loadedScene == null)
       return "Not Loaded Correctly";
 
-    sceneOptions.getEye().setxLimit(loadedScene.getCorners()[1].x);
-    sceneOptions.getEye().setyLimit(loadedScene.getCorners()[2].y);
 
     Pane pane = new Pane();
-
+    
     for (shared.Segment seg : loadedScene.getSegList()) {
       //adding 100 to include all segments (not on the edge of the pane)
-      double initX = seg.getStart().x + loadedScene.getCorners()[3].x + 100;
-      double initY = seg.getStart().y+ loadedScene.getCorners()[3].y + 100;
-      double finalX = seg.getEnd().x + loadedScene.getCorners()[3].x + 100;
-      double finalY = seg.getEnd().y + loadedScene.getCorners()[3].y + 100;
+      double initX = seg.getStart().x + loadedScene.getCorners()[3].x*1.1;
+      double initY = seg.getStart().y + loadedScene.getCorners()[3].y*1.1;
+      double finalX = seg.getEnd().x + loadedScene.getCorners()[3].x*1.1;
+      double finalY = seg.getEnd().y + loadedScene.getCorners()[3].y*1.1;
 
       Line line = new Line(initX, initY, finalX, finalY);
       line.setStroke(Paint.valueOf(seg.getColor()));
       pane.getChildren().add(line);
     }
+    sceneOptions.getEye().eyeNodeProperty().addListener( e -> {
+      if (sceneOptions.getEye().isDrawn){
+        pane.getChildren().removeLast();
+      }
+      pane.getChildren().add(sceneOptions.getEye().getEyeNode()); 
+    });
 
-    // giving space at the end of the pane too // TODO FIND HOW + ZOOM
-    //pane.setMinSize(loadedScene.getCorners()[3].x + 200, loadedScene.getCorners()[3].y + 200);
-
+    pane.setMinSize(loadedScene.getCorners()[3].x*2.2, loadedScene.getCorners()[3].y*2.2 );
     sceneOptions.setDrawSceneNode(pane);
+
+    sceneOptions.getEye().setxLimit(Math.round(loadedScene.getCorners()[3].x*2.2));
+    sceneOptions.getEye().setyLimit(Math.round(loadedScene.getCorners()[3].y*2.2));
 /*
     //load the bsp 
     bsp = new BSP(drawScene.getSegList(), GenerationMethod.enumToGenerationMethod(sceneOptions.getGenerationMethod()));
@@ -234,11 +239,37 @@ public class GraphicalTest extends Application {
   }
 
   private void setEye(){
-
-      // TODO : create an eye component with the field infos 
+    
+    DrawEye();
+    Point pos = new Point(sceneOptions.getEye().getX(), sceneOptions.getEye().getY());
+    double initAngle = ( sceneOptions.getEye().getAngle() +90) %360;
+    double fov = sceneOptions.getEye().getFov();
+    Eye eye = new Eye(pos, initAngle, fov);
+    
+    // TODO get the drawnSegment from the eye pov
+    
   }
-  private void unsetEye(){
-      // TODO : delete the eye component
-  }
+  
+  private void DrawEye(){
+    Point pos = new Point(sceneOptions.getEye().getX(), sceneOptions.getEye().getY());
+    double initAngle = ( sceneOptions.getEye().getAngle() +90) %360;
+    double fov = sceneOptions.getEye().getFov();
+    double[] angles = {Math.toRadians((initAngle - fov) % 360), Math.toRadians((initAngle + fov) % 360)};
+    // arbitrary length of the segments showing the angles
+    double length = 30;
 
+    Line leftLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[0])), pos.y + (length * Math.cos(angles[0])));
+    Line rightLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[1])), pos.y + (length * Math.cos(angles[1])));
+    double essai = initAngle -fov -90;
+    Arc arc = new Arc(pos.x,pos.y, 15, 15,essai , fov*2);
+
+    System.out.printf(" fov %s\n", fov);
+    System.out.printf("init %s avec essai : %s\n", initAngle, essai);
+
+    arc.setType(ArcType.ROUND);
+
+    sceneOptions.getEye().setEyeNode(new Pane(leftLine, rightLine, arc)); 
+    sceneOptions.getEye().isDrawn = true;
+    
+  }
 } 
