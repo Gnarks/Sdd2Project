@@ -78,7 +78,7 @@ public class BSP {
       return new EyeSegment(eyeSeg);
     }
 
-    int eyePos = this.head.data.get(0).locationPoint(p.getPosition());
+    int eyePos = this.head.data.get(0).locationPoint(p.getPos());
     int vision = p.seeNode(this.head.data.get(0));
 
     EyeSegment eyeSegRight = (vision == -1 || vision == 0) ? this.head.rightSon.painterAlgorithm(p,range) : null;
@@ -136,8 +136,8 @@ public class BSP {
       Segment segment = data.get(i);
       Segment seg = p.seeSegment(segment);
       if(seg != null){
-      Segment seg1 = new Segment(p.getPosition(),seg.getStart(),Color.RED);
-      Segment seg2 = new Segment(p.getPosition(),seg.getEnd(),Color.RED);
+      Segment seg1 = new Segment(p.getPos(),seg.getStart(),Color.RED);
+      Segment seg2 = new Segment(p.getPos(),seg.getEnd(),Color.RED);
       Point inter1 = seg1.interSeg(line);
       Point inter2 = seg2.interSeg(line);
 

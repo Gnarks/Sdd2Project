@@ -13,13 +13,15 @@ public class Eye {
     this.fov = fov%90;
   }
 
-  public Point getPosition(){
-    return this.position;
-  }
+  public Point getPos(){return position.copy();}
+  public void setPos(Point pos){this.position = pos;}
 
-  public double getAngle(){
-    return this.angle;
-  }
+  public double getAngle(){return this.angle;}
+  public void setAngle(double angle){ this.angle = angle; }
+
+  public double getFov(){ return fov; }
+  public void setFov(double fov){ this.fov = fov; }
+
   
   public int seeNode(Segment line) {
     int loc = line.locationPoint(this.position);
@@ -166,5 +168,4 @@ public class Eye {
     } 
     return true;
   }
-
 }
