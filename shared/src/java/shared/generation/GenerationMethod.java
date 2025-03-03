@@ -1,6 +1,7 @@
-package shared;
+package shared.generation;
 
 import java.util.ArrayList;
+import shared.*;
 
 public interface GenerationMethod{
 

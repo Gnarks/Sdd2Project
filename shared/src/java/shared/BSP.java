@@ -2,6 +2,7 @@ package shared;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import shared.generation.*;
 import java.lang.Math;
 import java.awt.Color;
 
@@ -145,6 +146,4 @@ public class BSP {
     };
     return proj;
     }
-
-
 }
