@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import shared.Example;
 import shared.SceneReader;
 import shared.Segment;
+import shared.Example;
 
 public class ConsoleTest{
 
@@ -11,7 +12,6 @@ public class ConsoleTest{
     System.out.println("yipie");
 
     Example.main();
-
   }
 }
 
