@@ -92,7 +92,7 @@ public class Eye {
     boolean seeEnd = seePoint(fovLeft, fovRight, seg.getEnd());
 
     if(seeStart && seeEnd){
-      if (seg.areEqual(seg.getStart(),seg.getEnd())){
+      if (Utils.areEqual(seg.getStart(),seg.getEnd())){
         return null;
       }
         return seg;}
@@ -160,14 +160,11 @@ public class Eye {
         return false;
     }
 
-    if((!areEqual(Math.sin(angleRight), 0) && !areEqual(Math.sin(angleLeft),0))&&((locationPointRight == 0 || locationPointLeft == 0)||
+    if((!Utils.areEqual(Math.sin(angleRight), 0) && !Utils.areEqual(Math.sin(angleLeft),0))&&((locationPointRight == 0 || locationPointLeft == 0)||
     (Math.sin(angleLeft)*locationPointLeft < 0 || Math.sin(angleRight)*locationPointRight > 0))){
       return false;
     } 
     return true;
   }
 
-  public boolean areEqual(double x1, double x2){
-    return Math.abs(x1 - x2) < 1E-14;
-  }
 }

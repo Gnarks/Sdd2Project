@@ -49,7 +49,7 @@ public class EyeSegment {
         parts.get(j).setStart(seg.getEnd());        
       }
     }
-
+    Utils.sortSegments(merged);
     this.parts = merged;
   }
 
