@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import shared.generation.*;
 import java.lang.Math;
-import java.awt.Color;
 
 public class BSP {
  private Node head;
@@ -130,14 +129,14 @@ public class BSP {
       point2 = new Point(x+1,y-(1/Math.tan(Math.toRadians(p.getAngle()))));
     }
 
-    Segment line = new Segment(point1,point2,Color.RED);  
+    Segment line = new Segment(point1,point2,"red");  
 
     for (int i = 0; i < data.size(); i++){
       Segment segment = data.get(i);
       Segment seg = p.seeSegment(segment);
       if(seg != null){
-      Segment seg1 = new Segment(p.getPos(),seg.getStart(),Color.RED);
-      Segment seg2 = new Segment(p.getPos(),seg.getEnd(),Color.RED);
+      Segment seg1 = new Segment(p.getPos(),seg.getStart(),"red");
+      Segment seg2 = new Segment(p.getPos(),seg.getEnd(),"red");
       Point inter1 = seg1.interSeg(line);
       Point inter2 = seg2.interSeg(line);
 

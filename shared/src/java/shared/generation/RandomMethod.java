@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.ArrayList;
 import shared.*;
 
-public class RandomMethod implements GenerationMethod
+public class RandomMethod extends GenerationMethod
 {
   
   public Segment getSegment(ArrayList<Segment> data){

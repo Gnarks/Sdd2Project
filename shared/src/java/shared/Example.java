@@ -1,6 +1,5 @@
 package shared;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import shared.generation.*;
@@ -21,9 +20,9 @@ public class Example {
         Point F = new Point(1,-3);
 
 
-        Segment AB = new Segment(A,B,Color.RED);
-        Segment CD = new Segment(C,D,Color.BLACK);
-        Segment EF = new Segment(F,E,Color.BLUE);
+        Segment AB = new Segment(A,B,"red");
+        Segment CD = new Segment(C,D,"black");
+        Segment EF = new Segment(F,E,"blue");
 
         Segment[] data = new Segment[]{AB,CD,EF};
         

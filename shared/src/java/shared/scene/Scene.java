@@ -18,12 +18,20 @@ public class Scene{
     this.bottomLeft = bottomLeft;
     this.bottomRight = bottomRight;
   }
+
+  public Scene( ArrayList<Segment> segList){
+    this.segList = segList;
+    this.topRight = null;
+    this.topLeft = null;
+    this.bottomLeft = null;
+    this.bottomRight = null;
+  }
   
   /**
    * @return the corners of the scene in order : {topLeft, topRight, bottomLeft, bottomRight}
    */
   public Point[] getCorners(){
-    Point[] corners = {topLeft.copy(), topRight.copy(), bottomRight.copy(), bottomLeft.copy()};
+    Point[] corners = {topLeft.copy(), topRight.copy(), bottomLeft.copy(), bottomRight.copy()};
     return corners;
   }
 

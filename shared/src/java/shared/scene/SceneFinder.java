@@ -13,7 +13,7 @@ public class SceneFinder{
    *
    * @return the full paths of every scene
    */
-  public ArrayList<String> findScenes() throws IOException{
+  public ArrayList<String> findScenes(){
 
     try {
       Enumeration<URL> e = ClassLoader.getSystemResources(".");
@@ -36,7 +36,8 @@ public class SceneFinder{
       return scenesString;
     }
     catch (IOException e){
-      throw e;
+      e.printStackTrace();
+      return null;
     }
 
   }
