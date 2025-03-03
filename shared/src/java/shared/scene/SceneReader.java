@@ -1,6 +1,5 @@
 package shared.scene;
 
-import java.awt.Color;
 import java.io.*;
 import java.util.ArrayList;
 import shared.*;
