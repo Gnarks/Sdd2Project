@@ -255,7 +255,8 @@ public class GraphicalTest extends Application {
   private void setEye(){
     
     DrawEye();
-    Point pos = new Point(sceneOptions.getEye().getX(), sceneOptions.getEye().getY());
+    Point pos = new Point(sceneOptions.getEye().getX() - sceneOptions.getEye().getxLimit()/2,
+      sceneOptions.getEye().getY() - sceneOptions.getEye().getyLimit()/2);
     double initAngle = ( sceneOptions.getEye().getAngle() +90) %360;
     double fov = sceneOptions.getEye().getFov();
     Eye eye = new Eye(pos, initAngle, fov);
@@ -266,18 +267,20 @@ public class GraphicalTest extends Application {
     Pane p = new Pane();
 
     System.out.printf("\n\nEye parameters are : \n");
-    System.out.printf("Pos : (%s, %s) \n", sceneOptions.getEye().getX(), sceneOptions.getEye().getY());
+    System.out.printf("Initial Pos : (%s, %s) \n", sceneOptions.getEye().getX(), sceneOptions.getEye().getY());
+    System.out.printf("Pos (Transposed): %s  \n", pos);
     System.out.printf("Angle : %s \n", sceneOptions.getEye().getAngle());
     System.out.printf("Fov : %s \n\n\n", sceneOptions.getEye().getFov());
 
     // TODO get the drawnSegment from the eye pov
-    for (shared.Segment seg: eyePov.getParts()) {
+    for (shared.Segment seg : eyePov.getParts()) {
       //adding 100 to include all segments (not on the edge of the pane)
-      System.out.printf("segment got : %s\n", seg);
-      double initX = seg.getStart().x;
-      double initY = seg.getStart().y;
-      double finalX = seg.getEnd().x;
-      double finalY = seg.getEnd().y;
+      System.out.println(seg);
+      double initX = seg.getStart().x + sceneOptions.getEye().getxLimit()/2;
+      double initY = seg.getStart().y + sceneOptions.getEye().getyLimit()/2;
+      double finalX = seg.getEnd().x + sceneOptions.getEye().getxLimit()/2;
+      double finalY = seg.getEnd().y + sceneOptions.getEye().getyLimit()/2;
+      System.out.printf("Transposed to :%s \n\n", new shared.Segment(new Point(initX, initY), new Point(finalX, finalY), seg.getColor()));
 
       Line line = new Line(initX, initY, finalX, finalY);
       line.setStroke(Paint.valueOf(seg.getColor()));
