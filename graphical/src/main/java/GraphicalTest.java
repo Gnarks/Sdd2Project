@@ -219,8 +219,11 @@ public class GraphicalTest extends Application {
 
     Pane pane = new Pane();
     
+    //TODO delete
+    System.out.println("Segments drawn :");
     for (shared.Segment seg : loadedScene.getSegList()) {
       //adding 100 to include all segments (not on the edge of the pane)
+      System.out.println(seg);
       double initX = seg.getStart().x + loadedScene.getCorners()[3].x*1.1;
       double initY = seg.getStart().y + loadedScene.getCorners()[3].y*1.1;
       double finalX = seg.getEnd().x + loadedScene.getCorners()[3].x*1.1;
@@ -262,9 +265,15 @@ public class GraphicalTest extends Application {
     EyeSegment eyePov = bsp.painterAlgorithm(eye, range);
     Pane p = new Pane();
 
+    System.out.printf("\n\nEye parameters are : \n");
+    System.out.printf("Pos : (%s, %s) \n", sceneOptions.getEye().getX(), sceneOptions.getEye().getY());
+    System.out.printf("Angle : %s \n", sceneOptions.getEye().getAngle());
+    System.out.printf("Fov : %s \n\n\n", sceneOptions.getEye().getFov());
+
     // TODO get the drawnSegment from the eye pov
     for (shared.Segment seg: eyePov.getParts()) {
       //adding 100 to include all segments (not on the edge of the pane)
+      System.out.printf("segment got : %s\n", seg);
       double initX = seg.getStart().x;
       double initY = seg.getStart().y;
       double finalX = seg.getEnd().x;
