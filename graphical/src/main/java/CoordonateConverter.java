@@ -1,10 +1,11 @@
+import javafx.beans.property.DoubleProperty;
 import javafx.util.StringConverter;
 
 public class CoordonateConverter extends StringConverter<Number>{
 
-  private Double limit; 
+  private DoubleProperty limit; 
 
-  public CoordonateConverter(double limit){
+  public CoordonateConverter(DoubleProperty limit){
     this.limit = limit;
   }
 
@@ -14,7 +15,7 @@ public class CoordonateConverter extends StringConverter<Number>{
     }
     try {
       Double parsed = Double.parseDouble(st.replaceAll("[^-\\d.]", ""));
-      return (parsed<=limit? parsed: limit);
+      return (parsed<=limit.get()? parsed: limit.get());
       
     }
     catch(Exception e) {

@@ -14,7 +14,6 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-import javafx.util.converter.NumberStringConverter;
 import shared.scene.SceneFinder;
 import shared.scene.SceneReader;
 import shared.BSP;
@@ -138,16 +137,16 @@ public class TestGraphical extends Application {
     // textField limited by the coordonates of the borders
     DoubleProperty xLimit = sceneOptions.getEye().xLimitProperty();
 
-    LimitedTextField xField = new LimitedTextField(xLimit);
-    xField.textProperty().bindBidirectional(sceneOptions.getEye().xProperty(), new NumberStringConverter());
+    LimitedTextField xField = new LimitedTextField(xLimit ,false);
+    xField.textProperty().bindBidirectional(sceneOptions.getEye().xProperty(), new CoordonateConverter(xLimit));
     HBox xBox = new HBox(xLabel, xField);
 
     Label yLabel = new Label("Y : ");
 
     DoubleProperty yLimit = sceneOptions.getEye().xLimitProperty();
-    LimitedTextField yField = new LimitedTextField(yLimit);
+    LimitedTextField yField = new LimitedTextField(yLimit, false);
     // textField limited by the coordonates of the borders
-    yField.textProperty().bindBidirectional(sceneOptions.getEye().yProperty(), new NumberStringConverter());
+    yField.textProperty().bindBidirectional(sceneOptions.getEye().yProperty(), new CoordonateConverter(yLimit));
     HBox yBox = new HBox(yLabel, yField);
     
     return new VBox(xBox, yBox);
@@ -158,17 +157,17 @@ public class TestGraphical extends Application {
   private Node createViewParam(){
     // angle TextField
     Label angleLabel = new Label("Angle : ");
-    LimitedTextField angleField = new LimitedTextField(new SimpleDoubleProperty(360d));
+    LimitedTextField angleField = new LimitedTextField(new SimpleDoubleProperty(360d), true);
 
     // textField limited by the coordonates of the borders
-    angleField.textProperty().bindBidirectional(sceneOptions.getEye().angleProperty(), new NumberStringConverter());
+    angleField.textProperty().bindBidirectional(sceneOptions.getEye().angleProperty(), new CoordonateConverter(new SimpleDoubleProperty(360d)));
     HBox angleHbox= new HBox(angleLabel, angleField);
 
     // fov TextField
     Label fovLabel = new Label("FOV : ");
-    LimitedTextField fovField = new LimitedTextField(new SimpleDoubleProperty(180d));
+    LimitedTextField fovField = new LimitedTextField(new SimpleDoubleProperty(180d), true);
 
-    fovField.textProperty().bindBidirectional(sceneOptions.getEye().fovProperty(), new CoordonateConverter(180));
+    fovField.textProperty().bindBidirectional(sceneOptions.getEye().fovProperty(), new CoordonateConverter(new SimpleDoubleProperty(180d)));
     HBox fovHbox= new HBox(fovLabel, fovField);
 
     return new VBox(angleHbox, fovHbox);
@@ -195,7 +194,6 @@ public class TestGraphical extends Application {
 
     sceneOptions.viewTypeProperty().addListener(e -> {
       if (sceneOptions.getViewType() == "eye view"){
-        System.out.println("EYE VIEW enabled ");
         sPane.setContent(sceneOptions.getEyeSceneNode());
       }
       else{
@@ -230,8 +228,6 @@ public class TestGraphical extends Application {
     pane.getTransforms().add(scale);
     
     for (shared.Segment seg : loadedScene.getSegList()) {
-      //adding 100 to include all segments (not on the edge of the pane)
-      System.out.println(seg);
       double initX = seg.getStart().x + loadedScene.getCorners()[3].x*1.1;
       double initY = seg.getStart().y + loadedScene.getCorners()[3].y*1.1;
       double finalX = seg.getEnd().x + loadedScene.getCorners()[3].x*1.1;
@@ -261,34 +257,24 @@ public class TestGraphical extends Application {
   }
 
   private void setEye(){
-    
     DrawEye();
     Point pos = new Point(Math.round(sceneOptions.getEye().getX() - sceneOptions.getEye().getxLimit()/2.2),
       Math.round(sceneOptions.getEye().getY() - sceneOptions.getEye().getyLimit()/2.2));
     double initAngle = ( sceneOptions.getEye().getAngle() +90) %360;
     double fov = sceneOptions.getEye().getFov();
+
     Eye eye = new Eye(pos, initAngle, fov);
     
     double[] range = {sceneOptions.getEye().getxLimit(), sceneOptions.getEye().getyLimit()};
-
     EyeSegment eyePov = bsp.painterAlgorithm(eye, range);
     Pane p = new Pane();
 
-    System.out.printf("\n\nEye parameters are : \n");
-    System.out.printf("Initial Pos : (%s, %s) \n", sceneOptions.getEye().getX(), sceneOptions.getEye().getY());
-    System.out.printf("Pos (Transposed): %s  \n", pos);
-    System.out.printf("Angle : %s \n", sceneOptions.getEye().getAngle());
-    System.out.printf("Fov : %s \n\n\n", sceneOptions.getEye().getFov());
-
     // TODO get the drawnSegment from the eye pov
     for (shared.Segment seg : eyePov.getParts()) {
-      //adding 100 to include all segments (not on the edge of the pane)
-      System.out.println(seg);
       double initX = seg.getStart().x + sceneOptions.getEye().getxLimit()/2;
       double initY = seg.getStart().y + sceneOptions.getEye().getyLimit()/2;
       double finalX = seg.getEnd().x + sceneOptions.getEye().getxLimit()/2;
       double finalY = seg.getEnd().y + sceneOptions.getEye().getyLimit()/2;
-      System.out.printf("Transposed to :%s \n\n", new shared.Segment(new Point(initX, initY), new Point(finalX, finalY), seg.getColor()));
 
       Line line = new Line(initX, initY, finalX, finalY);
       line.setStroke(Paint.valueOf(seg.getColor()));
@@ -300,16 +286,20 @@ public class TestGraphical extends Application {
   
   
   private void DrawEye(){
-    Point pos = new Point(sceneOptions.getEye().getX(), sceneOptions.getEye().getY());
-    double initAngle = ( sceneOptions.getEye().getAngle() +90) %360;
+
+    Point pos = new Point(sceneOptions.getEye().getX() + sceneOptions.getEye().getxLimit()/20,
+      sceneOptions.getEye().getY() + sceneOptions.getEye().getyLimit()/20);
+    double initAngle =  sceneOptions.getEye().getAngle();
     double fov = sceneOptions.getEye().getFov();
+
     double[] angles = {Math.toRadians((initAngle - fov) % 360), Math.toRadians((initAngle + fov) % 360)};
+
     // arbitrary length of the segments showing the angles
     double length = 30;
 
-    Line leftLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[0])), pos.y - (length * Math.cos(angles[0])));
-    Line rightLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[1])), pos.y - (length * Math.cos(angles[1])));
-    Arc arc = new Arc(pos.x,pos.y, length/2, length/2,initAngle -fov +270 , fov*2);
+    Line leftLine = new Line(pos.x, pos.y, pos.x + (length * Math.cos(angles[1])), pos.y + (length * Math.sin(angles[1])));
+    Line rightLine = new Line(pos.x, pos.y, pos.x + (length * Math.cos(angles[0])), pos.y + (length * Math.sin(angles[0])));
+    Arc arc = new Arc(pos.x,pos.y, length/2, length/2, -initAngle +fov, -fov *2);
 
     arc.setType(ArcType.ROUND);
     sceneOptions.getEye().setEyeNode(new Pane(leftLine, rightLine, arc)); 
