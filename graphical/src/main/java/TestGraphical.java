@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
@@ -11,6 +12,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Line;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 import shared.scene.SceneFinder;
@@ -24,7 +26,7 @@ import shared.generation.GenerationMethod;
 
 
 
-public class GraphicalTest extends Application {
+public class TestGraphical extends Application {
 
   // all the sceneoptions in FX properties
   private SceneOptions sceneOptions;
@@ -118,7 +120,7 @@ public class GraphicalTest extends Application {
     RadioButton eyeView = new RadioButton("eye view");
     eyeView.setToggleGroup(viewGroup);
     
-    // changing views  
+    // changing views
     viewGroup.selectedToggleProperty().addListener(
     (ObservableValue<? extends Toggle> ov, Toggle old_toggle, 
         Toggle new_toggle) -> {
@@ -218,9 +220,15 @@ public class GraphicalTest extends Application {
 
 
     Pane pane = new Pane();
+    Scale scale = new Scale();
+    scale.setX(1);
+    scale.setY(-1);
+
+    scale.pivotYProperty().bind(Bindings.createDoubleBinding(() -> 
+      pane.getBoundsInLocal().getMinY() + pane.getBoundsInLocal().getHeight() /2, 
+      pane.boundsInLocalProperty()));
+    pane.getTransforms().add(scale);
     
-    //TODO delete
-    System.out.println("Segments drawn :");
     for (shared.Segment seg : loadedScene.getSegList()) {
       //adding 100 to include all segments (not on the edge of the pane)
       System.out.println(seg);
@@ -255,8 +263,8 @@ public class GraphicalTest extends Application {
   private void setEye(){
     
     DrawEye();
-    Point pos = new Point(sceneOptions.getEye().getX() - sceneOptions.getEye().getxLimit()/2,
-      sceneOptions.getEye().getY() - sceneOptions.getEye().getyLimit()/2);
+    Point pos = new Point(Math.round(sceneOptions.getEye().getX() - sceneOptions.getEye().getxLimit()/2.2),
+      Math.round(sceneOptions.getEye().getY() - sceneOptions.getEye().getyLimit()/2.2));
     double initAngle = ( sceneOptions.getEye().getAngle() +90) %360;
     double fov = sceneOptions.getEye().getFov();
     Eye eye = new Eye(pos, initAngle, fov);
@@ -299,10 +307,10 @@ public class GraphicalTest extends Application {
     // arbitrary length of the segments showing the angles
     double length = 30;
 
-    Line leftLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[0])), pos.y + (length * Math.cos(angles[0])));
-    Line rightLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[1])), pos.y + (length * Math.cos(angles[1])));
-    double essai = initAngle -fov -90;
-    Arc arc = new Arc(pos.x,pos.y, 15, 15,essai , fov*2);
+    Line leftLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[0])), pos.y - (length * Math.cos(angles[0])));
+    Line rightLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[1])), pos.y - (length * Math.cos(angles[1])));
+    Arc arc = new Arc(pos.x,pos.y, length/2, length/2,initAngle -fov +270 , fov*2);
+
     arc.setType(ArcType.ROUND);
     sceneOptions.getEye().setEyeNode(new Pane(leftLine, rightLine, arc)); 
     sceneOptions.getEye().isDrawn = true;
