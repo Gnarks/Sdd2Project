@@ -29,5 +29,5 @@ java {
 }
 
 application {
-    mainClass = "ConsoleTest"
+    mainClass = "TestConsole"
 }
