@@ -263,8 +263,8 @@ public class TestGraphical extends Application {
   private void setEye(){
     
     DrawEye();
-    Point pos = new Point(sceneOptions.getEye().getX() - sceneOptions.getEye().getxLimit()/2,
-      sceneOptions.getEye().getY() - sceneOptions.getEye().getyLimit()/2);
+    Point pos = new Point(Math.round(sceneOptions.getEye().getX() - sceneOptions.getEye().getxLimit()/2.2),
+      Math.round(sceneOptions.getEye().getY() - sceneOptions.getEye().getyLimit()/2.2));
     double initAngle = ( sceneOptions.getEye().getAngle() +90) %360;
     double fov = sceneOptions.getEye().getFov();
     Eye eye = new Eye(pos, initAngle, fov);
@@ -307,10 +307,10 @@ public class TestGraphical extends Application {
     // arbitrary length of the segments showing the angles
     double length = 30;
 
-    Line leftLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[0])), pos.y + (length * Math.cos(angles[0])));
-    Line rightLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[1])), pos.y + (length * Math.cos(angles[1])));
-    double essai = initAngle -fov -90;
-    Arc arc = new Arc(pos.x,pos.y, 15, 15,essai , fov*2);
+    Line leftLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[0])), pos.y - (length * Math.cos(angles[0])));
+    Line rightLine = new Line(pos.x, pos.y, pos.x + (length * Math.sin(angles[1])), pos.y - (length * Math.cos(angles[1])));
+    Arc arc = new Arc(pos.x,pos.y, length/2, length/2,initAngle -fov +270 , fov*2);
+
     arc.setType(ArcType.ROUND);
     sceneOptions.getEye().setEyeNode(new Pane(leftLine, rightLine, arc)); 
     sceneOptions.getEye().isDrawn = true;
