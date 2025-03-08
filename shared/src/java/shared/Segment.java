@@ -16,17 +16,28 @@ public class Segment {
   private double[] line;
   private boolean isVertical;
   
+
   public Segment(Point start,Point end,String color){
-    this.start = start;
-    this.end = end;
+    if (start.x < end.x){
+      this.start = start;
+      this.end = end;
+    } else {
+      this.start = end;
+      this.end = start;}
     this.color = color;
     this.isVertical = false;
     updateLine(); 
   }
 
   public Segment(double x1, double y1, double x2, double y2, String color){
-    this.start = new Point(x1,y1);
-    this.end = new Point(x2,y2);
+    Point _start = new Point(x1,y1);
+    Point _end = new Point(x2,y2);
+    if (_start.x < _end.x){
+      this.start = _start;
+      this.end = _end;
+    } else {
+      this.start = _end;
+      this.end = _start;}
     this.color = color;
     updateLine();
   }

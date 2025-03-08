@@ -34,5 +34,5 @@ javafx {
 }
 
 application {
-    mainClass = "GraphicalTest"
+    mainClass = "TestGraphical"
 }
