@@ -244,12 +244,12 @@ public class TestGraphical extends Application {
       pane.getChildren().add(sceneOptions.getEye().getEyeNode()); 
     });
 
+    sceneOptions.getEye().isDrawn = false;
     pane.setMinSize(loadedScene.getCorners()[3].x*2.2, loadedScene.getCorners()[3].y*2.2 );
     sceneOptions.setDrawSceneNode(pane);
 
     sceneOptions.getEye().setxLimit(Math.round(loadedScene.getCorners()[3].x*2.2));
     sceneOptions.getEye().setyLimit(Math.round(loadedScene.getCorners()[3].y*2.2));
-    //load the bsp 
     
     bsp = new BSP(loadedScene.getSegList(), GenerationMethod.enumToGenerationMethod(sceneOptions.getGenerationMethod()));
 
@@ -305,7 +305,6 @@ public class TestGraphical extends Application {
       sceneOptions.getEye().getY() + sceneOptions.getEye().getyLimit()/20);
     double initAngle =  sceneOptions.getEye().getAngle();
     double fov = sceneOptions.getEye().getFov();
-
     double[] angles = {Math.toRadians((initAngle - fov) % 360), Math.toRadians((initAngle + fov) % 360)};
 
     // arbitrary length of the segments showing the angles
