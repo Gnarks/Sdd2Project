@@ -22,58 +22,68 @@ public class Eye {
   public double getFov(){ return fov; }
   public void setFov(double fov){ this.fov = fov; }
 
-  
-  public int seeNode(Segment line) {
-    int loc = line.locationPoint(this.position);
-    double alpha = Math.atan(Math.toRadians(line.getLine()[0])); 
-    double limit = 180+alpha;
 
+  /**
+   * return 0 if see both side of the line
+   *        1 if see only h+ side of the line
+   *        -1 if see only h- side of the line
+   */
+  
+  public VisionEnum seeNode(Segment line) {
+    double angleRadians = Math.toRadians(this.angle);
+    double angleLeft = angle+fov;
+    double angleRight = angle-fov;
+
+    double lineSlope = line.getLine()[0];
+    int loc = line.locationPoint(this.position);
+    double alpha = Math.toDegrees(Math.atan(lineSlope)); 
+    double limit = 180+alpha;
 
     if(loc == 1){
       if(line.isVertical()){
-        if(angle > 90 && angle < 270){
-          return 0;
+        if(Math.cos(angleRadians) < 0){
+          return VisionEnum.BOTH;
         }
-        return 1;
+        return VisionEnum.HPLUS;
       }
-      if (line.getLine()[0] >= 0){
-        if(angle > limit && ((angle-fov)%360 >= limit || angle+fov <= alpha+360)){return 1;} 
-      }
-      if (line.getLine()[0] < 0){
-        if(angle <= limit && ((angle+fov)%360 <= limit || angle-fov >= alpha)){return 1;} 
-      }
+      if (lineSlope  >= 0 && (this.angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
+        return VisionEnum.HPLUS;
+      }  
+      if (lineSlope < 0 && (this.angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
+        return VisionEnum.HPLUS;
+      } 
     }
     if (loc == -1){
       if(line.isVertical()){
-        if(Math.cos(Math.toRadians(angle)) > 1){
-          return 0;
+        if(Math.cos(angleRadians) > 0){
+          return VisionEnum.BOTH;
         }
-        return -1;
+        return VisionEnum.HMINUS;
       }
-      if(line.getLine()[0]>=0){
-        if(angle <= limit && ((angle+fov)%360 <= limit || angle-fov >= alpha)){return -1;} 
-      }
-      if (line.getLine()[0] < 0){
-        if(angle > limit && ((angle-fov)%360 >= limit || angle+fov <= alpha+360)){return -1;} 
-      }
+      if(lineSlope>=0 && (angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
+        return VisionEnum.HMINUS;
+      } 
+      if (lineSlope < 0 && (angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
+        return VisionEnum.HMINUS;
+      } 
     }
-    return 0;
+    return VisionEnum.BOTH;
 
   }
 
-  public Segment seeSegment(Segment seg){
+  public Segment seenSegment(Segment seg){
     int[] fovLine = fovLine();
     double angleRight = Math.toRadians(angle-fov);
     double angleLeft = Math.toRadians(angle+fov);
-
+  
     double yLeft;
     double yRight;
-    if (angle+fov==270 || angle+fov == 90){
+    if (Utils.areEqual(Math.cos(Math.toRadians(angle+fov)),0)){
       yLeft = Math.sin(angleLeft);
     }else{
       yLeft= Math.tan(angleLeft)*(position.x + fovLine[0]); 
     }
-    if (angle-fov ==270 || angle-fov == 90){
+    if (Utils.areEqual(Math.cos(Math.toRadians(angle-fov)),0)){
       yRight = Math.sin(angleRight);
     }else{
       yRight= Math.tan(angleRight)*(position.x + fovLine[1]); 
@@ -110,14 +120,21 @@ public class Eye {
         return new Segment(seg.getStart(),inter,seg.getColor());}
       return new Segment(inter,seg.getEnd(),seg.getColor());
     }
+
+    
     Point interRight = fovRight.interSeg(seg);
     Point interLeft = fovLeft.interSeg(seg);
+
     if(interRight == null || interLeft == null){
+      return null;
+    }
+    if((interBehind(interLeft,interRight)) || (!seg.onSeg(interRight) || !seg.onSeg(interLeft))){
       return null;
     }
     return new Segment(interLeft,interRight,seg.getColor());
 
   }
+
 
   public int[] fovLine(){
     int[] toReturn = new int[2];
@@ -154,18 +171,58 @@ public class Eye {
     int locationPointRight =fovRight.locationPoint(p);
 
     
-    if((angle-fov == 0 || angle-fov == 180)&&(Math.cos(angleRight) == locationPointRight)){
+    if((angle-fov == 0 || angle-fov == 180)&&(Utils.areEqual(Math.cos(angleRight), locationPointRight))){
       return false;
     }  
   
-    else if((angle+fov == 0 || angle+fov == 180)&&(Math.cos(angleRight) == locationPointRight)){
+    else if((angle+fov == 0 || angle+fov == 180) && (Utils.areEqual(Math.cos(angleRight), locationPointRight))){
         return false;
     }
 
-    if((!Utils.areEqual(Math.sin(angleRight), 0) && !Utils.areEqual(Math.sin(angleLeft),0))&&((locationPointRight == 0 || locationPointLeft == 0)||
-    (Math.sin(angleLeft)*locationPointLeft < 0 || Math.sin(angleRight)*locationPointRight > 0))){
+    if((Math.sin(angleLeft)*locationPointLeft < 0 || Math.sin(angleRight)*locationPointRight > 0)){
       return false;
     } 
     return true;
+  }
+  
+  public boolean interBehind(Point interLeft, Point interRight){
+    double angleRight = Math.toRadians(this.angle- this.fov);
+    double angleLeft = Math.toRadians(this.angle+this.fov);
+
+    if(Utils.areEqual(Math.cos(angleRight),0)){
+      if((Math.sin(angleRight)>0 && this.position.y > interRight.y) || (Math.sin(angleRight)<0 && this.position.y < interRight.y)){
+        return true;
+      }
+    }
+  
+    else if(Math.cos(angleRight) < 0){
+      if (interRight.x > this.position.x){
+        return true;
+      }   
+    }
+    else if(Math.cos(angleRight) > 0){
+      if(interRight.x < this.position.x){
+        return true;
+      }
+    } 
+
+    if(Utils.areEqual(Math.cos(angleLeft),0)){
+      if((Math.sin(angleLeft)>0 && this.position.y > interLeft.y) || (Math.sin(angleLeft)<0 && this.position.y < interLeft.y)){
+        return true;
+      }
+    }
+
+    else if(Math.cos(angleLeft) > 0){
+      if (interLeft.x < this.position.x){
+        return true;
+      }   
+    }
+    else if(Math.cos(angleLeft) < 0){
+      if(interLeft.x > this.position.x){
+        return true;
+      }
+    }
+    return false;
+    
   }
 }

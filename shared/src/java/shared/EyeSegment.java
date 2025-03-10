@@ -24,6 +24,9 @@ public class EyeSegment {
     if (toMerge.size() == 0){
       return;
     }
+    if(this.parts == null){
+      this.parts = toMerge;
+    }
     int j = 0;
     for (int i = 0; i < toMerge.size(); i++) {
       Segment seg = toMerge.get(i);
