@@ -95,31 +95,30 @@ public class Segment {
             0 if the point belongs to the segment's line
   */
   public int locationPoint(Point point){
+
     if(isVertical){
-      if(point.x < this.line[0]){
-        return -1;
+      if(Utils.areEqual(point.x, this.line[0])){
+        return 0;
       } else if(point.x > this.line[0]){
         return 1;
       } else {
-      return 0;
+      return -1;
       }
     }
-
     if(this.line[0] == 0){
-      if(point.y > this.line[1]){
-        return -1;
+      if(Utils.areEqual(point.y, this.line[1])){
+        return 0;
       } else if(point.y < this.line[1]){
         return 1;
       } else {
-        return 0;
+        return -1;
       }
     }
-
     double x = (point.y - this.line[1])/this.line[0];
-    if (point.x < x){
-      return -1;
-    } else if (Utils.areEqual(point.x,x)){
+    if (Utils.areEqual(point.x,x)){
       return 0;
+    } else if (point.x < x){
+      return -1;
     } else {
       return 1;
     }
@@ -161,6 +160,7 @@ public class Segment {
    */
   public ArrayList<ArrayList<Segment>> generateNode(ArrayList<Segment> data){
     ArrayList<Segment> align = new ArrayList<>();
+    align.add(this);
     ArrayList<Segment> d_minus = new ArrayList<>();
     ArrayList<Segment> d_plus = new ArrayList<>();
 
@@ -168,7 +168,6 @@ public class Segment {
       Point inter = this.interSeg(seg); 
       int locationStart= this.locationPoint(seg.getStart());
       int locationEnd = this.locationPoint(seg.getEnd());
-
       if (locationStart == locationEnd || locationStart == 0 || locationEnd == 0){
         switch (locationStart) {
           case -1:
@@ -194,11 +193,8 @@ public class Segment {
       Segment startSeg = new Segment(seg.getStart(),inter,seg.getColor());
       Segment endSeg = new Segment(inter,seg.getEnd(),seg.getColor());
 
-      if(!Utils.areEqual(seg.getStart() ,inter)){
-        if (locationStart == -1){ d_minus.add(startSeg);} else { d_plus.add(startSeg);}
-      }
-      if(!Utils.areEqual(seg.getEnd() ,inter)){}
-        if (locationEnd == -1){ d_minus.add(endSeg);} else { d_plus.add(endSeg);}
+      if (locationStart == -1){ d_minus.add(startSeg);} else { d_plus.add(startSeg);}
+      if (locationEnd == -1){ d_minus.add(endSeg);} else { d_plus.add(endSeg);}
      }
     });
     return new ArrayList<>(List.of(align,d_minus,d_plus));

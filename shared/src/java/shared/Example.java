@@ -32,12 +32,12 @@ public class Example {
         ArrayList<Segment> segments = scene.getSegList();        
 
           
-        Point eue = new Point(0,-100);
-        Eye p = new Eye(eue,0,45);
+        Point eue = new Point(0,0);
+        Eye p = new Eye(eue,45,45);
 
         //ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
         BSP bsp = new BSP(segments, new FirstMethod());
-        double[] range = new double[]{200,200};
+        double[] range = new double[]{440,440};
 
         System.out.println(bsp.getHead());
         System.out.println("Height = " + bsp.getHead().height);
