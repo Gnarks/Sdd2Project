@@ -3,6 +3,7 @@ package shared;
 import java.util.ArrayList;
 import java.util.Arrays;
 import shared.generation.*;
+import shared.scene.*;
 public class Example {
 
     public String getGreeting() {
@@ -25,15 +26,21 @@ public class Example {
         Segment EF = new Segment(F,E,"blue");
 
         Segment[] data = new Segment[]{AB,CD,EF};
-        
+
+        SceneReader sceneReader = new SceneReader();
+        Scene scene = sceneReader.read("/home/wal//Documents/Sdd2Project/shared/src/ressources/scenes/first/octogone.txt");
+        ArrayList<Segment> segments = scene.getSegList();        
+
           
-        Point eue = new Point(10,10);
-        Eye p = new Eye(eue,225,45);
-        ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
+        Point eue = new Point(0,-100);
+        Eye p = new Eye(eue,0,45);
+
+        //ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
         BSP bsp = new BSP(segments, new FirstMethod());
-        double[] range = new double[]{10,10};
+        double[] range = new double[]{200,200};
 
         System.out.println(bsp.getHead());
+        System.out.println("Height = " + bsp.getHead().height);
         EyeSegment pSeg = bsp.painterAlgorithm(p,range);
         System.out.println(pSeg);
     }

@@ -18,7 +18,7 @@ public class Segment {
   
 
   public Segment(Point start,Point end,String color){
-    if (start.x < end.x){
+    if (start.x <= end.x){
       this.start = start;
       this.end = end;
     } else {
@@ -145,6 +145,14 @@ public class Segment {
     double y = this.line[0]*x + this.line[1];
     return new Point(x,y);
   }
+  
+  public boolean onSeg(Point point){
+    if(this.isVertical){
+      return (Utils.areEqual(point.x, this.line[0])); 
+    }
+    return Utils.areEqual(point.y, this.line[0]*point.x + this.line[1]);
+
+  }
 
   /**
    * align :  the segments that are aligned with the current segment
@@ -161,7 +169,7 @@ public class Segment {
       int locationStart= this.locationPoint(seg.getStart());
       int locationEnd = this.locationPoint(seg.getEnd());
 
-      if (locationStart == locationEnd){
+      if (locationStart == locationEnd || locationStart == 0 || locationEnd == 0){
         switch (locationStart) {
           case -1:
             d_minus.add(seg);
@@ -170,7 +178,15 @@ public class Segment {
             d_plus.add(seg);
             break;
           default:
+            if (locationEnd == 0){
             align.add(seg);
+            }
+            else if (locationEnd == 1){
+              d_plus.add(seg);
+            }
+            else{
+              d_minus.add(seg);
+            }
             break;
         }
       }

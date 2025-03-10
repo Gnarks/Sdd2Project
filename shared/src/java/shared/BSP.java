@@ -13,6 +13,7 @@ public class BSP {
     public BSP leftSon;
     public BSP rightSon;
     public boolean isLeaf;
+    public int height;
 
     public Node(Segment[] data,boolean isLeaf){
       this.data = new ArrayList<Segment>(Arrays.asList(data));
@@ -30,21 +31,20 @@ public class BSP {
 
     public String toString(){
       String s = data.toString();
-      s += isLeaf;
-
       s +="\nleft";
-        if(leftSon != null){s += leftSon.getHead();}
+        if(leftSon != null){s += leftSon.getHead(); }
       s += "\nright"; 
-        if(rightSon != null){s += rightSon.getHead();}
+        if(rightSon != null){s += rightSon.getHead(); }
       return s;
     }
   }
 
   public BSP(ArrayList<Segment> data, GenerationMethod generationMethod){
-    if (data.size() == 0){
+    if (data.size() == 0 || data.get(0)==null){
       this.head = null;
     } else if(data.size() == 1){
       this.head = new Node(data,true);
+      this.head.height = 1;
     } else{
       Segment segment = generationMethod.getSegment(data);
       ArrayList<ArrayList<Segment>> locSegment = segment.generateNode(data);
@@ -59,6 +59,15 @@ public class BSP {
 
       this.head.leftSon = leftSon;
       this.head.rightSon = rightSon;
+      int maxHeight = 0;
+      if (leftSon != null && leftSon.getHead() != null){
+        maxHeight = leftSon.getHead().height; 
+      }
+      if (rightSon != null && rightSon.getHead() != null){
+        maxHeight = Math.max(rightSon.getHead().height,maxHeight); 
+      }
+      this.head.height = maxHeight + 1;
+
     }
   }
 
@@ -70,22 +79,22 @@ public class BSP {
     if(this.head == null){
       return new EyeSegment(new ArrayList<Segment>());
     }
-    ArrayList<Segment> eyeSeg = new ArrayList<Segment>(Arrays.asList(drawNode(p,this.head.data,range)));
+    ArrayList<Segment> eyeSeg = drawNode(p,this.head.data,range);
     Utils.sortSegments(eyeSeg);
 
     if(this.head.isLeaf){
       return new EyeSegment(eyeSeg);
     }
-
     int eyePos = this.head.data.get(0).locationPoint(p.getPos());
-    int vision = p.seeNode(this.head.data.get(0));
+    VisionEnum vision = p.seeNode(this.head.data.get(0));
 
-    EyeSegment eyeSegRight = (vision == -1 || vision == 0) ? this.head.rightSon.painterAlgorithm(p,range) : null;
-    EyeSegment eyeSegLeft = (vision == 1 || vision == 0) ? this.head.leftSon.painterAlgorithm(p,range) : null;
-    
+    EyeSegment eyeSegRight = (vision == VisionEnum.HPLUS || vision == VisionEnum.BOTH) ? this.head.rightSon.painterAlgorithm(p,range) : null;
+    EyeSegment eyeSegLeft = (vision == VisionEnum.HMINUS || vision == VisionEnum.BOTH) ? this.head.leftSon.painterAlgorithm(p,range) : null;
+
+
     if(eyePos == -1){
       EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
-      if(vision == 1 || vision == 0){
+      if(vision == VisionEnum.HPLUS || vision == VisionEnum.BOTH){
         eyeSegRight.mergeParts(eyeSegHead);
         eyeSegRight.mergeParts(eyeSegLeft);
         return eyeSegRight;}
@@ -96,51 +105,58 @@ public class BSP {
     else if(eyePos == 1){
       EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
 
-      if(vision == -1 || vision == 0){
+      if(vision == VisionEnum.HMINUS || vision == VisionEnum.BOTH){
         eyeSegLeft.mergeParts(eyeSegHead);
         eyeSegLeft.mergeParts(eyeSegRight);
-      return eyeSegLeft;}
+        return eyeSegLeft;}
+
       eyeSegHead.mergeParts(eyeSegRight);
       return eyeSegHead;
     }
     else{
-      if (vision == 0){
+      if (vision == VisionEnum.BOTH){
         eyeSegRight.mergeParts(eyeSegLeft);
         return eyeSegRight;
       }
-      if(vision == 1){
+      if(vision == VisionEnum.HPLUS){
         return eyeSegRight;
       }
       return eyeSegLeft;
     }
   }
   
-  public Segment[] drawNode(Eye p,ArrayList<Segment> data, double[] range){
-    Segment[] proj = new Segment[data.size()];
+  public ArrayList<Segment> drawNode(Eye p,ArrayList<Segment> data, double[] range){
+    ArrayList<Segment> proj = new ArrayList<>();
+    double pAngle = Math.toRadians(p.getAngle());
     double distance = Math.sqrt(Math.pow(range[1],2)+Math.pow(range[0],2));
-    double x = distance*Math.cos(Math.toRadians(p.getAngle()));
-    double y = distance*Math.sin(Math.toRadians(p.getAngle()));
+    double x = distance*Math.cos(Math.toRadians(pAngle));
+    double y = distance*Math.sin(Math.toRadians(pAngle));
     Point point1 = new Point(x,y);
     Point point2;
 
-    if(p.getAngle()==270 || p.getAngle()==90){
+    if(Utils.areEqual(Math.cos(pAngle),0)){
       point2  = new Point(x+1,y);
+    } else if (Utils.areEqual(Math.sin(pAngle), 0)) {
+        point2 = new Point(x,y+1);
     } else {
-      point2 = new Point(x+1,y-(1/Math.tan(Math.toRadians(p.getAngle()))));
+      point2 = new Point(x+1,y-(1/Math.tan(pAngle)));
     }
 
     Segment line = new Segment(point1,point2,"red");  
 
     for (int i = 0; i < data.size(); i++){
       Segment segment = data.get(i);
-      Segment seg = p.seeSegment(segment);
+      Segment seg = p.seenSegment(segment);
       if(seg != null){
-      Segment seg1 = new Segment(p.getPos(),seg.getStart(),"red");
-      Segment seg2 = new Segment(p.getPos(),seg.getEnd(),"red");
-      Point inter1 = seg1.interSeg(line);
-      Point inter2 = seg2.interSeg(line);
+        Segment seg1 = new Segment(p.getPos(),seg.getStart(),"red");
+        Segment seg2 = new Segment(p.getPos(),seg.getEnd(),"red");
+        Point inter1 = seg1.interSeg(line);
+        Point inter2 = seg2.interSeg(line);
 
-      proj[i] = new Segment(inter1,inter2,seg.getColor());
+        if (inter1 != null && inter2 != null && !Utils.areEqual(inter1,inter2)){
+          Segment inter = new Segment(inter1,inter2,seg.getColor());
+          proj.add(inter); 
+        }
       }
     };
     return proj;
