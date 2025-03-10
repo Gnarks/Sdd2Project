@@ -40,6 +40,7 @@ public class Example {
         double[] range = new double[]{200,200};
 
         System.out.println(bsp.getHead());
+        System.out.println("Height = " + bsp.getHead().height);
         EyeSegment pSeg = bsp.painterAlgorithm(p,range);
         System.out.println(pSeg);
     }

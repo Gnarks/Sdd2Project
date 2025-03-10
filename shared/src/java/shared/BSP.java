@@ -13,6 +13,7 @@ public class BSP {
     public BSP leftSon;
     public BSP rightSon;
     public boolean isLeaf;
+    public int height;
 
     public Node(Segment[] data,boolean isLeaf){
       this.data = new ArrayList<Segment>(Arrays.asList(data));
@@ -31,9 +32,9 @@ public class BSP {
     public String toString(){
       String s = data.toString();
       s +="\nleft";
-        if(leftSon != null){s += leftSon.getHead();}
+        if(leftSon != null){s += leftSon.getHead(); }
       s += "\nright"; 
-        if(rightSon != null){s += rightSon.getHead();}
+        if(rightSon != null){s += rightSon.getHead(); }
       return s;
     }
   }
@@ -43,6 +44,7 @@ public class BSP {
       this.head = null;
     } else if(data.size() == 1){
       this.head = new Node(data,true);
+      this.head.height = 1;
     } else{
       Segment segment = generationMethod.getSegment(data);
       ArrayList<ArrayList<Segment>> locSegment = segment.generateNode(data);
@@ -57,6 +59,15 @@ public class BSP {
 
       this.head.leftSon = leftSon;
       this.head.rightSon = rightSon;
+      int maxHeight = 0;
+      if (leftSon != null && leftSon.getHead() != null){
+        maxHeight = leftSon.getHead().height; 
+      }
+      if (rightSon != null && rightSon.getHead() != null){
+        maxHeight = Math.max(rightSon.getHead().height,maxHeight); 
+      }
+      this.head.height = maxHeight + 1;
+
     }
   }
 
@@ -75,15 +86,15 @@ public class BSP {
       return new EyeSegment(eyeSeg);
     }
     int eyePos = this.head.data.get(0).locationPoint(p.getPos());
-    LocationEnum vision = p.seeNode(this.head.data.get(0));
+    VisionEnum vision = p.seeNode(this.head.data.get(0));
 
-    EyeSegment eyeSegRight = (vision == LocationEnum.HPLUS || vision == LocationEnum.ALIGNED) ? this.head.rightSon.painterAlgorithm(p,range) : null;
-    EyeSegment eyeSegLeft = (vision == LocationEnum.HMINUS || vision == LocationEnum.ALIGNED) ? this.head.leftSon.painterAlgorithm(p,range) : null;
+    EyeSegment eyeSegRight = (vision == VisionEnum.HPLUS || vision == VisionEnum.BOTH) ? this.head.rightSon.painterAlgorithm(p,range) : null;
+    EyeSegment eyeSegLeft = (vision == VisionEnum.HMINUS || vision == VisionEnum.BOTH) ? this.head.leftSon.painterAlgorithm(p,range) : null;
 
 
     if(eyePos == -1){
       EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
-      if(vision == LocationEnum.HPLUS || vision == LocationEnum.ALIGNED){
+      if(vision == VisionEnum.HPLUS || vision == VisionEnum.BOTH){
         eyeSegRight.mergeParts(eyeSegHead);
         eyeSegRight.mergeParts(eyeSegLeft);
         return eyeSegRight;}
@@ -94,7 +105,7 @@ public class BSP {
     else if(eyePos == 1){
       EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
 
-      if(vision == LocationEnum.HMINUS || vision == LocationEnum.ALIGNED){
+      if(vision == VisionEnum.HMINUS || vision == VisionEnum.BOTH){
         eyeSegLeft.mergeParts(eyeSegHead);
         eyeSegLeft.mergeParts(eyeSegRight);
         return eyeSegLeft;}
@@ -103,11 +114,11 @@ public class BSP {
       return eyeSegHead;
     }
     else{
-      if (vision == LocationEnum.ALIGNED){
+      if (vision == VisionEnum.BOTH){
         eyeSegRight.mergeParts(eyeSegLeft);
         return eyeSegRight;
       }
-      if(vision == LocationEnum.HPLUS){
+      if(vision == VisionEnum.HPLUS){
         return eyeSegRight;
       }
       return eyeSegLeft;

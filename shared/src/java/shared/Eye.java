@@ -29,7 +29,7 @@ public class Eye {
    *        -1 if see only h- side of the line
    */
   
-  public LocationEnum seeNode(Segment line) {
+  public VisionEnum seeNode(Segment line) {
     double angleRadians = Math.toRadians(this.angle);
     double angleLeft = angle+fov;
     double angleRight = angle-fov;
@@ -42,32 +42,32 @@ public class Eye {
     if(loc == 1){
       if(line.isVertical()){
         if(Math.cos(angleRadians) < 0){
-          return LocationEnum.ALIGNED;
+          return VisionEnum.BOTH;
         }
-        return LocationEnum.HPLUS;
+        return VisionEnum.HPLUS;
       }
       if (lineSlope  >= 0 && (this.angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
-        return LocationEnum.HPLUS;
+        return VisionEnum.HPLUS;
       }  
       if (lineSlope < 0 && (this.angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
-        return LocationEnum.HPLUS;
+        return VisionEnum.HPLUS;
       } 
     }
     if (loc == -1){
       if(line.isVertical()){
         if(Math.cos(angleRadians) > 0){
-          return LocationEnum.ALIGNED;
+          return VisionEnum.BOTH;
         }
-        return LocationEnum.HMINUS;
+        return VisionEnum.HMINUS;
       }
       if(lineSlope>=0 && (angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
-        return LocationEnum.HMINUS;
+        return VisionEnum.HMINUS;
       } 
       if (lineSlope < 0 && (angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
-        return LocationEnum.HMINUS;
+        return VisionEnum.HMINUS;
       } 
     }
-    return LocationEnum.ALIGNED;
+    return VisionEnum.BOTH;
 
   }
 

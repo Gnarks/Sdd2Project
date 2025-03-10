@@ -1,7 +1,7 @@
 package shared;
 
-public enum LocationEnum{ 
+public enum VisionEnum{ 
   HMINUS,
   HPLUS,
-  ALIGNED
+  BOTH
 }
