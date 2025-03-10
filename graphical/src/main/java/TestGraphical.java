@@ -252,7 +252,6 @@ public class TestGraphical extends Application {
     //load the bsp 
     
     bsp = new BSP(loadedScene.getSegList(), GenerationMethod.enumToGenerationMethod(sceneOptions.getGenerationMethod()));
-    System.out.println(bsp.getHead());
 
     return "Succes !";
   }
@@ -267,10 +266,22 @@ public class TestGraphical extends Application {
     Eye eye = new Eye(pos, initAngle, fov);
     System.out.printf("transposed : %s, %s, %s", pos, initAngle, fov);
     
-    double[] range = {sceneOptions.getEye().getxLimit(), sceneOptions.getEye().getyLimit()};
+    double[] range = {Math.round(sceneOptions.getEye().getxLimit()/2.2), Math.round(sceneOptions.getEye().getyLimit()/2.2)};
+    System.out.println(range[0]);
+    System.out.println(range[1]);
     EyeSegment eyePov = bsp.painterAlgorithm(eye, range);
     Pane p = new Pane();
 
+
+    Scale scale = new Scale();
+    scale.setX(1);
+    scale.setY(-1);
+
+    scale.pivotYProperty().bind(Bindings.createDoubleBinding(() -> 
+      p.getBoundsInLocal().getMinY() + p.getBoundsInLocal().getHeight() /2, 
+      p.boundsInLocalProperty()));
+    p.getTransforms().add(scale);
+    
     // TODO get the drawnSegment from the eye pov
     for (shared.Segment seg : eyePov.getParts()) {
       System.out.println(seg);
