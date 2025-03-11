@@ -42,10 +42,7 @@ public class LimitedTextField extends TextField {
       if (parsed > limit.get() ){
         super.setText(String.valueOf(limit.get()));
       }
-      if (!fullCycle && parsed < -limit.get()/20){
-        super.setText(String.valueOf(-limit.get()/20));
-      }
-      if (fullCycle && parsed < -limit.get()){
+      if (!fullCycle && parsed < -limit.get()){
         super.setText(String.valueOf(-limit.get()));
       }
     } catch (Exception e) {

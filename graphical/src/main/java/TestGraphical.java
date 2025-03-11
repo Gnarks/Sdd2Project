@@ -228,10 +228,10 @@ public class TestGraphical extends Application {
     pane.getTransforms().add(scale);
     
     for (shared.Segment seg : loadedScene.getSegList()) {
-      double initX = seg.getStart().x + loadedScene.getCorners()[3].x*1.1;
-      double initY = seg.getStart().y + loadedScene.getCorners()[3].y*1.1;
-      double finalX = seg.getEnd().x + loadedScene.getCorners()[3].x*1.1;
-      double finalY = seg.getEnd().y + loadedScene.getCorners()[3].y*1.1;
+      double initX = Math.round(seg.getStart().x + loadedScene.getCorners()[3].x*1.1);
+      double initY = Math.round(seg.getStart().y + loadedScene.getCorners()[3].y*1.1);
+      double finalX = Math.round(seg.getEnd().x + loadedScene.getCorners()[3].x*1.1);
+      double finalY = Math.round(seg.getEnd().y + loadedScene.getCorners()[3].y*1.1);
 
       Line line = new Line(initX, initY, finalX, finalY);
       line.setStroke(Paint.valueOf(seg.getColor()));
@@ -248,8 +248,8 @@ public class TestGraphical extends Application {
     pane.setMinSize(loadedScene.getCorners()[3].x*2.2, loadedScene.getCorners()[3].y*2.2 );
     sceneOptions.setDrawSceneNode(pane);
 
-    sceneOptions.getEye().setxLimit(Math.round(loadedScene.getCorners()[3].x*2.2));
-    sceneOptions.getEye().setyLimit(Math.round(loadedScene.getCorners()[3].y*2.2));
+    sceneOptions.getEye().setxLimit(Math.round(loadedScene.getCorners()[3].x*1.2));
+    sceneOptions.getEye().setyLimit(Math.round(loadedScene.getCorners()[3].y*1.2));
     
     bsp = new BSP(loadedScene.getSegList(), GenerationMethod.enumToGenerationMethod(sceneOptions.getGenerationMethod()));
 
@@ -258,17 +258,14 @@ public class TestGraphical extends Application {
 
   private void setEye(){
     DrawEye();
-    Point pos = new Point(Math.round(sceneOptions.getEye().getX() - sceneOptions.getEye().getxLimit()/2.2),
-      Math.round(sceneOptions.getEye().getY() - sceneOptions.getEye().getyLimit()/2.2));
+    Point pos = new Point(sceneOptions.getEye().getX(),
+      sceneOptions.getEye().getY());
     double initAngle = sceneOptions.getEye().getAngle();
     double fov = sceneOptions.getEye().getFov();
 
     Eye eye = new Eye(pos, initAngle, fov);
-    System.out.printf("transposed : %s, %s, %s", pos, initAngle, fov);
     
-    double[] range = {Math.round(sceneOptions.getEye().getxLimit()/2.2), Math.round(sceneOptions.getEye().getyLimit()/2.2)};
-    System.out.println(range[0]);
-    System.out.println(range[1]);
+    double[] range = {Math.round(sceneOptions.getEye().getxLimit()/1.2), Math.round(sceneOptions.getEye().getyLimit()/1.2)};
     EyeSegment eyePov = bsp.painterAlgorithm(eye, range);
     Pane p = new Pane();
 
@@ -284,11 +281,10 @@ public class TestGraphical extends Application {
     
     // TODO get the drawnSegment from the eye pov
     for (shared.Segment seg : eyePov.getParts()) {
-      System.out.println(seg);
-      double initX = seg.getStart().x + sceneOptions.getEye().getxLimit()/2;
-      double initY = seg.getStart().y + sceneOptions.getEye().getyLimit()/2;
-      double finalX = seg.getEnd().x + sceneOptions.getEye().getxLimit()/2;
-      double finalY = seg.getEnd().y + sceneOptions.getEye().getyLimit()/2;
+      double initX = seg.getStart().x + sceneOptions.getEye().getxLimit()/1.2;
+      double initY = seg.getStart().y + sceneOptions.getEye().getyLimit()/1.2;
+      double finalX = seg.getEnd().x + sceneOptions.getEye().getxLimit()/1.2;
+      double finalY = seg.getEnd().y + sceneOptions.getEye().getyLimit()/1.2;
 
       Line line = new Line(initX, initY, finalX, finalY);
       line.setStroke(Paint.valueOf(seg.getColor()));
@@ -300,9 +296,8 @@ public class TestGraphical extends Application {
   
   
   private void DrawEye(){
-
-    Point pos = new Point(sceneOptions.getEye().getX() + sceneOptions.getEye().getxLimit()/20,
-      sceneOptions.getEye().getY() + sceneOptions.getEye().getyLimit()/20);
+    Point pos = new Point(sceneOptions.getEye().getX() + Math.round((sceneOptions.getEye().getxLimit()/1.2) * 1.1),
+      sceneOptions.getEye().getY() + Math.round((sceneOptions.getEye().getyLimit()/1.2) * 1.1));
     double initAngle =  sceneOptions.getEye().getAngle();
     double fov = sceneOptions.getEye().getFov();
     double[] angles = {Math.toRadians((initAngle - fov) % 360), Math.toRadians((initAngle + fov) % 360)};
