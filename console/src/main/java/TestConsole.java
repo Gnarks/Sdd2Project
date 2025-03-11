@@ -14,37 +14,50 @@ import shared.scene.SceneReader;
 
 public class TestConsole{
 
+  private static Scanner sc = new Scanner(System.in);
+
   public static void main(String[] args){
     
     
     Scene scene = selectScene();
-    ArrayList<Eye> eyeList = generateEyes(scene, 100);
+    int eyeNumber = askInt("Select the number of random eyes for the painter's algorithm");
+    int iterations = askInt("Select the number of iterations for the mean");
+
+    ArrayList<Eye> eyeList = generateEyes(scene, eyeNumber);
+
 
     for (GenerationEnum heuristic : Arrays.asList(GenerationEnum.class.getEnumConstants())) {
       System.out.println("\n-----------------------------------------");
-      displayHeursiticStats(heuristic, scene, eyeList);
+      displayHeursiticStats(heuristic, scene, eyeList, iterations);
     }
+    sc.close();
   }
   
 
 
-  /** Returns the mean cpu time of BSP creation and Painter algorithm
+  /** Returns all there is to know (BspStat) for the stats of an heuristic
    * @param scene the scene to create the bsp on 
    * @param generationEnum the generationMethod 
    * @param iterations the number of BSP to calculate the mean
    *
-   * @return two Double: first is mean Bsp creation time, second is mean Painter's algorithm time 
+   * @return A BspStat object
    */
-  private static double[] getMeanCpuTime(Scene scene, ArrayList<Eye> eyeList, GenerationEnum generationEnum, int iterations){
+  private static BspStat getBspStat(Scene scene, ArrayList<Eye> eyeList, GenerationEnum generationEnum, int iterations){
     
     ArrayList<Segment> segList = scene.getSegList();
     long sumBsp = 0;
+    double sumHeight = 0;
+    double sumSize = 0;
+
     ArrayList<BSP> bspList = new ArrayList<>();
     for (int i = 0; i < iterations; i++) {
       long start = System.nanoTime();
       // call
       BSP createdBsp =new BSP(segList, GenerationMethod.enumToGenerationMethod(generationEnum)); 
       sumBsp += System.nanoTime() -start;
+      
+      sumHeight += createdBsp.getHead().height;
+      sumSize += createdBsp.getHead().size;
       bspList.add(createdBsp);
     }
 
@@ -63,21 +76,16 @@ public class TestConsole{
       sumPainter += eyeSum/eyeList.size();
     }
 
-    double[] means = {sumBsp/iterations, sumPainter/iterations};
-    return means;
+    return new BspStat(sumBsp/iterations, sumPainter/iterations, sumHeight/iterations, sumSize/iterations);
   }
 
   private static Scene selectScene(){
     SceneFinder sf = new SceneFinder();
     ArrayList<String> allScenes =  sf.findScenes();
-    System.out.println("Select a scene to test :");
     for (int i = 0; i < allScenes.size(); i++) {
       System.out.printf("%s) %s\n", i,allScenes.get(i));
     }
-
-    Scanner scanner = new Scanner(System.in);
-    int indexPicked = scanner.nextInt();
-    scanner.close();
+    int indexPicked = askInt("Select a scene to test");
 
     SceneReader sr = new SceneReader();
     Scene scene = sr.read(allScenes.get(indexPicked));
@@ -97,15 +105,26 @@ public class TestConsole{
     return eyes;
   }
 
-  private static void displayHeursiticStats(GenerationEnum heuristic, Scene scene, ArrayList<Eye> eyeList){
+  private static void displayHeursiticStats(GenerationEnum heuristic, Scene scene, ArrayList<Eye> eyeList, int iterations){
 
-    double[] meanTime = getMeanCpuTime(scene, eyeList, heuristic, 10000);
+    BspStat bspStat = getBspStat(scene, eyeList, heuristic, iterations);
     System.out.printf("%s Got : \n", heuristic);
-    System.out.printf("BSP tree height : %s\n", Double.NaN);
-    System.out.printf("BSP tree size : %s\n", Double.NaN);
-    System.out.printf("Mean BSP tree creation time : %s \n", meanTime[0] / 1e6);
-    System.out.printf("Mean Painter's algorithm time: %s \n", meanTime[1] / 1e6);
+    System.out.printf("BSP tree height : %s\n", bspStat.meanHeight);
+    System.out.printf("BSP tree size : %s\n", bspStat.meanSize);
+    System.out.printf("Mean BSP tree creation time : %s \n", bspStat.meanBspCpuTime /1e6);
+    System.out.printf("Mean Painter's algorithm time: %s \n", bspStat.meanPainterCpuTime/ 1e6);
+  }
 
+  private static int askInt(String text) {
+    System.out.printf("\n%s : ", text);
+    while(true){
+      try {
+        int a = Integer.parseInt(sc.next());
+        return a;
+      } catch(NumberFormatException ne) {
+        System.out.printf("\n %s :", text);
+      }
+    }
   }
 }
 
