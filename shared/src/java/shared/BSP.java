@@ -8,12 +8,13 @@ import java.lang.Math;
 public class BSP {
  private Node head;
 
-  static class Node {
+  public static class Node {
     public ArrayList<Segment> data;
     public BSP leftSon;
     public BSP rightSon;
     public boolean isLeaf;
     public int height;
+    public int size;
 
     public Node(Segment[] data,boolean isLeaf){
       this.data = new ArrayList<Segment>(Arrays.asList(data));
@@ -45,6 +46,7 @@ public class BSP {
     } else if(data.size() == 1){
       this.head = new Node(data,true);
       this.head.height = 1;
+      this.head.size = 1;
     } else{
       Segment segment = generationMethod.getSegment(data);
       ArrayList<ArrayList<Segment>> locSegment = segment.generateNode(data);
@@ -60,11 +62,14 @@ public class BSP {
       this.head.leftSon = leftSon;
       this.head.rightSon = rightSon;
       int maxHeight = 0;
+      this.head.size = 1;
       if (leftSon != null && leftSon.getHead() != null){
         maxHeight = leftSon.getHead().height; 
+        this.head.size += leftSon.getHead().size;
       }
       if (rightSon != null && rightSon.getHead() != null){
         maxHeight = Math.max(rightSon.getHead().height,maxHeight); 
+        this.head.size += rightSon.getHead().size;
       }
       this.head.height = maxHeight + 1;
 
