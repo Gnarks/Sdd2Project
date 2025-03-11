@@ -32,8 +32,8 @@ public class Example {
         ArrayList<Segment> segments = scene.getSegList();        
 
           
-        Point eue = new Point(0,0);
-        Eye p = new Eye(eue,45,45);
+        Point eue = new Point(-180,-200);
+        Eye p = new Eye(eue,30,60);
 
         //ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
         BSP bsp = new BSP(segments, new FirstMethod());

@@ -76,42 +76,36 @@ public class BSP {
   }
 
   public EyeSegment painterAlgorithm(Eye p,double[] range){
+    
     if(this.head == null){
       return new EyeSegment(new ArrayList<Segment>());
     }
+
     ArrayList<Segment> eyeSeg = drawNode(p,this.head.data,range);
     Utils.sortSegments(eyeSeg);
 
     if(this.head.isLeaf){
       return new EyeSegment(eyeSeg);
     }
+
     int eyePos = this.head.data.get(0).locationPoint(p.getPos());
     VisionEnum vision = p.seeNode(this.head.data.get(0));
-
-    EyeSegment eyeSegRight = (vision == VisionEnum.HPLUS || vision == VisionEnum.BOTH) ? this.head.rightSon.painterAlgorithm(p,range) : null;
-    EyeSegment eyeSegLeft = (vision == VisionEnum.HMINUS || vision == VisionEnum.BOTH) ? this.head.leftSon.painterAlgorithm(p,range) : null;
-
+    
+    EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
+    EyeSegment eyeSegRight =  this.head.rightSon.painterAlgorithm(p,range);
+    EyeSegment eyeSegLeft =  this.head.leftSon.painterAlgorithm(p,range);
+    
 
     if(eyePos == -1){
-      EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
-      if(vision == VisionEnum.HPLUS || vision == VisionEnum.BOTH){
         eyeSegRight.mergeParts(eyeSegHead);
         eyeSegRight.mergeParts(eyeSegLeft);
         return eyeSegRight;}
 
-      eyeSegHead.mergeParts(eyeSegLeft);
-      return eyeSegHead;
-    } 
+     
     else if(eyePos == 1){
-      EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
-
-      if(vision == VisionEnum.HMINUS || vision == VisionEnum.BOTH){
-        eyeSegLeft.mergeParts(eyeSegHead);
-        eyeSegLeft.mergeParts(eyeSegRight);
-        return eyeSegLeft;}
-
-      eyeSegHead.mergeParts(eyeSegRight);
-      return eyeSegHead;
+      eyeSegLeft.mergeParts(eyeSegHead);
+      eyeSegLeft.mergeParts(eyeSegRight);
+      return eyeSegLeft;
     }
     else{
       if (vision == VisionEnum.BOTH){
@@ -126,9 +120,11 @@ public class BSP {
   }
   
   public ArrayList<Segment> drawNode(Eye p,ArrayList<Segment> data, double[] range){
-    ArrayList<Segment> proj = new ArrayList<>();
+    ArrayList<Segment> proj = new ArrayList<>();  
+
     double pAngle = Math.toRadians(p.getAngle());
     double distance = Math.sqrt(Math.pow(range[1],2)+Math.pow(range[0],2));
+
     double x = distance*Math.cos(Math.toRadians(pAngle));
     double y = distance*Math.sin(Math.toRadians(pAngle));
     Point point1 = new Point(x,y);

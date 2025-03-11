@@ -72,25 +72,44 @@ public class Eye {
   }
 
   public Segment seenSegment(Segment seg){
-    int[] fovLine = fovLine();
+  
     double angleRight = Math.toRadians(angle-fov);
     double angleLeft = Math.toRadians(angle+fov);
-  
+    
+//TODO ameliore avec projection intersection angle+distance avec range
+    int[] fovLine = fovLine();
     double yLeft;
     double yRight;
-    if (Utils.areEqual(Math.cos(Math.toRadians(angle+fov)),0)){
+    if (Utils.areEqual(Math.cos(angleLeft),0)){
       yLeft = Math.sin(angleLeft);
     }else{
       yLeft= Math.tan(angleLeft)*(position.x + fovLine[0]); 
     }
-    if (Utils.areEqual(Math.cos(Math.toRadians(angle-fov)),0)){
+
+    if (Utils.areEqual(Math.cos(angleRight),0)){
       yRight = Math.sin(angleRight);
     }else{
       yRight= Math.tan(angleRight)*(position.x + fovLine[1]); 
     }
+
+    
     Point fovLeftPoint = new Point(position.x + fovLine[0],yLeft + position.y);
     Point fovRightPoint = new Point(position.x + fovLine[1],yRight + position.y);
-    
+//END TOTO
+//
+//TODO calculer angle Start et End
+//    check si entre angleLeft et angleRight
+//    ni l'un ni l'autre => 
+//    check angle avec les intersection 
+//    if angle=Fov ok
+//    else
+//    return null
+//    entre les 2 => return seg
+//    voit start et pas end =>
+//    checker angleEnd plus proche de angleRight ou angleLeft => prendre intersection entre 
+//                                                               le fov et le segment et conserver start
+//    same angleStart
+//
     Segment fovLeft = new Segment(this.position,fovLeftPoint,seg.getColor());
     Segment fovRight = new Segment(this.position,fovRightPoint,seg.getColor());
 
@@ -108,7 +127,7 @@ public class Eye {
         return null;
       }
         return seg;}
-
+    
     if(seeStart || seeEnd){
       Point inter;
       if(locationStartLeft != locationEndLeft){
@@ -171,7 +190,7 @@ public class Eye {
     int locationPointRight =fovRight.locationPoint(p);
 
     
-    if((angle-fov == 0 || angle-fov == 180)&&(Utils.areEqual(Math.cos(angleRight), locationPointRight))){
+    if((angle-fov == 0 || angle-fov == 180)&&(Utils.areEqual(Math.cos(angleLeft), locationPointLeft))){
       return false;
     }  
   
