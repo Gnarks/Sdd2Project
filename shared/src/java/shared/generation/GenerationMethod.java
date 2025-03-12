@@ -13,8 +13,7 @@ public abstract class GenerationMethod{
         return new FirstMethod();
 
       case GenerationEnum.HEURISTIC:
-        //TODO changer ici lorsqu'on aura impl HEURISTIC
-        return new FirstMethod(); 
+        return new HeuristicMethod(); 
 
       case GenerationEnum.RANDOM:
         return new RandomMethod();
