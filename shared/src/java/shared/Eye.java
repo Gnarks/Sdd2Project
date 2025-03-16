@@ -71,32 +71,18 @@ public class Eye {
 
   }
 
-  public Segment seenSegment(Segment seg){
+  public Segment seenSegment(Segment seg,double distance, Segment line){
   
     double angleRight = Math.toRadians(angle-fov);
     double angleLeft = Math.toRadians(angle+fov);
     
-//TODO ameliore avec projection intersection angle+distance avec range
-    int[] fovLine = fovLine();
-    double yLeft;
-    double yRight;
-    if (Utils.areEqual(Math.cos(angleLeft),0)){
-      yLeft = Math.sin(angleLeft);
-    }else{
-      yLeft= Math.tan(angleLeft)*(position.x + fovLine[0]); 
-    }
+    double adj = Math.tan(Math.toRadians(fov));
+    double hypo = Math.sqrt(Math.pow(adj,2)+Math.pow(distance,2));
 
-    if (Utils.areEqual(Math.cos(angleRight),0)){
-      yRight = Math.sin(angleRight);
-    }else{
-      yRight= Math.tan(angleRight)*(position.x + fovLine[1]); 
-    }
+    Segment fovLeft = new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(angleLeft),this.position.y+hypo*Math.sin(angleLeft),seg.getColor());
+    Segment fovRight =new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(angleRight),this.position.y+hypo*Math.sin(angleRight),seg.getColor());
 
-    
-    Point fovLeftPoint = new Point(position.x + fovLine[0],yLeft + position.y);
-    Point fovRightPoint = new Point(position.x + fovLine[1],yRight + position.y);
-//END TOTO
-//
+
 //TODO calculer angle Start et End
 //    check si entre angleLeft et angleRight
 //    ni l'un ni l'autre => 
@@ -110,8 +96,6 @@ public class Eye {
 //                                                               le fov et le segment et conserver start
 //    same angleStart
 //
-    Segment fovLeft = new Segment(this.position,fovLeftPoint,seg.getColor());
-    Segment fovRight = new Segment(this.position,fovRightPoint,seg.getColor());
 
     int locationStartRight= fovRight.locationPoint(seg.getStart());
     int locationEndRight = fovRight.locationPoint(seg.getEnd());

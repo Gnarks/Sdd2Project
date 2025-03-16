@@ -142,7 +142,7 @@ public class BSP {
 
     for (int i = 0; i < data.size(); i++){
       Segment segment = data.get(i);
-      Segment seg = p.seenSegment(segment);
+      Segment seg = p.seenSegment(segment,distance,line);
       if(seg != null){
         Segment seg1 = new Segment(p.getPos(),seg.getStart(),"red");
         Segment seg2 = new Segment(p.getPos(),seg.getEnd(),"red");
