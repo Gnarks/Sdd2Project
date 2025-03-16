@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+/** Finder class for all the scenes in the $PROJECTDIRECTORY/shared/ressources/scenes directory
+ */
 public class SceneFinder{
 
   /** finds the scenes in the $PROJECTDIRECTORY/shared/ressources/scenes directory
-   *
-   * @return the full paths of every scene
+   * @return the full paths of every scene found
    */
   public ArrayList<String> findScenes(){
-
     try {
       Enumeration<URL> e = ClassLoader.getSystemResources(".");
 
@@ -39,10 +39,15 @@ public class SceneFinder{
       e.printStackTrace();
       return null;
     }
-
   }
 
-  public void listf(String directoryName, List<File> files) throws IOException {
+
+  /** get all the files in the specified directory 
+ * @param directoryName the full path of the directory
+ * @param files the list to add the found files to 
+ * @throws IOException
+   */
+  private void listf(String directoryName, List<File> files) throws IOException {
     try {
       File directory = new File(directoryName).getCanonicalFile();
 
