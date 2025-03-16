@@ -2,12 +2,21 @@ package shared.generation;
 
 import shared.Point;
 import java.util.ArrayList;
-
 import shared.Segment;
 
+/**
+ * Heuristique H1
+ * Auteurs: * Détermination de la partition: on choisit un segment s qui maximise g_s
+ *
+ * Heuristic H1 (see Heuristique.pdf)
+ * Authors:  Krishnaswamy, Alijani, Su 
+ * Method selecting the segment beeing intersected the most by all other segment's lines
+ */
 public class HeuristicMethod extends GenerationMethod{
 
-
+  /**
+   * @return the most intersected segment in the list
+   */
   public Segment getSegment(ArrayList<Segment> data ){
 
     int bestG =0;
@@ -28,7 +37,12 @@ public class HeuristicMethod extends GenerationMethod{
     }
     return bestSegment;
   }
-
+  /**
+   * returns if the point p is on the segment seg
+ * @param p the point to check
+ * @param seg the segment on which the test is issued
+ * @return if the point p is on the segement seg
+   */
   private static boolean pointOnSegment(Point p, Segment seg){
     if (p == null)
     return false;
