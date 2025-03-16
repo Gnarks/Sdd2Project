@@ -146,12 +146,19 @@ public class Segment {
     return new Point(x,y);
   }
   
+  /**
+   * returns if the point is on the segment 
+ * @param point the point to check
+ * @return if the point p is on the segement
+   */
   public boolean onSeg(Point point){
-    if(this.isVertical){
-      return (Utils.areEqual(point.x, this.line[0])); 
-    }
-    return Utils.areEqual(point.y, this.line[0]*point.x + this.line[1]);
+    if (point == null)
+      return false;
 
+    if(this.isVertical)
+      return (Utils.areEqual(point.x, this.line[0])) && Math.min(start.y,end.y) <= point.y && point.y <= Math.max(start.y,end.y); 
+    
+    return Utils.areEqual(point.y, this.line[0]*point.x + this.line[1]) && (start.x <= point.x && point.x <= end.x);
   }
 
   /**
