@@ -228,10 +228,10 @@ public class TestGraphical extends Application {
     pane.getTransforms().add(scale);
     
     for (shared.Segment seg : loadedScene.getSegList()) {
-      double initX = Math.round(seg.getStart().x + loadedScene.getCorners()[3].x*1.1);
-      double initY = Math.round(seg.getStart().y + loadedScene.getCorners()[3].y*1.1);
-      double finalX = Math.round(seg.getEnd().x + loadedScene.getCorners()[3].x*1.1);
-      double finalY = Math.round(seg.getEnd().y + loadedScene.getCorners()[3].y*1.1);
+      double initX = Math.round(seg.getStart().x + loadedScene.getRange().x*1.1);
+      double initY = Math.round(seg.getStart().y + loadedScene.getRange().y*1.1);
+      double finalX = Math.round(seg.getEnd().x + loadedScene.getRange().x*1.1);
+      double finalY = Math.round(seg.getEnd().y + loadedScene.getRange().y*1.1);
 
       Line line = new Line(initX, initY, finalX, finalY);
       line.setStroke(Paint.valueOf(seg.getColor()));
@@ -245,11 +245,11 @@ public class TestGraphical extends Application {
     });
 
     sceneOptions.getEye().isDrawn = false;
-    pane.setMinSize(loadedScene.getCorners()[3].x*2.2, loadedScene.getCorners()[3].y*2.2 );
+    pane.setMinSize(loadedScene.getRange().x*2.2, loadedScene.getRange().y*2.2 );
     sceneOptions.setDrawSceneNode(pane);
 
-    sceneOptions.getEye().setxLimit(Math.round(loadedScene.getCorners()[3].x*1.2));
-    sceneOptions.getEye().setyLimit(Math.round(loadedScene.getCorners()[3].y*1.2));
+    sceneOptions.getEye().setxLimit(Math.round(loadedScene.getRange().x*1.2));
+    sceneOptions.getEye().setyLimit(Math.round(loadedScene.getRange().y*1.2));
     
     bsp = new BSP(loadedScene.getSegList(), GenerationMethod.enumToGenerationMethod(sceneOptions.getGenerationMethod()));
 
@@ -279,7 +279,6 @@ public class TestGraphical extends Application {
       p.boundsInLocalProperty()));
     p.getTransforms().add(scale);
     
-    // TODO get the drawnSegment from the eye pov
     for (shared.Segment seg : eyePov.getParts()) {
       double initX = seg.getStart().x + sceneOptions.getEye().getxLimit()/1.2;
       double initY = seg.getStart().y + sceneOptions.getEye().getyLimit()/1.2;

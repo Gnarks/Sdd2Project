@@ -20,10 +20,7 @@ public class SceneReader{
       boolean first= true;
 
       ArrayList<Segment> segList = new ArrayList<>();
-      Point topLeft = null;
-      Point topRight = null;
-      Point bottomLeft = null;
-      Point bottomRight = null;
+      Point range = null;
 
       while ((read = reader.readLine()) != null){
 
@@ -32,10 +29,7 @@ public class SceneReader{
           first = false;
           double a = Double.parseDouble(line[1]);
           double b = Double.parseDouble(line[2]);
-          topLeft = new Point(-a, -b);
-          topRight = new Point(a, -b);
-          bottomLeft = new Point(-a, b);
-          bottomRight = new Point(a, b);
+          range = new Point(a, b);
           continue;
         }
 
@@ -82,7 +76,7 @@ public class SceneReader{
       }
       reader.close();
 
-      return new Scene(segList, topLeft, topRight, bottomLeft, bottomRight);
+      return new Scene(segList, range);
     }
     catch (Exception a) {
       a.printStackTrace();
