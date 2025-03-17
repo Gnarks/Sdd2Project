@@ -165,9 +165,9 @@ public class TestGraphical extends Application {
 
     // fov TextField
     Label fovLabel = new Label("FOV : ");
-    LimitedTextField fovField = new LimitedTextField(new SimpleDoubleProperty(180d), true);
+    LimitedTextField fovField = new LimitedTextField(new SimpleDoubleProperty(90d), true);
 
-    fovField.textProperty().bindBidirectional(sceneOptions.getEye().fovProperty(), new CoordonateConverter(new SimpleDoubleProperty(180d)));
+    fovField.textProperty().bindBidirectional(sceneOptions.getEye().fovProperty(), new CoordonateConverter(new SimpleDoubleProperty(90d)));
     HBox fovHbox= new HBox(fovLabel, fovField);
 
     return new VBox(angleHbox, fovHbox);

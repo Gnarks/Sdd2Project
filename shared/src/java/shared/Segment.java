@@ -167,7 +167,6 @@ public class Segment {
    */
   public ArrayList<ArrayList<Segment>> generateNode(ArrayList<Segment> data){
     ArrayList<Segment> align = new ArrayList<>();
-    align.add(this);
     ArrayList<Segment> d_minus = new ArrayList<>();
     ArrayList<Segment> d_plus = new ArrayList<>();
 

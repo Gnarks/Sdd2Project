@@ -16,11 +16,14 @@ public class EyeSegment {
   public void setParts(ArrayList<Segment> parts){
     this.parts = parts;
   }
+
   public void mergeParts(EyeSegment segments){
-    if (segments == null){    
+    if (segments == null){  
       return;}
+
     ArrayList<Segment> merged = new ArrayList<>();
     ArrayList<Segment> toMerge = segments.getParts();
+    Utils.sortSegments(toMerge);
     if (toMerge.size() == 0){
       return;
     }
@@ -28,28 +31,31 @@ public class EyeSegment {
       this.parts = toMerge;
     }
     int j = 0;
+
     for (int i = 0; i < toMerge.size(); i++) {
       Segment seg = toMerge.get(i);
-      while(j<this.parts.size() && parts.get(j).getEnd().x <= seg.getStart().x) {
+      while(j<this.parts.size() && parts.get(j).getEnd().x <= seg.getStart().x && (!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))) {
         merged.add(this.parts.get(j));
         j++;        
       }
-
       if(j< this.parts.size()){
         if(this.parts.get(j).getStart().x < seg.getStart().x){
           Segment temp = new Segment(this.parts.get(j).getStart().x,this.parts.get(j).getStart().y,seg.getStart().x,seg.getStart().y,this.parts.get(j).getColor());
-          merged.add(temp);
+            merged.add(temp);
+
         }
-        if(this.parts.get(j).getEnd().x < seg.getEnd().x){
-        this.parts.get(j).setEnd(seg.getStart());}
-        merged.add(this.parts.get(j));
       }
       merged.add(seg);
       while( j<this.parts.size() && parts.get(j).getEnd().x<seg.getEnd().x){
         j++;
       }
-      if(j < this.parts.size() && parts.get(j).getStart().x<seg.getEnd().x){
-        parts.get(j).setStart(seg.getEnd());        
+      if(j < this.parts.size()){
+          if (parts.get(j).getStart().x<seg.getEnd().x){
+            parts.get(j).setStart(seg.getEnd());        
+          }
+          if((i == toMerge.size()-1) && (!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))){
+            merged.add(this.parts.get(j));
+          }
       }
     }
     Utils.sortSegments(merged);
