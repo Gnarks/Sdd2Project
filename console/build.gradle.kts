@@ -28,6 +28,10 @@ java {
     }
 }
 
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}
+
 application {
-    mainClass = "ConsoleTest"
+    mainClass = "TestConsole"
 }

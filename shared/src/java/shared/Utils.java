@@ -22,11 +22,7 @@ public class Utils {
 
   public static void sortSegments(ArrayList<Segment> seg){ 
       seg.sort((a,b)->{
-        if(a.getStart().x < b.getStart().x){
-          return -1;
-        } else {
-          return 1;
-        }
+        return Double.compare(a.getStart().x, b.getStart().x);
       });
   }
 
