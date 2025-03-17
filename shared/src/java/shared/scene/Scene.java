@@ -1,9 +1,10 @@
 package shared.scene;
 
 import java.util.ArrayList;
-
 import shared.*;
 
+/** Object representing a 2D scene loaded from example files
+ */
 public class Scene{
   private ArrayList<Segment> segList;
   private Point topLeft;

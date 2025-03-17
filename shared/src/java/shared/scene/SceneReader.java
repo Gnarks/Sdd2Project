@@ -1,12 +1,18 @@
 package shared.scene;
+
 import java.io.*;
 import java.util.ArrayList;
 import shared.*;
 
+/** Reader class to transform a fileName to a Scene object 
+ */
 public class SceneReader{
 
+  /** reads the file specified by it's Name
+ * @param fileName the full path of the file to read
+ * @return the Scene stored in the file if there's one
+   */
   public Scene read (String fileName){
-
     try {
       BufferedReader reader = new BufferedReader(new FileReader(fileName));
 
@@ -35,7 +41,6 @@ public class SceneReader{
 
 
         String color;
-        //Bleu, Rouge, Orange, Jaune, Noir, Violet, Marron, Vert, Gris et Rose
         switch (line[4]){
           case "Bleu":
             color = "blue";
@@ -78,9 +83,8 @@ public class SceneReader{
       reader.close();
 
       return new Scene(segList, topLeft, topRight, bottomLeft, bottomRight);
-
     }
-    catch (IOException a) {
+    catch (Exception a) {
       a.printStackTrace();
     }
     return null;

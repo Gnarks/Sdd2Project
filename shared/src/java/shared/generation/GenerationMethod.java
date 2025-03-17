@@ -3,9 +3,18 @@ package shared.generation;
 import java.util.ArrayList;
 import shared.*;
 
+/**
+ * General class to qualify a generation method
+ * represents the method to construct a Binary Space Partitionning tree
+ * @see BSP
+ */
 public abstract class GenerationMethod{
 
 
+  /** Converts a GenerationEnum to a new generation method instance
+   * @param generationEnum the enum representing the generation method 
+   * @return a new instance of the represented generation method
+   */
   public static GenerationMethod enumToGenerationMethod(GenerationEnum generationEnum){
 
     switch(generationEnum){
@@ -13,8 +22,7 @@ public abstract class GenerationMethod{
         return new FirstMethod();
 
       case GenerationEnum.HEURISTIC:
-        //TODO changer ici lorsqu'on aura impl HEURISTIC
-        return new FirstMethod(); 
+        return new HeuristicMethod(); 
 
       case GenerationEnum.RANDOM:
         return new RandomMethod();
@@ -23,5 +31,8 @@ public abstract class GenerationMethod{
     return null;
   }
 
+  /** Returns the next segment selected by the generation method
+   * @param data the list of segments to select in
+   */
   public abstract Segment getSegment(ArrayList<Segment> data);
 }
