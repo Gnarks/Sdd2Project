@@ -88,34 +88,31 @@ public class Eye {
     boolean seeEnd = (angleRight < angleLeft && angleEnd > angleRight && angleEnd < angleLeft) || (angleRight > angleLeft && (angleEnd > angleRight || angleEnd < angleLeft));
 
     if(seeStart && seeEnd){
-      if (Utils.areEqual(seg.getStart(),seg.getEnd())){
+      if (Utils.areEqual(seg.getStart(),seg.getEnd()))
         return null;
-      }
-        return seg;}
+      
+      return seg;
+    }
 
     Point interRight = fovRight.interSeg(seg);
     Point interLeft = fovLeft.interSeg(seg);
-    
-    double angleInterRight = (anglePoint(interRight)+360)%360;
-    double angleInterLeft = (anglePoint(interLeft)+360)%360;
 
     if(seeStart){
-      if (Math.abs(angleLeft-angleEnd) < Math.abs(angleRight-angleEnd)){
+      if (interRight == null || !seg.onSeg(interRight))
         return new Segment(seg.getStart(),interLeft,seg.getColor());
-      }
+
       return new Segment(seg.getStart(),interRight,seg.getColor());
     } 
+
     if(seeEnd){
-      if (Math.abs(angleLeft-angleStart) < Math.abs(angleRight-angleStart)){
-        return new Segment(interLeft,seg.getEnd(),seg.getColor());
-      }
-      return new Segment(interRight,seg.getEnd(),seg.getColor());
+      if (interRight == null || !seg.onSeg(interRight))
+        return new Segment(seg.getEnd(),interLeft,seg.getColor());
+
+      return new Segment(seg.getEnd(),interRight,seg.getColor());
     }
-    if (Utils.areEqual(angleInterLeft,angleLeft) && Utils.areEqual(angleInterRight,angleRight)
-        && (interLeft.x > seg.getStart().x && (interRight.x > seg.getStart().x))
-        &&(interLeft.x < seg.getEnd().x && (interRight.x < seg.getEnd().x))) {
+
+    if (interRight != null && interLeft != null && fovLeft.onSeg(interLeft) && fovRight.onSeg(interRight))
       return new Segment(interLeft,interRight,seg.getColor());
-    }
 
     return null;
   }
