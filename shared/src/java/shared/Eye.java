@@ -76,8 +76,7 @@ public class Eye {
     double angleRight = (angle-fov+360)%360;
     double angleLeft = (angle+fov)%360;
     
-    double adj = Math.tan(Math.toRadians(fov));
-    double hypo = Math.sqrt(Math.pow(adj,2)+Math.pow(distance,2));
+    double hypo = Math.sqrt(Math.pow(Math.tan(Math.toRadians(fov))*distance,2)+Math.pow(distance,2));
 
     Segment fovLeft = new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(Math.toRadians(angleLeft)),this.position.y+hypo*Math.sin(Math.toRadians(angleLeft)),seg.getColor());
     Segment fovRight =new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(Math.toRadians(angleRight)),this.position.y+hypo*Math.sin(Math.toRadians(angleRight)),seg.getColor());
