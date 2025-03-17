@@ -19,11 +19,23 @@ public class SceneOptions{
 
   private ObjectProperty<Node> drawScene = new SimpleObjectProperty<Node>();
 
+  private ObjectProperty<Node> eyeScene = new SimpleObjectProperty<Node>();
+
   public EyeProperty getEye() {
     return eye;
   }
 
+  public Node getEyeSceneNode(){
+    return eyeScene.get();
+  }
 
+  public ObjectProperty<Node> eyeSceneNodeProperty() {
+    return eyeScene;
+  }
+
+  public void setEyeSceneNode(Node eyeScene) {
+    this.eyeScene.set(eyeScene);
+  }
 
   public Node getDrawSceneNode(){
     return drawScene.get();

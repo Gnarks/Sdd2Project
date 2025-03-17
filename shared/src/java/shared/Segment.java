@@ -16,17 +16,28 @@ public class Segment {
   private double[] line;
   private boolean isVertical;
   
+
   public Segment(Point start,Point end,String color){
-    this.start = start;
-    this.end = end;
+    if (start.x <= end.x){
+      this.start = start;
+      this.end = end;
+    } else {
+      this.start = end;
+      this.end = start;}
     this.color = color;
     this.isVertical = false;
     updateLine(); 
   }
 
   public Segment(double x1, double y1, double x2, double y2, String color){
-    this.start = new Point(x1,y1);
-    this.end = new Point(x2,y2);
+    Point _start = new Point(x1,y1);
+    Point _end = new Point(x2,y2);
+    if (_start.x < _end.x){
+      this.start = _start;
+      this.end = _end;
+    } else {
+      this.start = _end;
+      this.end = _start;}
     this.color = color;
     updateLine();
   }
@@ -84,31 +95,30 @@ public class Segment {
             0 if the point belongs to the segment's line
   */
   public int locationPoint(Point point){
+
     if(isVertical){
-      if(point.x < this.line[0]){
-        return -1;
+      if(Utils.areEqual(point.x, this.line[0])){
+        return 0;
       } else if(point.x > this.line[0]){
         return 1;
       } else {
-      return 0;
+      return -1;
       }
     }
-
     if(this.line[0] == 0){
-      if(point.y > this.line[1]){
-        return -1;
+      if(Utils.areEqual(point.y, this.line[1])){
+        return 0;
       } else if(point.y < this.line[1]){
         return 1;
       } else {
-        return 0;
+        return -1;
       }
     }
-
     double x = (point.y - this.line[1])/this.line[0];
-    if (point.x < x){
-      return -1;
-    } else if (Utils.areEqual(point.x,x)){
+    if (Utils.areEqual(point.x,x)){
       return 0;
+    } else if (point.x < x){
+      return -1;
     } else {
       return 1;
     }
@@ -134,6 +144,14 @@ public class Segment {
     double y = this.line[0]*x + this.line[1];
     return new Point(x,y);
   }
+  
+  public boolean onSeg(Point point){
+    if(this.isVertical){
+      return (Utils.areEqual(point.x, this.line[0])); 
+    }
+    return Utils.areEqual(point.y, this.line[0]*point.x + this.line[1]);
+
+  }
 
   /**
    * align :  the segments that are aligned with the current segment
@@ -142,6 +160,7 @@ public class Segment {
    */
   public ArrayList<ArrayList<Segment>> generateNode(ArrayList<Segment> data){
     ArrayList<Segment> align = new ArrayList<>();
+    align.add(this);
     ArrayList<Segment> d_minus = new ArrayList<>();
     ArrayList<Segment> d_plus = new ArrayList<>();
 
@@ -149,8 +168,7 @@ public class Segment {
       Point inter = this.interSeg(seg); 
       int locationStart= this.locationPoint(seg.getStart());
       int locationEnd = this.locationPoint(seg.getEnd());
-
-      if (locationStart == locationEnd){
+      if (locationStart == locationEnd || locationStart == 0 || locationEnd == 0){
         switch (locationStart) {
           case -1:
             d_minus.add(seg);
@@ -159,7 +177,15 @@ public class Segment {
             d_plus.add(seg);
             break;
           default:
+            if (locationEnd == 0){
             align.add(seg);
+            }
+            else if (locationEnd == 1){
+              d_plus.add(seg);
+            }
+            else{
+              d_minus.add(seg);
+            }
             break;
         }
       }
@@ -167,11 +193,8 @@ public class Segment {
       Segment startSeg = new Segment(seg.getStart(),inter,seg.getColor());
       Segment endSeg = new Segment(inter,seg.getEnd(),seg.getColor());
 
-      if(!Utils.areEqual(seg.getStart() ,inter)){
-        if (locationStart == -1){ d_minus.add(startSeg);} else { d_plus.add(startSeg);}
-      }
-      if(!Utils.areEqual(seg.getEnd() ,inter)){}
-        if (locationEnd == -1){ d_minus.add(endSeg);} else { d_plus.add(endSeg);}
+      if (locationStart == -1){ d_minus.add(startSeg);} else { d_plus.add(startSeg);}
+      if (locationEnd == -1){ d_minus.add(endSeg);} else { d_plus.add(endSeg);}
      }
     });
     return new ArrayList<>(List.of(align,d_minus,d_plus));
