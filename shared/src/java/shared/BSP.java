@@ -131,7 +131,7 @@ public class BSP {
     ArrayList<Segment> proj = new ArrayList<>();  
 
     double pAngle = Math.toRadians(p.getAngle());
-    double distance = Math.sqrt(Math.pow(range[1],2)+Math.pow(range[0],2));
+    double distance = 2* Math.sqrt(Math.pow(range[1],2)+Math.pow(range[0],2));
 
     double x = distance*Math.cos(Math.toRadians(pAngle));
     double y = distance*Math.sin(Math.toRadians(pAngle));
