@@ -106,8 +106,8 @@ public class TestConsole{
     System.out.printf("%s Got : \n", heuristic);
     System.out.printf("BSP tree height : %s\n", bspStat.meanHeight);
     System.out.printf("BSP tree size : %s\n", bspStat.meanSize);
-    System.out.printf("Mean BSP tree creation time : %s \n", bspStat.meanBspCpuTime /1e6);
-    System.out.printf("Mean Painter's algorithm time: %s \n", bspStat.meanPainterCpuTime/ 1e6);
+    System.out.printf("Mean BSP tree creation time : %s ms\n", bspStat.meanBspCpuTime /1e6);
+    System.out.printf("Mean Painter's algorithm time: %s ms\n", bspStat.meanPainterCpuTime/ 1e6);
   }
 
   private static int askInt(String text) {
