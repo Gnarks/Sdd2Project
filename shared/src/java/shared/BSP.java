@@ -152,18 +152,14 @@ public class BSP {
       Segment segment = data.get(i);
       Segment seg = p.seenSegment(segment,distance,line);
       if(seg != null){
-
-        proj.add(seg); 
-
-        /*
         Segment seg1 = new Segment(p.getPos(),seg.getStart(),"red");
         Segment seg2 = new Segment(p.getPos(),seg.getEnd(),"red");
-        Point inter1 = seg1.interSeg(line);
-        Point inter2 = seg2.interSeg(line);
+        Point inter1 = seg1.lineIntersect(line);
+        Point inter2 = seg2.lineIntersect(line);
         if (inter1 != null && inter2 != null && !Utils.areEqual(inter1,inter2)){
           Segment inter = new Segment(inter1,inter2,seg.getColor());
-          // ici avant le proj.add(inter);
-        }*/
+          proj.add(inter); 
+        }
       }
     }
     return proj;
