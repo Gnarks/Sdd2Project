@@ -2,6 +2,7 @@ package shared;
 
 import java.util.ArrayList;
 import java.lang.Math;
+import shared.geometrical.*;
 
 public class Utils {
   

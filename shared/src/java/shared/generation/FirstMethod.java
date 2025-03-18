@@ -1,7 +1,7 @@
 package shared.generation;
 
-import shared.*;
 import java.util.ArrayList;
+import shared.geometrical.*;
 
 /** 
  * Method selecting the first segment in the list

@@ -2,15 +2,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
-import shared.BSP;
-import shared.Eye;
-import shared.Point;
-import shared.Segment;
-import shared.generation.GenerationEnum;
-import shared.generation.GenerationMethod;
-import shared.scene.Scene;
-import shared.scene.SceneFinder;
-import shared.scene.SceneReader;
+import shared.geometrical.*;
+import shared.scene.*;
+import shared.*;
+import shared.generation.*;
 
 public class TestConsole{
 

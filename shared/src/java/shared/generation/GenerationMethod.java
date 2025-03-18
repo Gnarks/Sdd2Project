@@ -2,6 +2,7 @@ package shared.generation;
 
 import java.util.ArrayList;
 import shared.*;
+import shared.geometrical.*;
 
 /**
  * General class to qualify a generation method

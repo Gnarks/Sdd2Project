@@ -1,6 +1,7 @@
 package shared;
 
 import java.lang.Math;
+import shared.geometrical.*;
 
 public class Eye {
   private Point position;
@@ -29,18 +30,18 @@ public class Eye {
    *        -1 if see only h- side of the line
    */
   
-  public VisionEnum seeNode(Segment line) {
+  public VisionEnum seeNode(Segment segment) {
     double angleRadians = Math.toRadians(this.angle);
     double angleLeft = angle+fov;
     double angleRight = angle-fov;
 
-    double lineSlope = line.getLine()[0];
-    int loc = line.locationPoint(this.position);
+    double lineSlope = segment.getLine().slope;
+    PartitionEnum loc = segment.relativePosition(this.position);
     double alpha = Math.toDegrees(Math.atan(lineSlope)); 
     double limit = 180+alpha;
 
-    if(loc == 1){
-      if(line.isVertical()){
+    if(loc == PartitionEnum.HPLUS){
+      if(segment.isVertical()){
         if(Math.cos(angleRadians) < 0){
           return VisionEnum.BOTH;
         }
@@ -53,8 +54,8 @@ public class Eye {
         return VisionEnum.HPLUS;
       } 
     }
-    if (loc == -1){
-      if(line.isVertical()){
+    if (loc == PartitionEnum.HMINUS){
+      if(segment.isVertical()){
         if(Math.cos(angleRadians) > 0){
           return VisionEnum.BOTH;
         }
@@ -94,24 +95,24 @@ public class Eye {
       return seg;
     }
 
-    Point interRight = fovRight.interSeg(seg);
-    Point interLeft = fovLeft.interSeg(seg);
+    Point interRight = fovRight.SegmentIntersect(seg);
+    Point interLeft = fovLeft.SegmentIntersect(seg);
 
     if(seeStart){
-      if (interRight == null || !seg.onSeg(interRight))
+      if (interRight == null)
         return new Segment(seg.getStart(),interLeft,seg.getColor());
 
       return new Segment(seg.getStart(),interRight,seg.getColor());
     } 
 
     if(seeEnd){
-      if (interRight == null || !seg.onSeg(interRight))
+      if (interRight == null)
         return new Segment(seg.getEnd(),interLeft,seg.getColor());
 
       return new Segment(seg.getEnd(),interRight,seg.getColor());
     }
 
-    if (interRight != null && interLeft != null && fovLeft.onSeg(interLeft) && fovRight.onSeg(interRight))
+    if (interRight != null && interLeft != null)
       return new Segment(interLeft,interRight,seg.getColor());
 
     return null;
@@ -131,7 +132,7 @@ public class Eye {
       }
     }
 
-    double degree =  Math.toDegrees(Math.atan(seg.getLine()[0]));
+    double degree =  Math.toDegrees(Math.atan(seg.getLine().slope));
     if(point.x < this.position.x){
       return 180 + degree;
     }

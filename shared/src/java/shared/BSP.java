@@ -2,7 +2,10 @@ package shared;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
 import shared.generation.*;
+import shared.geometrical.*;
 import java.lang.Math;
 
 public class BSP {
@@ -49,7 +52,7 @@ public class BSP {
       this.head.size = 1;
     } else{
       Segment segment = generationMethod.getSegment(data);
-      ArrayList<ArrayList<Segment>> locSegment = segment.generateNode(data);
+      ArrayList<ArrayList<Segment>> locSegment = generateNode(data, segment.getLine());
 
       this.head = new Node(locSegment.get(0),true);
       BSP leftSon = new BSP(locSegment.get(1),generationMethod);
@@ -93,7 +96,7 @@ public class BSP {
       return new EyeSegment(eyeSeg);
     }
 
-    int eyePos = this.head.data.get(0).locationPoint(p.getPos());
+    PartitionEnum eyePos = this.head.data.get(0).relativePosition(p.getPos());
     VisionEnum vision = p.seeNode(this.head.data.get(0));
     
     EyeSegment eyeSegHead = new EyeSegment(eyeSeg);
@@ -101,13 +104,13 @@ public class BSP {
     EyeSegment eyeSegLeft =  this.head.leftSon.painterAlgorithm(p,range);
     
 
-    if(eyePos == -1){
+    if(eyePos == PartitionEnum.HMINUS){
         eyeSegRight.mergeParts(eyeSegHead);
         eyeSegRight.mergeParts(eyeSegLeft);
         return eyeSegRight;}
 
      
-    else if(eyePos == 1){
+    else if(eyePos == PartitionEnum.HPLUS){
       eyeSegLeft.mergeParts(eyeSegHead);
       eyeSegLeft.mergeParts(eyeSegRight);
       return eyeSegLeft;
@@ -149,17 +152,69 @@ public class BSP {
       Segment segment = data.get(i);
       Segment seg = p.seenSegment(segment,distance,line);
       if(seg != null){
+
+        proj.add(seg); 
+
+        /*
         Segment seg1 = new Segment(p.getPos(),seg.getStart(),"red");
         Segment seg2 = new Segment(p.getPos(),seg.getEnd(),"red");
         Point inter1 = seg1.interSeg(line);
         Point inter2 = seg2.interSeg(line);
-
         if (inter1 != null && inter2 != null && !Utils.areEqual(inter1,inter2)){
           Segment inter = new Segment(inter1,inter2,seg.getColor());
-          proj.add(inter); 
-        }
+          // ici avant le proj.add(inter);
+        }*/
       }
-    };
+    }
     return proj;
     }
+
+
+
+  /**
+   * align :  the segments that are aligned with the current segment
+   * d_minus : the segments that are on the d- part of the segment
+   * d_plus : the segments that are on the d+ part of the segment
+   */
+  private ArrayList<ArrayList<Segment>> generateNode(ArrayList<Segment> data, Line divider){
+    ArrayList<Segment> align = new ArrayList<>();
+    ArrayList<Segment> d_minus = new ArrayList<>();
+    ArrayList<Segment> d_plus = new ArrayList<>();
+
+    data.forEach(seg-> {
+      Point inter = divider.intersect(seg); 
+      PartitionEnum locationStart= divider.relativePosition(seg.getStart());
+      PartitionEnum locationEnd = divider.relativePosition(seg.getEnd());
+      if (locationStart == locationEnd || locationStart == PartitionEnum.BOTH || locationEnd == PartitionEnum.BOTH){
+        switch (locationStart) {
+          case PartitionEnum.HMINUS:
+            d_minus.add(seg);
+            break;
+          case PartitionEnum.HPLUS:
+            d_plus.add(seg);
+            break;
+          default:
+            if (locationEnd == PartitionEnum.BOTH){
+            align.add(seg);
+            }
+            else if (locationEnd == PartitionEnum.HPLUS){
+              d_plus.add(seg);
+            }
+            else{
+              d_minus.add(seg);
+            }
+            break;
+        }
+      }
+      else{
+      Segment startSeg = new Segment(seg.getStart(),inter,seg.getColor());
+      Segment endSeg = new Segment(inter,seg.getEnd(),seg.getColor());
+
+      if (locationStart == PartitionEnum.HMINUS){ d_minus.add(startSeg);} else { d_plus.add(startSeg);}
+      if (locationEnd == PartitionEnum.HMINUS){ d_minus.add(endSeg);} else { d_plus.add(endSeg);}
+     }
+    });
+    return new ArrayList<>(List.of(align,d_minus,d_plus));
+  }
+
 }
