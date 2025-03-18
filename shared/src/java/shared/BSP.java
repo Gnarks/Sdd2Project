@@ -146,14 +146,14 @@ public class BSP {
       point2 = new Point(x+1,y-(1/Math.tan(pAngle)));
     }
 
-    Segment line = new Segment(point1,point2,"red");  
+    Segment line = new Segment(point1,point2);  
 
     for (int i = 0; i < data.size(); i++){
       Segment segment = data.get(i);
       Segment seg = p.seenSegment(segment,distance,line);
       if(seg != null){
-        Segment seg1 = new Segment(p.getPos(),seg.getStart(),"red");
-        Segment seg2 = new Segment(p.getPos(),seg.getEnd(),"red");
+        Segment seg1 = new Segment(p.getPos(),seg.getStart());
+        Segment seg2 = new Segment(p.getPos(),seg.getEnd());
         Point inter1 = seg1.lineIntersect(line);
         Point inter2 = seg2.lineIntersect(line);
         if (inter1 != null && inter2 != null && !Utils.areEqual(inter1,inter2)){
