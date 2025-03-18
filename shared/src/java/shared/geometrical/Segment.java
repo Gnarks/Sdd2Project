@@ -102,7 +102,7 @@ public class Segment {
    */
   public Point SegmentIntersect(Segment seg){
     Point inter = lineIntersect(seg);
-    if (onSeg(inter))
+    if (onSeg(inter) && seg.onSeg(inter))
       return inter;
 
     return null;
