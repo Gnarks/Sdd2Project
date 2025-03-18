@@ -1,8 +1,5 @@
 package shared.geometrical;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import shared.Utils;
 
 public class Segment {

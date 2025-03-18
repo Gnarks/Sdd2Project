@@ -71,7 +71,7 @@ public class TestConsole{
       sumPainter += eyeSum/eyeList.size();
     }
 
-    return new BspStat(sumBsp/iterations, sumPainter/iterations, sumHeight/iterations, sumSize/iterations);
+    return new BspStat(sumBsp/iterations, sumPainter/iterations, sumSize/iterations, sumHeight/iterations);
   }
 
   private static Scene selectScene(){
