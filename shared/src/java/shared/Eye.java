@@ -84,8 +84,8 @@ public class Eye {
     Segment fovLeft = new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(Math.toRadians(angleLeft)),this.position.y+hypo*Math.sin(Math.toRadians(angleLeft)),seg.getColor());
     Segment fovRight =new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(Math.toRadians(angleRight)),this.position.y+hypo*Math.sin(Math.toRadians(angleRight)),seg.getColor());
 
-    double angleStart = (getAnglePoint(seg.getStart())+360)%360;
-    double angleEnd = (getAnglePoint(seg.getEnd())+360)%360;
+    double angleStart = getAnglePoint(seg.getStart());
+    double angleEnd = getAnglePoint(seg.getEnd());
 
     boolean seeStart = (angleRight < angleLeft && angleStart > angleRight && angleStart < angleLeft) || (angleRight > angleLeft && (angleStart > angleRight || angleStart < angleLeft));
     boolean seeEnd = (angleRight < angleLeft && angleEnd > angleRight && angleEnd < angleLeft) || (angleRight > angleLeft && (angleEnd > angleRight || angleEnd < angleLeft));
@@ -137,8 +137,8 @@ public class Eye {
 
     double degree =  Math.toDegrees(Math.atan(seg.getLine().slope));
     if(point.x < this.position.x){
-      return 180 + degree;
+      return ((180 + degree) +360)%360;
     }
-    return degree;
+    return (degree +360) %360;
   }
 }
