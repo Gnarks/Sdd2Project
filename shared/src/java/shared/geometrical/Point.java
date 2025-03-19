@@ -1,4 +1,4 @@
-package shared;
+package shared.geometrical;
 
 public class Point {
   public double x;
@@ -15,5 +15,8 @@ public class Point {
 
   public Point copy(){
     return new Point(x,y);
+  }
+  public boolean areEqual(Point p){
+    return Math.abs(x - p.x) < 1E-10 && Math.abs(y - p.y) < 1E-10;
   }
 }

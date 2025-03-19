@@ -1,4 +1,4 @@
-package shared;
+package shared.geometrical;
 
 public enum VisionEnum{ 
   HMINUS,

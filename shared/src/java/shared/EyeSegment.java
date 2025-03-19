@@ -1,6 +1,7 @@
 package shared;
 
 import java.util.ArrayList;
+import shared.geometrical.*;
 
 public class EyeSegment {
   private ArrayList<Segment> parts;

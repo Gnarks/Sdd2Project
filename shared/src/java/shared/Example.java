@@ -3,6 +3,7 @@ package shared;
 import java.util.ArrayList;
 import java.util.Arrays;
 import shared.generation.*;
+import shared.geometrical.*;
 import shared.scene.*;
 public class Example {
 
@@ -29,7 +30,7 @@ public class Example {
 
         SceneReader sceneReader = new SceneReader();
         Scene scene = sceneReader.read("/home/wal//Documents/Sdd2Project/shared/src/ressources/scenes/first/octogone.txt");
-        ArrayList<Segment> segments = scene.getSegList();        
+        ArrayList<Segment> segments = scene.getSegList();
 
           
         Point eue = new Point(-100,-100);

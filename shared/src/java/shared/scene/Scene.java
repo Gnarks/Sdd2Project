@@ -1,7 +1,7 @@
 package shared.scene;
 
 import java.util.ArrayList;
-import shared.*;
+import shared.geometrical.*;
 
 /** Object representing a 2D scene loaded from example files
  */
