@@ -228,10 +228,10 @@ public class TestGraphical extends Application {
     pane.getTransforms().add(scale);
     
     for (shared.geometrical.Segment seg : loadedScene.getSegList()) {
-      double initX = Math.round(seg.getStart().x + loadedScene.getCorners()[3].x*1.1);
-      double initY = Math.round(seg.getStart().y + loadedScene.getCorners()[3].y*1.1);
-      double finalX = Math.round(seg.getEnd().x + loadedScene.getCorners()[3].x*1.1);
-      double finalY = Math.round(seg.getEnd().y + loadedScene.getCorners()[3].y*1.1);
+      double initX = Math.round(seg.getStart().x + loadedScene.getRange().x*1.1);
+      double initY = Math.round(seg.getStart().y + loadedScene.getRange().y*1.1);
+      double finalX = Math.round(seg.getEnd().x + loadedScene.getRange().x*1.1);
+      double finalY = Math.round(seg.getEnd().y + loadedScene.getRange().y*1.1);
 
       Line line = new Line(initX, initY, finalX, finalY);
       line.setStroke(Paint.valueOf(seg.getColor()));
