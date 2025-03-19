@@ -33,16 +33,18 @@ public class Example {
         ArrayList<Segment> segments = scene.getSegList();
 
           
-        Point eue = new Point(-100,-100);
-        Eye p = new Eye(eue,0,10);
+        Point eue = new Point(0,0);
+        Eye p = new Eye(eue,30,60);
 
         //ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
         BSP bsp = new BSP(segments, new FirstMethod());
-        double[] range = new double[]{440,440};
+        Point range = new Point(440,440);
 
-        System.out.println(bsp.getHead());
-        System.out.println("Height = " + bsp.getHead().height);
-        EyeSegment pSeg = bsp.painterAlgorithm(p,range);
+        System.out.println(bsp);
+        System.out.println("Height = " + bsp.height);
+        Projection pSeg = bsp.painterAlgorithm(p,range);
+        System.out.println(pSeg);
+        pSeg.flatten(200);
         System.out.println(pSeg);
     }
 

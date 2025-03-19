@@ -51,21 +51,20 @@ public class TestConsole{
       BSP createdBsp =new BSP(segList, GenerationMethod.enumToGenerationMethod(generationEnum)); 
       sumBsp += System.nanoTime() -start;
       
-      sumHeight += createdBsp.getHead().height;
-      sumSize += createdBsp.getHead().size;
+      sumHeight += createdBsp.height;
+      sumSize += createdBsp.size;
       bspList.add(createdBsp);
     }
 
     long sumPainter = 0;
     for (int i = 0; i < iterations; i++) {
       BSP bsp = bspList.get(i); 
-      double[] range = {scene.getRange().x, scene.getRange().y};
       long eyeSum = 0;
       for (int j = 0; j < eyeList.size(); j++) {
         Eye eye = eyeList.get(j);
 
         long start = System.nanoTime();
-        bsp.painterAlgorithm(eye, range);
+        bsp.painterAlgorithm(eye, scene.getRange());
         eyeSum += System.nanoTime() -start;
       }
       sumPainter += eyeSum/eyeList.size();

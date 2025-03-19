@@ -18,7 +18,7 @@ import shared.scene.SceneFinder;
 import shared.scene.SceneReader;
 import shared.BSP;
 import shared.Eye;
-import shared.EyeSegment;
+import shared.Projection;
 import shared.geometrical.Point;
 import shared.generation.GenerationEnum;
 import shared.generation.GenerationMethod;
@@ -265,8 +265,8 @@ public class TestGraphical extends Application {
 
     Eye eye = new Eye(pos, initAngle, fov);
     
-    double[] range = {Math.round(sceneOptions.getEye().getxLimit()/1.2), Math.round(sceneOptions.getEye().getyLimit()/1.2)};
-    EyeSegment eyePov = bsp.painterAlgorithm(eye, range);
+    Point range = new Point(Math.round(sceneOptions.getEye().getxLimit()/1.2), Math.round(sceneOptions.getEye().getyLimit()/1.2));
+    Projection eyePov = bsp.painterAlgorithm(eye, range);
     Pane p = new Pane();
 
 

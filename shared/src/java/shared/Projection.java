@@ -3,10 +3,13 @@ package shared;
 import java.util.ArrayList;
 import shared.geometrical.*;
 
-public class EyeSegment {
+public class Projection{
   private ArrayList<Segment> parts;
 
-  public EyeSegment(ArrayList<Segment> parts){
+  public Projection(ArrayList<Segment> parts){
+    parts.sort((a,b)->{
+      return Double.compare(a.getStart().x, b.getStart().x);
+    });
     this.parts = parts;
   }
 
@@ -15,10 +18,13 @@ public class EyeSegment {
   }
 
   public void setParts(ArrayList<Segment> parts){
+    parts.sort((a,b)->{
+      return Double.compare(a.getStart().x, b.getStart().x);
+    });
     this.parts = parts;
   }
 
-  public void mergeParts(EyeSegment segments){
+  public void mergeParts(Projection segments){
     if (segments == null){  
       return;}
 
@@ -59,12 +65,28 @@ public class EyeSegment {
           }
       }
     }
-    Utils.sortSegments(merged);
-    this.parts = merged;
+    this.setParts(merged);
+  }
+
+  public void flatten(double range){
+    if(this.parts == null || this.parts.size() == 0)
+      return;
+    ArrayList<Segment> flat = new ArrayList<>();
+    int n = this.parts.size();
+    Point startParts = this.parts.get(0).getStart();
+    Point endParts = this.parts.get(n-1).getEnd();
+    double scaling = (2*range)/startParts.distanceTo(endParts);
+    
+    for (int i = 0; i < n; i++) {
+      Segment seg = this.parts.get(i);
+      double lenSeg = seg.getStart().distanceTo(seg.getEnd())*scaling;
+      double distanceStartSeg = startParts.distanceTo(seg.getStart())*scaling;
+      flat.add(new Segment(distanceStartSeg-range,0,distanceStartSeg+lenSeg-range,0,seg.getColor()));
+    }
+    this.parts = flat;
   }
 
   public String toString(){
     return parts.toString();
   }
-
 }
