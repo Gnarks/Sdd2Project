@@ -19,10 +19,6 @@ public class Utils {
   public static boolean areEqual(Point p1, Point p2){
     return Math.abs(p1.x - p2.x) < 1E-10 && Math.abs(p1.y - p2.y) < 1E-10;
   }
-
-  public static boolean lowerOrEqual(Point p1, Point p2){
-    return areEqual(p1,p2) || p1.x < p2.x;
-  }
   
   public static boolean lowerOrEqual(double x1, double x2){
     return areEqual(x1,x2) || x1 < x2;
