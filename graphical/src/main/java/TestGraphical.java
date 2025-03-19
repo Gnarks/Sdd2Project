@@ -19,7 +19,7 @@ import shared.scene.SceneReader;
 import shared.BSP;
 import shared.Eye;
 import shared.EyeSegment;
-import shared.Point;
+import shared.geometrical.Point;
 import shared.generation.GenerationEnum;
 import shared.generation.GenerationMethod;
 
@@ -227,7 +227,7 @@ public class TestGraphical extends Application {
       pane.boundsInLocalProperty()));
     pane.getTransforms().add(scale);
     
-    for (shared.Segment seg : loadedScene.getSegList()) {
+    for (shared.geometrical.Segment seg : loadedScene.getSegList()) {
       double initX = Math.round(seg.getStart().x + loadedScene.getCorners()[3].x*1.1);
       double initY = Math.round(seg.getStart().y + loadedScene.getCorners()[3].y*1.1);
       double finalX = Math.round(seg.getEnd().x + loadedScene.getCorners()[3].x*1.1);
@@ -280,7 +280,7 @@ public class TestGraphical extends Application {
     p.getTransforms().add(scale);
     
     // TODO get the drawnSegment from the eye pov
-    for (shared.Segment seg : eyePov.getParts()) {
+    for (shared.geometrical.Segment seg : eyePov.getParts()) {
       double initX = seg.getStart().x + sceneOptions.getEye().getxLimit()/1.2;
       double initY = seg.getStart().y + sceneOptions.getEye().getyLimit()/1.2;
       double finalX = seg.getEnd().x + sceneOptions.getEye().getxLimit()/1.2;

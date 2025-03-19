@@ -2,15 +2,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
-import shared.BSP;
-import shared.Eye;
-import shared.Point;
-import shared.Segment;
-import shared.generation.GenerationEnum;
-import shared.generation.GenerationMethod;
-import shared.scene.Scene;
-import shared.scene.SceneFinder;
-import shared.scene.SceneReader;
+import shared.geometrical.*;
+import shared.scene.*;
+import shared.*;
+import shared.generation.*;
 
 public class TestConsole{
 
@@ -76,7 +71,7 @@ public class TestConsole{
       sumPainter += eyeSum/eyeList.size();
     }
 
-    return new BspStat(sumBsp/iterations, sumPainter/iterations, sumHeight/iterations, sumSize/iterations);
+    return new BspStat(sumBsp/iterations, sumPainter/iterations, sumSize/iterations, sumHeight/iterations);
   }
 
   private static Scene selectScene(){
@@ -111,8 +106,8 @@ public class TestConsole{
     System.out.printf("%s Got : \n", heuristic);
     System.out.printf("BSP tree height : %s\n", bspStat.meanHeight);
     System.out.printf("BSP tree size : %s\n", bspStat.meanSize);
-    System.out.printf("Mean BSP tree creation time : %s \n", bspStat.meanBspCpuTime /1e6);
-    System.out.printf("Mean Painter's algorithm time: %s \n", bspStat.meanPainterCpuTime/ 1e6);
+    System.out.printf("Mean BSP tree creation time : %s ms\n", bspStat.meanBspCpuTime /1e6);
+    System.out.printf("Mean Painter's algorithm time: %s ms\n", bspStat.meanPainterCpuTime/ 1e6);
   }
 
   private static int askInt(String text) {

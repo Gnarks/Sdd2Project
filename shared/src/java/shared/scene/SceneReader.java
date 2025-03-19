@@ -2,7 +2,7 @@ package shared.scene;
 
 import java.io.*;
 import java.util.ArrayList;
-import shared.*;
+import shared.geometrical.*;
 
 /** Reader class to transform a fileName to a Scene object 
  */
