@@ -122,7 +122,7 @@ public class Eye {
    * Define the angle in the trigonometrical circle with the eye's position as center 
    */
   public double anglePoint(Point point){
-    Segment seg = new Segment(point,this.position,"red");
+    Segment seg = new Segment(point,this.position);
     if (seg.isVertical()){
       if (point.y > this.position.y){
         return 90;

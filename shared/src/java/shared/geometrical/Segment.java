@@ -20,6 +20,10 @@ public class Segment {
     this.line = new Line(this.start, this.end);
   }
 
+  public Segment(Point start,Point end){
+    this(start,end, null);
+  }
+
   public Segment(double x1, double y1, double x2, double y2, String color){
     Point _start = new Point(x1,y1);
     Point _end = new Point(x2,y2);
