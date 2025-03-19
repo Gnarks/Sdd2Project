@@ -46,7 +46,7 @@ public class BSP {
 
 
   public boolean isLeaf(){
-    return leftSon!=null || rightSon!=null;
+    return leftSon==null && rightSon==null;
   }
 
   /** apply the painter's algorithm to get a projection of the eye
@@ -65,25 +65,25 @@ public class BSP {
     PartitionEnum vision = eye.getSeenPartition(data.get(0).getLine());
 
     // init the left and right projections as empty
-    Projection rightProjection = new Projection(new ArrayList<Segment>());
-    Projection leftProjection = new Projection(new ArrayList<Segment>());
-
-    if (rightSon != null)
-      rightProjection =  rightSon.painterAlgorithm(eye, range);
-
-    if (leftSon != null)
-      leftProjection =  leftSon.painterAlgorithm(eye, range);
-
+    Projection rightProjection = (rightSon != null && (vision == PartitionEnum.HPLUS||vision == PartitionEnum.BOTH)) ? rightSon.painterAlgorithm(eye, range) : new Projection(new ArrayList<Segment>());
+    Projection leftProjection = (leftSon != null && (vision == PartitionEnum.HMINUS||vision == PartitionEnum.BOTH)) ? leftSon.painterAlgorithm(eye, range) : new Projection(new ArrayList<Segment>());
 
     if(eyePos == PartitionEnum.HMINUS){
+      if (vision == PartitionEnum.BOTH){
         rightProjection.mergeParts(lineDataProjection);
         rightProjection.mergeParts(leftProjection);
-        return rightProjection;
+        return rightProjection;}
+      leftProjection.mergeParts(lineDataProjection);
+      return leftProjection;
     }
     else if(eyePos == PartitionEnum.HPLUS){
-      leftProjection.mergeParts(lineDataProjection);
-      leftProjection.mergeParts(rightProjection);
-      return leftProjection;
+      if (vision == PartitionEnum.BOTH){
+        leftProjection.mergeParts(lineDataProjection);
+        leftProjection.mergeParts(rightProjection);
+        return leftProjection;
+      }
+      rightProjection.mergeParts(lineDataProjection);
+      return rightProjection;
     }
     else{
       if (vision == PartitionEnum.BOTH){

@@ -12,7 +12,7 @@ public class Utils {
   public static boolean areEqual(double x1, double x2){
     return Math.abs(x1 - x2) < 1E-10;
   }
-  
+
   /**
    * Define if 2 points are equals with a biais
    */
@@ -20,6 +20,13 @@ public class Utils {
     return Math.abs(p1.x - p2.x) < 1E-10 && Math.abs(p1.y - p2.y) < 1E-10;
   }
 
+  public static boolean lowerOrEqual(Point p1, Point p2){
+    return areEqual(p1,p2) || p1.x < p2.x;
+  }
+  
+  public static boolean lowerOrEqual(double x1, double x2){
+    return areEqual(x1,x2) || x1 < x2;
+  }
 
   public static void sortSegments(ArrayList<Segment> seg){ 
       seg.sort((a,b)->{

@@ -10,7 +10,14 @@ public class Segment {
   
 
   public Segment(Point start,Point end,String color){
-    if (start.x <= end.x){
+    if(Utils.areEqual(start.x,end.x)){
+      if (start.y > end.y){
+        this.start = start;
+        this.end = end;
+      }
+      this.start =end;
+      this.end = start;
+    } else if (start.x < end.x){
       this.start = start;
       this.end = end;
     } else {
@@ -27,7 +34,14 @@ public class Segment {
   public Segment(double x1, double y1, double x2, double y2, String color){
     Point _start = new Point(x1,y1);
     Point _end = new Point(x2,y2);
-    if (_start.x < _end.x){
+    if(Utils.areEqual(_start.x,_end.x)){
+      if (_start.y > _end.y){
+        this.start = _start;
+        this.end = _end;
+      }
+      this.start = _end;
+      this.end = _start;
+    } else if (_start.x < _end.x){
       this.start = _start;
       this.end = _end;
     } else {
@@ -79,9 +93,9 @@ public class Segment {
       return false;
 
     if(this.isVertical())
-      return (Utils.areEqual(point.x, this.line.slope)) && Math.min(start.y,end.y) <= point.y && point.y <= Math.max(start.y,end.y); 
+      return (Utils.areEqual(point.x, this.line.slope)) && Utils.lowerOrEqual(Math.min(start.y,end.y),point.y) && Utils.lowerOrEqual(point.y, Math.max(start.y,end.y)); 
     
-    return Utils.areEqual(point.y, this.line.slope*point.x + this.line.intercept) && (start.x <= point.x && point.x <= end.x);
+    return Utils.areEqual(point.y, this.line.slope*point.x + this.line.intercept) && Utils.lowerOrEqual(start.x, point.x) && Utils.lowerOrEqual(point.x,end.x);
   }
 
   /** Function to define if a point is in h-, h+ or belongs to the line
