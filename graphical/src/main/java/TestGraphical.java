@@ -227,19 +227,11 @@ public class TestGraphical extends Application {
       pane.boundsInLocalProperty()));
     pane.getTransforms().add(scale);
     
-<<<<<<< HEAD
-    for (shared.Segment seg : loadedScene.getSegList()) {
-      double initX = Math.round(seg.getStart().x + loadedScene.getRange().x*1.1);
-      double initY = Math.round(seg.getStart().y + loadedScene.getRange().y*1.1);
-      double finalX = Math.round(seg.getEnd().x + loadedScene.getRange().x*1.1);
-      double finalY = Math.round(seg.getEnd().y + loadedScene.getRange().y*1.1);
-=======
     for (shared.geometrical.Segment seg : loadedScene.getSegList()) {
       double initX = Math.round(seg.getStart().x + loadedScene.getCorners()[3].x*1.1);
       double initY = Math.round(seg.getStart().y + loadedScene.getCorners()[3].y*1.1);
       double finalX = Math.round(seg.getEnd().x + loadedScene.getCorners()[3].x*1.1);
       double finalY = Math.round(seg.getEnd().y + loadedScene.getCorners()[3].y*1.1);
->>>>>>> main
 
       Line line = new Line(initX, initY, finalX, finalY);
       line.setStroke(Paint.valueOf(seg.getColor()));
@@ -287,12 +279,7 @@ public class TestGraphical extends Application {
       p.boundsInLocalProperty()));
     p.getTransforms().add(scale);
     
-<<<<<<< HEAD
-    for (shared.Segment seg : eyePov.getParts()) {
-=======
-    // TODO get the drawnSegment from the eye pov
     for (shared.geometrical.Segment seg : eyePov.getParts()) {
->>>>>>> main
       double initX = seg.getStart().x + sceneOptions.getEye().getxLimit()/1.2;
       double initY = seg.getStart().y + sceneOptions.getEye().getyLimit()/1.2;
       double finalX = seg.getEnd().x + sceneOptions.getEye().getxLimit()/1.2;
