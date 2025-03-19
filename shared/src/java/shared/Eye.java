@@ -24,55 +24,57 @@ public class Eye {
   public void setFov(double fov){ this.fov = fov; }
 
 
-  /**
-   * return 0 if see both side of the line
-   *        1 if see only h+ side of the line
-   *        -1 if see only h- side of the line
+  /** returns the the line's partition seen by the eye 
+ * @param line partitionning the space
+ * @return the partition of the line seen by the eye
    */
-  
-  public VisionEnum seeNode(Segment segment) {
+  public PartitionEnum getSeenPartition(Line line) {
     double angleRadians = Math.toRadians(this.angle);
     double angleLeft = angle+fov;
     double angleRight = angle-fov;
 
-    double lineSlope = segment.getLine().slope;
-    PartitionEnum loc = segment.relativePosition(this.position);
-    double alpha = Math.toDegrees(Math.atan(lineSlope)); 
+    PartitionEnum loc = line.relativePosition(this.position);
+    double alpha = Math.toDegrees(Math.atan(line.slope)); 
     double limit = 180+alpha;
 
     if(loc == PartitionEnum.HPLUS){
-      if(segment.isVertical()){
+      if(line.isVertical){
         if(Math.cos(angleRadians) < 0){
-          return VisionEnum.BOTH;
+          return PartitionEnum.BOTH;
         }
-        return VisionEnum.HPLUS;
+        return PartitionEnum.HPLUS;
       }
-      if (lineSlope  >= 0 && (this.angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
-        return VisionEnum.HPLUS;
+      if (line.slope  >= 0 && (this.angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
+        return PartitionEnum.HPLUS;
       }  
-      if (lineSlope < 0 && (this.angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
-        return VisionEnum.HPLUS;
+      if (line.slope < 0 && (this.angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
+        return PartitionEnum.HPLUS;
       } 
     }
     if (loc == PartitionEnum.HMINUS){
-      if(segment.isVertical()){
+      if(line.isVertical){
         if(Math.cos(angleRadians) > 0){
-          return VisionEnum.BOTH;
+          return PartitionEnum.BOTH;
         }
-        return VisionEnum.HMINUS;
+        return PartitionEnum.HMINUS;
       }
-      if(lineSlope>=0 && (angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
-        return VisionEnum.HMINUS;
+      if(line.slope>=0 && (angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
+        return PartitionEnum.HMINUS;
       } 
-      if (lineSlope < 0 && (angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
-        return VisionEnum.HMINUS;
+      if (line.slope < 0 && (angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
+        return PartitionEnum.HMINUS;
       } 
     }
-    return VisionEnum.BOTH;
+    return PartitionEnum.BOTH;
 
   }
 
-  public Segment seenSegment(Segment seg,double distance, Segment line){
+  /** returns the part of the segment seen by the eye
+ * @param seg the segment to look at 
+ * @param distance the maximum distance the segment can be from the eye
+ * @return the seen segment part from the eye
+   */
+  public Segment seenSegmentPart(Segment seg,double distance){
   
     double angleRight = (angle-fov+360)%360;
     double angleLeft = (angle+fov)%360;
@@ -82,8 +84,8 @@ public class Eye {
     Segment fovLeft = new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(Math.toRadians(angleLeft)),this.position.y+hypo*Math.sin(Math.toRadians(angleLeft)),seg.getColor());
     Segment fovRight =new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(Math.toRadians(angleRight)),this.position.y+hypo*Math.sin(Math.toRadians(angleRight)),seg.getColor());
 
-    double angleStart = (anglePoint(seg.getStart())+360)%360;
-    double angleEnd = (anglePoint(seg.getEnd())+360)%360;
+    double angleStart = (getAnglePoint(seg.getStart())+360)%360;
+    double angleEnd = (getAnglePoint(seg.getEnd())+360)%360;
 
     boolean seeStart = (angleRight < angleLeft && angleStart > angleRight && angleStart < angleLeft) || (angleRight > angleLeft && (angleStart > angleRight || angleStart < angleLeft));
     boolean seeEnd = (angleRight < angleLeft && angleEnd > angleRight && angleEnd < angleLeft) || (angleRight > angleLeft && (angleEnd > angleRight || angleEnd < angleLeft));
@@ -118,10 +120,11 @@ public class Eye {
     return null;
   }
 
-  /**
-   * Define the angle in the trigonometrical circle with the eye's position as center 
+  /** return the angle in the trigonometrical circle with the eye's position as center 
+ * @param point the point to get the angle from
+ * @return the angle formed by the point relative to the eye's position as the center
    */
-  public double anglePoint(Point point){
+  public double getAnglePoint(Point point){
     Segment seg = new Segment(point,this.position);
     if (seg.isVertical()){
       if (point.y > this.position.y){
@@ -137,7 +140,5 @@ public class Eye {
       return 180 + degree;
     }
     return degree;
-    
   }
-
 }

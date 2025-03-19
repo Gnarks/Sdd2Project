@@ -3,10 +3,13 @@ package shared;
 import java.util.ArrayList;
 import shared.geometrical.*;
 
-public class EyeSegment {
+public class Projection{
   private ArrayList<Segment> parts;
 
-  public EyeSegment(ArrayList<Segment> parts){
+  public Projection(ArrayList<Segment> parts){
+    parts.sort((a,b)->{
+      return Double.compare(a.getStart().x, b.getStart().x);
+    });
     this.parts = parts;
   }
 
@@ -15,10 +18,13 @@ public class EyeSegment {
   }
 
   public void setParts(ArrayList<Segment> parts){
+    parts.sort((a,b)->{
+      return Double.compare(a.getStart().x, b.getStart().x);
+    });
     this.parts = parts;
   }
 
-  public void mergeParts(EyeSegment segments){
+  public void mergeParts(Projection segments){
     if (segments == null){  
       return;}
 
@@ -59,12 +65,10 @@ public class EyeSegment {
           }
       }
     }
-    Utils.sortSegments(merged);
-    this.parts = merged;
+    this.setParts(merged);
   }
 
   public String toString(){
     return parts.toString();
   }
-
 }
