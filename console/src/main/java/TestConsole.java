@@ -12,7 +12,7 @@ public class TestConsole{
   private static Scanner sc = new Scanner(System.in);
 
   public static void main(String[] args){
-    
+    //Example.main();
     
     Scene scene = selectScene();
     int eyeNumber = askInt("Select the number of random eyes for the painter's algorithm");

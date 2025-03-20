@@ -34,7 +34,7 @@ public class Example {
 
           
         Point eue = new Point(0,0);
-        Eye p = new Eye(eue,30,60);
+        Eye p = new Eye(eue,0,30);
 
         //ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
         BSP bsp = new BSP(segments, new FirstMethod());

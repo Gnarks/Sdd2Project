@@ -14,9 +14,9 @@ public class Segment {
       if (start.y > end.y){
         this.start = start;
         this.end = end;
-      }
+      } else {
       this.start =end;
-      this.end = start;
+      this.end = start;}
     } else if (start.x < end.x){
       this.start = start;
       this.end = end;
@@ -38,9 +38,9 @@ public class Segment {
       if (_start.y > _end.y){
         this.start = _start;
         this.end = _end;
-      }
+      } else {
       this.start = _end;
-      this.end = _start;
+      this.end = _start;}
     } else if (_start.x < _end.x){
       this.start = _start;
       this.end = _end;
