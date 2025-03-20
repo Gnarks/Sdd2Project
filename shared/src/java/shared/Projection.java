@@ -19,7 +19,10 @@ public class Projection{
 
   public void setParts(ArrayList<Segment> parts){
     parts.sort((a,b)->{
-      return Double.compare(a.getStart().x, b.getStart().x);
+      int comp = Double.compare(a.getStart().x, b.getStart().x);
+      if(comp == 0)
+        return Double.compare(b.getStart().y,a.getStart().y);
+      return comp;
     });
     this.parts = parts;
   }
@@ -27,7 +30,6 @@ public class Projection{
   public void mergeParts(Projection segments){
     if (segments == null){  
       return;}
-
     ArrayList<Segment> merged = new ArrayList<>();
     ArrayList<Segment> toMerge = segments.getParts();
     Utils.sortSegments(toMerge);
@@ -41,7 +43,7 @@ public class Projection{
 
     for (int i = 0; i < toMerge.size(); i++) {
       Segment seg = toMerge.get(i);
-      while(j<this.parts.size() && parts.get(j).getEnd().x <= seg.getStart().x && (!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))) {
+      while(j<this.parts.size() && Utils.lowerOrEqual(parts.get(j).getEnd().x, seg.getStart().x) && (!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))) {
         merged.add(this.parts.get(j));
         j++;        
       }
@@ -62,9 +64,14 @@ public class Projection{
           }
           if((i == toMerge.size()-1) && (!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))){
             merged.add(this.parts.get(j));
+            j++;
           }
       }
     }
+    while( j<this.parts.size()){
+        merged.add(this.parts.get(j));
+        j++;
+      }
     this.setParts(merged);
   }
 
