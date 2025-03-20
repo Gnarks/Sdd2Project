@@ -105,7 +105,7 @@ public class BSP {
  * @param range the range of the scene 
  * @return the projection of the data stored in the current bsp seen by the eye
    */
-  public Projection getDataProjection(Eye eye, Point range){
+  private Projection getDataProjection(Eye eye, Point range){
     ArrayList<Segment> proj = new ArrayList<>();  
 
     double eyeAngle = Math.toRadians(eye.getAngle());
