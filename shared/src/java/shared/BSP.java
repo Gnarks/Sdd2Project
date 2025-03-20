@@ -116,9 +116,9 @@ public class BSP {
     Point point1 = new Point(x,y);
     Point point2;
 
-    if(Utils.areEqual(Math.cos(eyeAngle),0)){
+    if(DoubleUtils.areEqual(Math.cos(eyeAngle),0)){
       point2  = new Point(x+1,y);
-    } else if (Utils.areEqual(Math.sin(eyeAngle), 0)) {
+    } else if (DoubleUtils.areEqual(Math.sin(eyeAngle), 0)) {
         point2 = new Point(x,y+1);
     } else {
       point2 = new Point(x+1,y-(1/Math.tan(eyeAngle)));
