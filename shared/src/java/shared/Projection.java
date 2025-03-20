@@ -7,10 +7,7 @@ public class Projection{
   private ArrayList<Segment> parts;
 
   public Projection(ArrayList<Segment> parts){
-    parts.sort((a,b)->{
-      return Double.compare(a.getStart().x, b.getStart().x);
-    });
-    this.parts = parts;
+    setParts(parts);
   }
 
   public ArrayList<Segment> getParts(){
@@ -33,7 +30,6 @@ public class Projection{
 
     ArrayList<Segment> merged = new ArrayList<>();
     ArrayList<Segment> toMerge = other.getParts();
-    Utils.sortSegments(toMerge);
     if (toMerge.size() == 0){
       return;
     }

@@ -16,12 +16,4 @@ public class Utils {
   public static boolean lowerOrEqual(double x1, double x2){
     return areEqual(x1,x2) || x1 < x2;
   }
-
-  public static void sortSegments(ArrayList<Segment> seg){ 
-      seg.sort((a,b)->{
-        return Double.compare(a.getStart().x, b.getStart().x);
-      });
-  }
-
-
 }
