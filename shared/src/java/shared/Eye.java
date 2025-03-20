@@ -124,7 +124,7 @@ public class Eye {
  * @param point the point to get the angle from
  * @return the angle formed by the point relative to the eye's position as the center
    */
-  public double getAnglePoint(Point point){
+  private double getAnglePoint(Point point){
     Segment seg = new Segment(point,this.position);
     if (seg.isVertical()){
       if (point.y > this.position.y){
