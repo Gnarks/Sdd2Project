@@ -91,7 +91,7 @@ public class Eye {
     boolean seeEnd = (angleRight < angleLeft && angleEnd > angleRight && angleEnd < angleLeft) || (angleRight > angleLeft && (angleEnd > angleRight || angleEnd < angleLeft));
 
     if(seeStart && seeEnd){
-      if (Utils.areEqual(seg.getStart(),seg.getEnd()))
+      if (seg.getStart().equals(seg.getEnd()))
         return null;
       
       return seg;

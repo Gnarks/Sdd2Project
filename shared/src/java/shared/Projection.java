@@ -44,7 +44,7 @@ public class Projection{
 
     for (int i = 0; i < toMerge.size(); i++) {
       Segment seg = toMerge.get(i);
-      while(j<this.parts.size() && parts.get(j).getEnd().x <= seg.getStart().x && (!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))) {
+      while(j<this.parts.size() && parts.get(j).getEnd().x <= seg.getStart().x && (!this.parts.get(j).getStart().equals(this.parts.get(j).getEnd()))) {
         merged.add(this.parts.get(j));
         j++;        
       }
@@ -63,7 +63,7 @@ public class Projection{
           if (parts.get(j).getStart().x<seg.getEnd().x){
             parts.get(j).setStart(seg.getEnd());        
           }
-          if((i == toMerge.size()-1) && (!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))){
+          if((i == toMerge.size()-1) && (!this.parts.get(j).getStart().equals(this.parts.get(j).getEnd()))){
             merged.add(this.parts.get(j));
           }
       }

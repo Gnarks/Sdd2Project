@@ -134,7 +134,7 @@ public class BSP {
         Segment seg2 = new Segment(eye.getPos(),seg.getEnd());
         Point inter1 = seg1.lineIntersect(line);
         Point inter2 = seg2.lineIntersect(line);
-        if (inter1 != null && inter2 != null && !Utils.areEqual(inter1,inter2)){
+        if (inter1 != null && inter2 != null && !inter1.equals(inter2)){
           Segment inter = new Segment(inter1,inter2,seg.getColor());
           proj.add(inter); 
         }
