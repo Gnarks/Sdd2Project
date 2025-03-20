@@ -45,6 +45,9 @@ public class BSP {
   }
 
 
+  /** 
+   * @return if the BSP tree only contains data and has no sons
+   */
   public boolean isLeaf(){
     return leftSon==null && rightSon==null;
   }
