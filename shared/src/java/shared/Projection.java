@@ -24,12 +24,15 @@ public class Projection{
     this.parts = parts;
   }
 
-  public void mergeParts(Projection segments){
-    if (segments == null){  
+  /** merges the part of the specified Projection in the current one 
+ * @param other the Projection to be merged
+   */
+  public void mergePartsFrom(Projection other){
+    if (other == null){  
       return;}
 
     ArrayList<Segment> merged = new ArrayList<>();
-    ArrayList<Segment> toMerge = segments.getParts();
+    ArrayList<Segment> toMerge = other.getParts();
     Utils.sortSegments(toMerge);
     if (toMerge.size() == 0){
       return;

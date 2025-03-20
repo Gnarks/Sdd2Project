@@ -70,24 +70,24 @@ public class BSP {
 
     if(eyePos == PartitionEnum.HMINUS){
       if (vision == PartitionEnum.BOTH){
-        rightProjection.mergeParts(lineDataProjection);
-        rightProjection.mergeParts(leftProjection);
+        rightProjection.mergePartsFrom(lineDataProjection);
+        rightProjection.mergePartsFrom(leftProjection);
         return rightProjection;}
-      leftProjection.mergeParts(lineDataProjection);
+      leftProjection.mergePartsFrom(lineDataProjection);
       return leftProjection;
     }
     else if(eyePos == PartitionEnum.HPLUS){
       if (vision == PartitionEnum.BOTH){
-        leftProjection.mergeParts(lineDataProjection);
-        leftProjection.mergeParts(rightProjection);
+        leftProjection.mergePartsFrom(lineDataProjection);
+        leftProjection.mergePartsFrom(rightProjection);
         return leftProjection;
       }
-      rightProjection.mergeParts(lineDataProjection);
+      rightProjection.mergePartsFrom(lineDataProjection);
       return rightProjection;
     }
     else{
       if (vision == PartitionEnum.BOTH){
-        rightProjection.mergeParts(leftProjection);
+        rightProjection.mergePartsFrom(leftProjection);
         return rightProjection;
       }
       if(vision == PartitionEnum.HPLUS){
