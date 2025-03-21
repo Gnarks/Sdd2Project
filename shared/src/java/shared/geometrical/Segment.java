@@ -1,6 +1,6 @@
 package shared.geometrical;
 
-import shared.Utils;
+import shared.DoubleUtils;
 
 public class Segment {
   private Point start;
@@ -10,7 +10,7 @@ public class Segment {
   
 
   public Segment(Point start,Point end,String color){
-    if(Utils.areEqual(start.x,end.x)){
+    if(DoubleUtils.areEqual(start.x,end.x)){
       if (start.y > end.y){
         this.start = start;
         this.end = end;
@@ -34,7 +34,7 @@ public class Segment {
   public Segment(double x1, double y1, double x2, double y2, String color){
     Point _start = new Point(x1,y1);
     Point _end = new Point(x2,y2);
-    if(Utils.areEqual(_start.x,_end.x)){
+    if(DoubleUtils.areEqual(_start.x,_end.x)){
       if (_start.y > _end.y){
         this.start = _start;
         this.end = _end;
@@ -93,9 +93,9 @@ public class Segment {
       return false;
 
     if(this.isVertical())
-      return (Utils.areEqual(point.x, this.line.slope)) && Utils.lowerOrEqual(Math.min(start.y,end.y),point.y) && Utils.lowerOrEqual(point.y, Math.max(start.y,end.y)); 
+      return (DoubleUtils.areEqual(point.x, this.line.slope)) && DoubleUtils.lowerOrEqual(Math.min(start.y,end.y),point.y) && DoubleUtils.lowerOrEqual(point.y, Math.max(start.y,end.y)); 
     
-    return Utils.areEqual(point.y, this.line.slope*point.x + this.line.intercept) && Utils.lowerOrEqual(start.x, point.x) && Utils.lowerOrEqual(point.x,end.x);
+    return DoubleUtils.areEqual(point.y, this.line.slope*point.x + this.line.intercept) && DoubleUtils.lowerOrEqual(start.x, point.x) && DoubleUtils.lowerOrEqual(point.x,end.x);
   }
 
   /** Function to define if a point is in h-, h+ or belongs to the line

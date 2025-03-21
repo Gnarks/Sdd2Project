@@ -45,6 +45,9 @@ public class BSP {
   }
 
 
+  /** 
+   * @return if the BSP tree only contains data and has no sons
+   */
   public boolean isLeaf(){
     return leftSon==null && rightSon==null;
   }
@@ -70,24 +73,24 @@ public class BSP {
 
     if(eyePos == PartitionEnum.HMINUS){
       if (vision == PartitionEnum.BOTH){
-        rightProjection.mergeParts(lineDataProjection);
-        rightProjection.mergeParts(leftProjection);
+        rightProjection.mergePartsFrom(lineDataProjection);
+        rightProjection.mergePartsFrom(leftProjection);
         return rightProjection;}
-      leftProjection.mergeParts(lineDataProjection);
+      leftProjection.mergePartsFrom(lineDataProjection);
       return leftProjection;
     }
     else if(eyePos == PartitionEnum.HPLUS){
       if (vision == PartitionEnum.BOTH){
-        leftProjection.mergeParts(lineDataProjection);
-        leftProjection.mergeParts(rightProjection);
+        leftProjection.mergePartsFrom(lineDataProjection);
+        leftProjection.mergePartsFrom(rightProjection);
         return leftProjection;
       }
-      rightProjection.mergeParts(lineDataProjection);
+      rightProjection.mergePartsFrom(lineDataProjection);
       return rightProjection;
     }
     else{
       if (vision == PartitionEnum.BOTH){
-        rightProjection.mergeParts(leftProjection);
+        rightProjection.mergePartsFrom(leftProjection);
         return rightProjection;
       }
       if(vision == PartitionEnum.HPLUS){
@@ -102,7 +105,7 @@ public class BSP {
  * @param range the range of the scene 
  * @return the projection of the data stored in the current bsp seen by the eye
    */
-  public Projection getDataProjection(Eye eye, Point range){
+  private Projection getDataProjection(Eye eye, Point range){
     ArrayList<Segment> proj = new ArrayList<>();  
 
     double eyeAngle = Math.toRadians(eye.getAngle());
@@ -113,9 +116,9 @@ public class BSP {
     Point point1 = new Point(x,y);
     Point point2;
 
-    if(Utils.areEqual(Math.cos(eyeAngle),0)){
+    if(DoubleUtils.areEqual(Math.cos(eyeAngle),0)){
       point2  = new Point(x+1,y);
-    } else if (Utils.areEqual(Math.sin(eyeAngle), 0)) {
+    } else if (DoubleUtils.areEqual(Math.sin(eyeAngle), 0)) {
         point2 = new Point(x,y+1);
     } else {
       point2 = new Point(x+1,y-(1/Math.tan(eyeAngle)));
@@ -131,7 +134,7 @@ public class BSP {
         Segment seg2 = new Segment(eye.getPos(),seg.getEnd());
         Point inter1 = seg1.lineIntersect(line);
         Point inter2 = seg2.lineIntersect(line);
-        if (inter1 != null && inter2 != null && !Utils.areEqual(inter1,inter2)){
+        if (inter1 != null && inter2 != null && !inter1.equals(inter2)){
           Segment inter = new Segment(inter1,inter2,seg.getColor());
           proj.add(inter); 
         }

@@ -91,7 +91,7 @@ public class Eye {
     boolean seeEnd = (angleRight < angleLeft && angleEnd > angleRight && angleEnd < angleLeft) || (angleRight > angleLeft && (angleEnd > angleRight || angleEnd < angleLeft));
 
     if(seeStart && seeEnd){
-      if (Utils.areEqual(seg.getStart(),seg.getEnd()))
+      if (seg.getStart().equals(seg.getEnd()))
         return null;
       
       return seg;
@@ -124,7 +124,7 @@ public class Eye {
  * @param point the point to get the angle from
  * @return the angle formed by the point relative to the eye's position as the center
    */
-  public double getAnglePoint(Point point){
+  private double getAnglePoint(Point point){
     Segment seg = new Segment(point,this.position);
     if (seg.isVertical()){
       if (point.y > this.position.y){

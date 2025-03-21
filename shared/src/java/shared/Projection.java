@@ -7,10 +7,7 @@ public class Projection{
   private ArrayList<Segment> parts;
 
   public Projection(ArrayList<Segment> parts){
-    parts.sort((a,b)->{
-      return Double.compare(a.getStart().x, b.getStart().x);
-    });
-    this.parts = parts;
+    setParts(parts);
   }
 
   public ArrayList<Segment> getParts(){
@@ -27,14 +24,14 @@ public class Projection{
     this.parts = parts;
   }
 
-  public void mergeParts(Projection segments){
-    if (segments == null){  
+  /** merges the part of the specified Projection in the current one 
+ * @param other the Projection to be merged
+   */
+  public void mergePartsFrom(Projection other){
+    if (other == null){  
       return;}
     ArrayList<Segment> merged = new ArrayList<>();
-    ArrayList<Segment> toMerge = segments.getParts();
-    Utils.sortSegments(toMerge);
-    
-    
+    ArrayList<Segment> toMerge = other.getParts();
     if (toMerge.size() == 0){
       return;
     }
@@ -47,25 +44,25 @@ public class Projection{
       Segment seg = toMerge.get(i);
       while(j<this.parts.size() 
           && ((!seg.isVertical() 
-          && Utils.lowerOrEqual(parts.get(j).getEnd().x, seg.getStart().x)) || (seg.isVertical() && Utils.lowerOrEqual(seg.getStart().y,parts.get(j).getEnd().y)) )){ 
+          && DoubleUtils.lowerOrEqual(parts.get(j).getEnd().x, seg.getStart().x)) || (seg.isVertical() && DoubleUtils.lowerOrEqual(seg.getStart().y,parts.get(j).getEnd().y)) )){ 
         
-        if (!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))
+        if (!this.parts.get(j).getStart().equals(this.parts.get(j).getEnd()))
           merged.add(this.parts.get(j));
         j++;        
       }
       if(j< this.parts.size()){
         if(!seg.isVertical() && this.parts.get(j).getStart().x < seg.getStart().x){
           Segment temp = new Segment(this.parts.get(j).getStart().x,this.parts.get(j).getStart().y,seg.getStart().x,seg.getStart().y,this.parts.get(j).getColor());
-          if(!Utils.areEqual(temp.getStart(), temp.getEnd()))
+          if(!temp.getStart().equals(temp.getEnd()))
             merged.add(temp);
         }
         if(seg.isVertical() && seg.getStart().y < parts.get(j).getStart().y){
           Segment temp = new Segment(this.parts.get(j).getStart().x,this.parts.get(j).getStart().y,seg.getStart().x,seg.getStart().y,this.parts.get(j).getColor());
-          if(!Utils.areEqual(temp.getStart(), temp.getEnd()))
+          if(!temp.getStart().equals(temp.getEnd()))
             merged.add(temp);
         }
       }
-      if(!Utils.areEqual(seg.getStart(), seg.getEnd()))
+      if(!seg.getStart().equals(seg.getEnd()))
         merged.add(seg);
       while( j<this.parts.size() && ((!seg.isVertical() && parts.get(j).getEnd().x<seg.getEnd().x) || (seg.isVertical() && parts.get(j).getEnd().y > seg.getEnd().y))){
         j++;
@@ -75,7 +72,7 @@ public class Projection{
             parts.get(j).setStart(seg.getEnd());        
           }
           if(i == toMerge.size()-1){
-            if(!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))
+            if(!this.parts.get(j).getStart().equals(this.parts.get(j).getEnd()))
               merged.add(this.parts.get(j));
             j++;
           }

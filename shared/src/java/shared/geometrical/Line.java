@@ -1,6 +1,6 @@
 package shared.geometrical;
 
-import shared.Utils;
+import shared.DoubleUtils;
 
 public class Line {
   public double intercept;
@@ -25,7 +25,7 @@ public class Line {
  * @return the point of intersection or null if there isn't any intersection
    */
   public Point intersect(Segment seg){
-    if ((isVertical && seg.isVertical()) || (!(isVertical || seg.isVertical()) && Utils.areEqual(seg.getLine().slope, this.slope))){
+    if ((isVertical && seg.isVertical()) || (!(isVertical || seg.isVertical()) && DoubleUtils.areEqual(seg.getLine().slope, this.slope))){
       return null;
     }
     if (this.isVertical){
@@ -57,7 +57,7 @@ public class Line {
       }
     }
     if(slope == 0){
-      if(Utils.areEqual(point.y, intercept)){
+      if(DoubleUtils.areEqual(point.y, intercept)){
         return PartitionEnum.BOTH;
       } else if(point.y < intercept){
         return PartitionEnum.HPLUS;
@@ -66,7 +66,7 @@ public class Line {
       }
     }
     double x = (point.y - intercept)/slope;
-    if (Utils.areEqual(point.x,x)){
+    if (DoubleUtils.areEqual(point.x,x)){
       return PartitionEnum.BOTH;
     } else if (point.x < x){
       return PartitionEnum.HMINUS;

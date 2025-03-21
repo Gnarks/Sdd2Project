@@ -18,12 +18,13 @@ public class Point {
   public Point copy(){
     return new Point(x,y);
   }
-  public boolean areEqual(Point p){
+
+  public boolean equals(Point p){
     return Math.abs(x - p.x) < 1E-10 && Math.abs(y - p.y) < 1E-10;
   }
 
   public boolean lowerOrEqual(Point p2){
-    return areEqual(p2) || this.x < p2.x;
+    return equals(p2) || this.x < p2.x;
   }
 
   public double distanceTo(Point p){
