@@ -30,12 +30,12 @@ public class Eye {
    */
   public PartitionEnum getSeenPartition(Line line) {
     double angleRadians = Math.toRadians(this.angle);
-    double angleLeft = angle+fov;
-    double angleRight = angle-fov;
+    double angleLeft = (angle+fov)%360;
+    double angleRight = (angle-fov+360)%360;
 
     PartitionEnum loc = line.relativePosition(this.position);
-    double alpha = Math.toDegrees(Math.atan(line.slope)); 
-    double limit = 180+alpha;
+    double alpha = (Math.toDegrees(Math.atan(line.slope))+360)%360; 
+    double limit = (180+alpha)%360;
 
     if(loc == PartitionEnum.HPLUS){
       if(line.isVertical){
@@ -44,24 +44,24 @@ public class Eye {
         }
         return PartitionEnum.HPLUS;
       }
-      if (line.slope  >= 0 && (this.angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
+      if (line.slope  >= 0 && (this.angle > limit || this.angle < alpha) && (angleRight >= limit || angleRight <= alpha) && (angleLeft >= limit || angleLeft <= alpha)){
         return PartitionEnum.HPLUS;
       }  
-      if (line.slope < 0 && (this.angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
+      if (line.slope < 0&& (this.angle < limit || this.angle > alpha) && (angleRight <= limit || angleRight >= alpha) && (angleLeft < limit || angleLeft >= alpha)){
         return PartitionEnum.HPLUS;
       } 
     }
-    if (loc == PartitionEnum.HMINUS){
+    else if (loc == PartitionEnum.HMINUS){
       if(line.isVertical){
         if(Math.cos(angleRadians) > 0){
           return PartitionEnum.BOTH;
         }
         return PartitionEnum.HMINUS;
       }
-      if(line.slope>=0 && (angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
+      if(line.slope>=0 && (angle > alpha && angle < limit && (angleLeft <= limit && angleRight >= alpha))){
         return PartitionEnum.HMINUS;
       } 
-      if (line.slope < 0 && (angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
+      if (line.slope < 0 && (angle > limit && angle < alpha && (angleRight >= limit && angleLeft <= alpha))){
         return PartitionEnum.HMINUS;
       } 
     }
@@ -84,8 +84,8 @@ public class Eye {
     Segment fovLeft = new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(Math.toRadians(angleLeft)),this.position.y+hypo*Math.sin(Math.toRadians(angleLeft)),seg.getColor());
     Segment fovRight =new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(Math.toRadians(angleRight)),this.position.y+hypo*Math.sin(Math.toRadians(angleRight)),seg.getColor());
 
-    double angleStart = (getAnglePoint(seg.getStart())+360)%360;
-    double angleEnd = (getAnglePoint(seg.getEnd())+360)%360;
+    double angleStart = getAnglePoint(seg.getStart());
+    double angleEnd = getAnglePoint(seg.getEnd());
 
     boolean seeStart = (angleRight < angleLeft && angleStart > angleRight && angleStart < angleLeft) || (angleRight > angleLeft && (angleStart > angleRight || angleStart < angleLeft));
     boolean seeEnd = (angleRight < angleLeft && angleEnd > angleRight && angleEnd < angleLeft) || (angleRight > angleLeft && (angleEnd > angleRight || angleEnd < angleLeft));
@@ -137,8 +137,8 @@ public class Eye {
 
     double degree =  Math.toDegrees(Math.atan(seg.getLine().slope));
     if(point.x < this.position.x){
-      return 180 + degree;
+      return ((180 + degree) +360)%360;
     }
-    return degree;
+    return (degree +360) %360;
   }
 }

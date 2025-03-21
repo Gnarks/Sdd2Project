@@ -29,12 +29,12 @@ public class Example {
         Segment[] data = new Segment[]{AB,CD,EF};
 
         SceneReader sceneReader = new SceneReader();
-        Scene scene = sceneReader.read("/home/wal//Documents/Sdd2Project/shared/src/ressources/scenes/first/octogone.txt");
+        Scene scene = sceneReader.read("/home/wal//Documents/Sdd2Project/shared/src/ressources/scenes/first/octangle.txt");
         ArrayList<Segment> segments = scene.getSegList();
 
           
         Point eue = new Point(0,0);
-        Eye p = new Eye(eue,30,60);
+        Eye p = new Eye(eue,270,80);
 
         //ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
         BSP bsp = new BSP(segments, new FirstMethod());

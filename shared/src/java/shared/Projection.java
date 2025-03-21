@@ -16,7 +16,10 @@ public class Projection{
 
   public void setParts(ArrayList<Segment> parts){
     parts.sort((a,b)->{
-      return Double.compare(a.getStart().x, b.getStart().x);
+      int comp = Double.compare(a.getStart().x, b.getStart().x);
+      if(comp == 0)
+        return Double.compare(b.getStart().y,a.getStart().y);
+      return comp;
     });
     this.parts = parts;
   }
@@ -27,7 +30,6 @@ public class Projection{
   public void mergePartsFrom(Projection other){
     if (other == null){  
       return;}
-
     ArrayList<Segment> merged = new ArrayList<>();
     ArrayList<Segment> toMerge = other.getParts();
     if (toMerge.size() == 0){
@@ -40,30 +42,46 @@ public class Projection{
 
     for (int i = 0; i < toMerge.size(); i++) {
       Segment seg = toMerge.get(i);
-      while(j<this.parts.size() && parts.get(j).getEnd().x <= seg.getStart().x && (!this.parts.get(j).getStart().equals(this.parts.get(j).getEnd()))) {
-        merged.add(this.parts.get(j));
+      while(j<this.parts.size() 
+          && ((!seg.isVertical() 
+          && DoubleUtils.lowerOrEqual(parts.get(j).getEnd().x, seg.getStart().x)) || (seg.isVertical() && DoubleUtils.lowerOrEqual(seg.getStart().y,parts.get(j).getEnd().y)) )){ 
+        
+        if (!this.parts.get(j).getStart().equals(this.parts.get(j).getEnd()))
+          merged.add(this.parts.get(j));
         j++;        
       }
       if(j< this.parts.size()){
-        if(this.parts.get(j).getStart().x < seg.getStart().x){
+        if(!seg.isVertical() && this.parts.get(j).getStart().x < seg.getStart().x){
           Segment temp = new Segment(this.parts.get(j).getStart().x,this.parts.get(j).getStart().y,seg.getStart().x,seg.getStart().y,this.parts.get(j).getColor());
+          if(!temp.getStart().equals(temp.getEnd()))
             merged.add(temp);
-
+        }
+        if(seg.isVertical() && seg.getStart().y < parts.get(j).getStart().y){
+          Segment temp = new Segment(this.parts.get(j).getStart().x,this.parts.get(j).getStart().y,seg.getStart().x,seg.getStart().y,this.parts.get(j).getColor());
+          if(!temp.getStart().equals(temp.getEnd()))
+            merged.add(temp);
         }
       }
-      merged.add(seg);
-      while( j<this.parts.size() && parts.get(j).getEnd().x<seg.getEnd().x){
+      if(!seg.getStart().equals(seg.getEnd()))
+        merged.add(seg);
+      while( j<this.parts.size() && ((!seg.isVertical() && parts.get(j).getEnd().x<seg.getEnd().x) || (seg.isVertical() && parts.get(j).getEnd().y > seg.getEnd().y))){
         j++;
       }
       if(j < this.parts.size()){
-          if (parts.get(j).getStart().x<seg.getEnd().x){
+          if ((!seg.isVertical() && parts.get(j).getStart().x < seg.getEnd().x) || (seg.isVertical() && parts.get(j).getStart().y > seg.getEnd().y) ){
             parts.get(j).setStart(seg.getEnd());        
           }
-          if((i == toMerge.size()-1) && (!this.parts.get(j).getStart().equals(this.parts.get(j).getEnd()))){
-            merged.add(this.parts.get(j));
+          if(i == toMerge.size()-1){
+            if(!this.parts.get(j).getStart().equals(this.parts.get(j).getEnd()))
+              merged.add(this.parts.get(j));
+            j++;
           }
       }
     }
+    while( j<this.parts.size()){
+        merged.add(this.parts.get(j));
+        j++;
+      }
     this.setParts(merged);
   }
 
