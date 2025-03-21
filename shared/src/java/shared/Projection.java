@@ -33,6 +33,8 @@ public class Projection{
     ArrayList<Segment> merged = new ArrayList<>();
     ArrayList<Segment> toMerge = segments.getParts();
     Utils.sortSegments(toMerge);
+    
+    
     if (toMerge.size() == 0){
       return;
     }
@@ -43,27 +45,38 @@ public class Projection{
 
     for (int i = 0; i < toMerge.size(); i++) {
       Segment seg = toMerge.get(i);
-      while(j<this.parts.size() && Utils.lowerOrEqual(parts.get(j).getEnd().x, seg.getStart().x) && (!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))) {
-        merged.add(this.parts.get(j));
+      while(j<this.parts.size() 
+          && ((!seg.isVertical() 
+          && Utils.lowerOrEqual(parts.get(j).getEnd().x, seg.getStart().x)) || (seg.isVertical() && Utils.lowerOrEqual(seg.getStart().y,parts.get(j).getEnd().y)) )){ 
+        
+        if (!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))
+          merged.add(this.parts.get(j));
         j++;        
       }
       if(j< this.parts.size()){
-        if(this.parts.get(j).getStart().x < seg.getStart().x){
+        if(!seg.isVertical() && this.parts.get(j).getStart().x < seg.getStart().x){
           Segment temp = new Segment(this.parts.get(j).getStart().x,this.parts.get(j).getStart().y,seg.getStart().x,seg.getStart().y,this.parts.get(j).getColor());
+          if(!Utils.areEqual(temp.getStart(), temp.getEnd()))
             merged.add(temp);
-
+        }
+        if(seg.isVertical() && seg.getStart().y < parts.get(j).getStart().y){
+          Segment temp = new Segment(this.parts.get(j).getStart().x,this.parts.get(j).getStart().y,seg.getStart().x,seg.getStart().y,this.parts.get(j).getColor());
+          if(!Utils.areEqual(temp.getStart(), temp.getEnd()))
+            merged.add(temp);
         }
       }
-      merged.add(seg);
-      while( j<this.parts.size() && parts.get(j).getEnd().x<seg.getEnd().x){
+      if(!Utils.areEqual(seg.getStart(), seg.getEnd()))
+        merged.add(seg);
+      while( j<this.parts.size() && ((!seg.isVertical() && parts.get(j).getEnd().x<seg.getEnd().x) || (seg.isVertical() && parts.get(j).getEnd().y > seg.getEnd().y))){
         j++;
       }
       if(j < this.parts.size()){
-          if (parts.get(j).getStart().x<seg.getEnd().x){
+          if ((!seg.isVertical() && parts.get(j).getStart().x < seg.getEnd().x) || (seg.isVertical() && parts.get(j).getStart().y > seg.getEnd().y) ){
             parts.get(j).setStart(seg.getEnd());        
           }
-          if((i == toMerge.size()-1) && (!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))){
-            merged.add(this.parts.get(j));
+          if(i == toMerge.size()-1){
+            if(!Utils.areEqual(this.parts.get(j).getStart(),this.parts.get(j).getEnd()))
+              merged.add(this.parts.get(j));
             j++;
           }
       }
