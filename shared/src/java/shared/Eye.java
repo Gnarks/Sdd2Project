@@ -30,12 +30,12 @@ public class Eye {
    */
   public PartitionEnum getSeenPartition(Line line) {
     double angleRadians = Math.toRadians(this.angle);
-    double angleLeft = angle+fov;
-    double angleRight = angle-fov;
+    double angleLeft = (angle+fov)%360;
+    double angleRight = (angle-fov+360)%360;
 
     PartitionEnum loc = line.relativePosition(this.position);
-    double alpha = Math.toDegrees(Math.atan(line.slope)); 
-    double limit = 180+alpha;
+    double alpha = (Math.toDegrees(Math.atan(line.slope))+360)%360; 
+    double limit = (180+alpha)%360;
 
     if(loc == PartitionEnum.HPLUS){
       if(line.isVertical){
@@ -44,24 +44,24 @@ public class Eye {
         }
         return PartitionEnum.HPLUS;
       }
-      if (line.slope  >= 0 && (this.angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
+      if (line.slope  >= 0 && (this.angle > limit || this.angle < alpha) && (angleRight >= limit || angleRight <= alpha) && (angleLeft >= limit || angleLeft <= alpha)){
         return PartitionEnum.HPLUS;
       }  
-      if (line.slope < 0 && (this.angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
+      if (line.slope < 0&& (this.angle < limit || this.angle > alpha) && (angleRight <= limit || angleRight >= alpha) && (angleLeft < limit || angleLeft >= alpha)){
         return PartitionEnum.HPLUS;
       } 
     }
-    if (loc == PartitionEnum.HMINUS){
+    else if (loc == PartitionEnum.HMINUS){
       if(line.isVertical){
         if(Math.cos(angleRadians) > 0){
           return PartitionEnum.BOTH;
         }
         return PartitionEnum.HMINUS;
       }
-      if(line.slope>=0 && (angle <= limit && ((angleLeft)%360 <= limit || angleRight >= alpha))){
+      if(line.slope>=0 && (angle > alpha && angle < limit && (angleLeft <= limit && angleRight >= alpha))){
         return PartitionEnum.HMINUS;
       } 
-      if (line.slope < 0 && (angle > limit && ((angleRight)%360 >= limit || angleLeft <= alpha+360))){
+      if (line.slope < 0 && (angle > limit && angle < alpha && (angleRight >= limit && angleLeft <= alpha))){
         return PartitionEnum.HMINUS;
       } 
     }

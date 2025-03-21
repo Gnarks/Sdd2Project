@@ -195,6 +195,7 @@ public class TestGraphical extends Application {
     sceneOptions.viewTypeProperty().addListener(e -> {
       if (sceneOptions.getViewType() == "eye view"){
         sPane.setContent(sceneOptions.getEyeSceneNode());
+        sPane.setMinSize(sceneOptions.getEye().getxLimit(), 200);
       }
       else{
         sPane.setContent(sceneOptions.getDrawSceneNode());
@@ -267,6 +268,7 @@ public class TestGraphical extends Application {
     
     Point range = new Point(Math.round(sceneOptions.getEye().getxLimit()/1.2), Math.round(sceneOptions.getEye().getyLimit()/1.2));
     Projection eyePov = bsp.painterAlgorithm(eye, range);
+    eyePov.flatten(sceneOptions.getEye().getxLimit()/1.2);
     Pane p = new Pane();
 
 
@@ -280,16 +282,16 @@ public class TestGraphical extends Application {
     p.getTransforms().add(scale);
     
     for (shared.geometrical.Segment seg : eyePov.getParts()) {
-      double initX = seg.getStart().x + sceneOptions.getEye().getxLimit()/1.2;
-      double initY = seg.getStart().y + sceneOptions.getEye().getyLimit()/1.2;
-      double finalX = seg.getEnd().x + sceneOptions.getEye().getxLimit()/1.2;
-      double finalY = seg.getEnd().y + sceneOptions.getEye().getyLimit()/1.2;
-
+      double initX = seg.getStart().x + sceneOptions.getEye().getxLimit()/1.2 +20;
+      double initY = seg.getStart().y + 100;
+      double finalX = seg.getEnd().x + sceneOptions.getEye().getxLimit()/1.2 +20 ;
+      double finalY = seg.getEnd().y + 100;
       Line line = new Line(initX, initY, finalX, finalY);
+      line.setStrokeWidth(10);
       line.setStroke(Paint.valueOf(seg.getColor()));
       p.getChildren().add(line);
     }
-
+    p.setMinSize(sceneOptions.getEye().getxLimit(), 150);
     sceneOptions.setEyeSceneNode(p);
   }
   
