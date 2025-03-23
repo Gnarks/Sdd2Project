@@ -50,6 +50,7 @@ public class TestGraphical extends Application {
     gridPane.add(eyeParam, 1,1);
 
     stage.setScene(new Scene(gridPane));
+    stage.setMaximized(true);
     stage.show();
   }
 
