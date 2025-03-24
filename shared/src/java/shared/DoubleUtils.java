@@ -10,7 +10,7 @@ public class DoubleUtils{
  * @return
    */
   public static boolean areEqual(double x1, double x2){
-    return Math.abs(x1 - x2) < 1E-10;
+    return Math.abs(x1 - x2) < 1E-7;
   }
 
   /** returns if the doubles are lower or equal

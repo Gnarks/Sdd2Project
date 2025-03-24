@@ -8,7 +8,7 @@ public class Line {
   public boolean isVertical;
 
   public Line(Point start, Point end) {
-    if (start.x == end.x){
+    if (DoubleUtils.areEqual(start.x ,end.x)){
       this.isVertical = true;
       slope = end.x;
       intercept = 0;
@@ -48,7 +48,7 @@ public class Line {
   public PartitionEnum relativePosition(Point point){
 
     if(isVertical){
-      if(Double.compare(point.x, slope) == 0){
+      if(DoubleUtils.areEqual(point.x, slope)){
         return PartitionEnum.BOTH;
       } else if(point.x > slope){
         return PartitionEnum.HPLUS;
@@ -56,7 +56,8 @@ public class Line {
       return PartitionEnum.HMINUS;
       }
     }
-    if(slope == 0){
+
+    if(DoubleUtils.areEqual(slope, 0)){
       if(DoubleUtils.areEqual(point.y, intercept)){
         return PartitionEnum.BOTH;
       } else if(point.y < intercept){
