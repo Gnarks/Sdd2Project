@@ -84,10 +84,11 @@ public class Eye {
     Segment fovLeft = new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(Math.toRadians(angleLeft)),this.position.y+hypo*Math.sin(Math.toRadians(angleLeft)),seg.getColor());
     Segment fovRight =new Segment(this.position.x,this.position.y,this.position.x+hypo*Math.cos(Math.toRadians(angleRight)),this.position.y+hypo*Math.sin(Math.toRadians(angleRight)),seg.getColor());
 
-    double angleStart = getAnglePoint(seg.getStart());
-    double angleEnd = getAnglePoint(seg.getEnd());
+    double angleStart = newGetAnglePoint(seg.getStart());
+    double angleEnd = newGetAnglePoint(seg.getEnd());
 
     boolean seeStart = (angleRight < angleLeft && angleStart > angleRight && angleStart < angleLeft) || (angleRight > angleLeft && (angleStart > angleRight || angleStart < angleLeft));
+
     boolean seeEnd = (angleRight < angleLeft && angleEnd > angleRight && angleEnd < angleLeft) || (angleRight > angleLeft && (angleEnd > angleRight || angleEnd < angleLeft));
 
     if(seeStart && seeEnd){
@@ -141,4 +142,14 @@ public class Eye {
     }
     return (degree +360) %360;
   }
+
+  /** return the angle in the trigonometrical circle with the eye's position as center 
+ * @param point the point to get the angle from
+ * @return the angle formed by the point relative to the eye's position as the center
+   */
+  private double newGetAnglePoint(Point point){
+    return (Math.toDegrees(Math.atan2(point.y, point.x)) +360 )%360;
+  }
+
+
 }

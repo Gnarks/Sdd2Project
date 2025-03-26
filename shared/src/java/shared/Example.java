@@ -1,51 +1,34 @@
 package shared;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import shared.generation.*;
 import shared.geometrical.*;
 import shared.scene.*;
 public class Example {
 
-    public String getGreeting() {
-        return "Hello World!";
-    }
+  public String getGreeting() {
+    return "Hello World!";
+  }
 
-    public static void main() {
-        System.out.println(new Example().getGreeting());
-        
-        Point A = new Point(0,0);
-        Point B = new Point(0,5);
-        Point C = new Point(6,6);
-        Point D = new Point(7,7);
-        Point E = new Point(-2,-3);
-        Point F = new Point(1,-3);
+  public static void main() {
+
+    SceneReader sceneReader = new SceneReader();
+    Scene scene = sceneReader.read("/home/etude/Documents/Bac3/Q1/SDD2_/PSdd2/shared/src/ressources/scenes/ellipses/ellipsesLarge.txt");
+    ArrayList<Segment> segments = scene.getSegList();
 
 
-        Segment AB = new Segment(A,B,"red");
-        Segment CD = new Segment(C,D,"black");
-        Segment EF = new Segment(F,E,"blue");
+    Point eue = new Point(0,0);
+    Eye p = new Eye(eue,0,45);
 
-        Segment[] data = new Segment[]{AB,CD,EF};
+    //ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
+    BSP bsp = new BSP(segments, new RandomMethod());
+    Point range = new Point(scene.getRange().x, scene.getRange().y);
 
-        SceneReader sceneReader = new SceneReader();
-        Scene scene = sceneReader.read("/home/wal//Documents/Sdd2Project/shared/src/ressources/scenes/first/octangle.txt");
-        ArrayList<Segment> segments = scene.getSegList();
 
-          
-        Point eue = new Point(0,0);
-        Eye p = new Eye(eue,270,80);
-
-        //ArrayList<Segment> segments = new ArrayList<>(Arrays.asList(data));  
-        BSP bsp = new BSP(segments, new FirstMethod());
-        Point range = new Point(440,440);
-
-        System.out.println(bsp);
-        System.out.println("Height = " + bsp.height);
-        Projection pSeg = bsp.painterAlgorithm(p,range);
-        System.out.println(pSeg);
-        pSeg.flatten(200);
-        System.out.println(pSeg);
-    }
+    Projection pSeg = bsp.painterAlgorithm(p,range);
+    //System.out.println(pSeg);
+    //pSeg.flatten(200);
+    //System.out.println(pSeg);
+  }
 
 }

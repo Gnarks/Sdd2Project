@@ -12,20 +12,20 @@ public class TestConsole{
   private static Scanner sc = new Scanner(System.in);
 
   public static void main(String[] args){
-    //Example.main   
+    Example.main();
     
-    Scene scene = selectScene();
-    int eyeNumber = askInt("Select the number of random eyes for the painter's algorithm");
-    int iterations = askInt("Select the number of iterations for the mean");
-
-    ArrayList<Eye> eyeList = generateEyes(scene, eyeNumber);
-
-
-    for (GenerationEnum heuristic : Arrays.asList(GenerationEnum.class.getEnumConstants())) {
-      System.out.println("\n-----------------------------------------");
-      displayHeursiticStats(heuristic, scene, eyeList, iterations);
-    }
-    sc.close();
+    //Scene scene = selectScene();
+    //int eyeNumber = askInt("Select the number of random eyes for the painter's algorithm");
+    //int iterations = askInt("Select the number of iterations for the mean");
+    //
+    //ArrayList<Eye> eyeList = generateEyes(scene, eyeNumber);
+    //
+    //
+    //for (GenerationEnum heuristic : Arrays.asList(GenerationEnum.class.getEnumConstants())) {
+    //  System.out.println("\n-----------------------------------------");
+    //  displayHeursiticStats(heuristic, scene, eyeList, iterations);
+    //}
+    //sc.close();
   }
   
 
