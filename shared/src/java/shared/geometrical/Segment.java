@@ -118,7 +118,7 @@ public class Segment {
  * @param seg the segment to intersect with
  * @return the point of intersection or null if there isn't any intersection
    */
-  public Point SegmentIntersect(Segment seg){
+  public Point segmentIntersect(Segment seg){
     Point inter = lineIntersect(seg);
     if (onSeg(inter) && seg.onSeg(inter))
       return inter;

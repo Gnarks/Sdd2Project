@@ -27,7 +27,7 @@ public class HeuristicMethod extends GenerationMethod{
       int currG = 0;
       for (Segment seg2 : data) {
 
-        if (seg1 != seg2 && seg1.SegmentIntersect(seg2) != null){
+        if (seg1 != seg2 && seg1.segmentIntersect(seg2) != null){
           currG++;
         }
         if (currG >= bestG){
