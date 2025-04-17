@@ -14,6 +14,9 @@ public class Projection{
     return this.parts;
   }
 
+  /** Sets the segments to the partition
+   *  sorts them by lower x then lower y 
+   */
   public void setParts(ArrayList<Segment> parts){
     parts.sort((a,b)->{
       int comp = Double.compare(a.getStart().x, b.getStart().x);
@@ -85,6 +88,10 @@ public class Projection{
     this.setParts(merged);
   }
 
+
+  /** Fatten the projection to y=0 and x=fraction of range 
+   * @param range the maximum x value to flatten to 
+   */
   public void flatten(double range){
     if(this.parts == null || this.parts.size() == 0)
       return;
