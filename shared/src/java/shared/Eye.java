@@ -88,6 +88,7 @@ public class Eye {
     double angleEnd = getAnglePoint(seg.getEnd());
 
     boolean seeStart = (angleRight < angleLeft && angleStart > angleRight && angleStart < angleLeft) || (angleRight > angleLeft && (angleStart > angleRight || angleStart < angleLeft));
+
     boolean seeEnd = (angleRight < angleLeft && angleEnd > angleRight && angleEnd < angleLeft) || (angleRight > angleLeft && (angleEnd > angleRight || angleEnd < angleLeft));
 
     if(seeStart && seeEnd){
@@ -97,8 +98,8 @@ public class Eye {
       return seg;
     }
 
-    Point interRight = fovRight.SegmentIntersect(seg);
-    Point interLeft = fovLeft.SegmentIntersect(seg);
+    Point interRight = fovRight.segmentIntersect(seg);
+    Point interLeft = fovLeft.segmentIntersect(seg);
 
     if(seeStart){
       if (interRight == null)

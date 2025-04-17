@@ -12,7 +12,6 @@ public class TestConsole{
   private static Scanner sc = new Scanner(System.in);
 
   public static void main(String[] args){
-    //Example.main   
     
     Scene scene = selectScene();
     int eyeNumber = askInt("Select the number of random eyes for the painter's algorithm");
@@ -22,8 +21,8 @@ public class TestConsole{
 
 
     for (GenerationEnum heuristic : Arrays.asList(GenerationEnum.class.getEnumConstants())) {
-      System.out.println("\n-----------------------------------------");
-      displayHeursiticStats(heuristic, scene, eyeList, iterations);
+     System.out.println("\n-----------------------------------------");
+     displayHeursiticStats(heuristic, scene, eyeList, iterations);
     }
     sc.close();
   }

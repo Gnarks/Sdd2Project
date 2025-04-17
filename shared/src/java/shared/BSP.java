@@ -109,10 +109,10 @@ public class BSP {
     ArrayList<Segment> proj = new ArrayList<>();  
 
     double eyeAngle = Math.toRadians(eye.getAngle());
-    double distance = 2* Math.sqrt(Math.pow(range.y,2)+Math.pow(range.x,2));
+    double distance = Math.sqrt(Math.pow(range.y *2,2)+Math.pow(range.x*2,2));
 
-    double x = distance*Math.cos(Math.toRadians(eyeAngle));
-    double y = distance*Math.sin(Math.toRadians(eyeAngle));
+    double x = distance*Math.cos(eyeAngle);
+    double y = distance*Math.sin(eyeAngle);
     Point point1 = new Point(x,y);
     Point point2;
 

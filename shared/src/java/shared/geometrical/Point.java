@@ -2,6 +2,8 @@ package shared.geometrical;
 
 import java.lang.Math;
 
+import shared.DoubleUtils;
+
 public class Point {
   public double x;
   public double y;
@@ -12,7 +14,7 @@ public class Point {
   }
 
   public String toString(){
-    return "(" + x + "," + y + ")";
+    return String.format("(%s,%s)" ,x,y);
   }
 
   public Point copy(){
@@ -20,7 +22,7 @@ public class Point {
   }
 
   public boolean equals(Point p){
-    return Math.abs(x - p.x) < 1E-10 && Math.abs(y - p.y) < 1E-10;
+    return DoubleUtils.areEqual(x, p.x) && DoubleUtils.areEqual(y, p.y);
   }
 
   public boolean lowerOrEqual(Point p2){
