@@ -14,8 +14,8 @@ public class TestConsole{
   public static void main(String[] args){
     
     Scene scene = selectScene();
-    int eyeNumber = askInt("Select the number of random eyes for the painter's algorithm");
-    int iterations = askInt("Select the number of iterations for the mean");
+    int eyeNumber = askInt("Select the number of random eyes for the painter's algorithm", 1, Integer.MAX_VALUE);
+    int iterations = askInt("Select the number of iterations for the mean", 1, Integer.MAX_VALUE);
 
     ArrayList<Eye> eyeList = generateEyes(scene, eyeNumber);
 
@@ -78,7 +78,7 @@ public class TestConsole{
     for (int i = 0; i < allScenes.size(); i++) {
       System.out.printf("%s) %s\n", i,allScenes.get(i));
     }
-    int indexPicked = askInt("Select a scene to test");
+    int indexPicked = askInt("Select a scene to test", 0, allScenes.size());
 
     SceneReader sr = new SceneReader();
     Scene scene = sr.read(allScenes.get(indexPicked));
@@ -108,12 +108,15 @@ public class TestConsole{
     System.out.printf("Mean Painter's algorithm time: %s ms\n", bspStat.meanPainterCpuTime/ 1e6);
   }
 
-  private static int askInt(String text) {
+  private static int askInt(String text, int lower, int upper) {
     System.out.printf("\n%s : ", text);
     while(true){
       try {
         int a = Integer.parseInt(sc.next());
-        return a;
+        if (a >= lower && a < upper) {
+          return a;
+        }
+        System.out.printf("\n %s :", text);
       } catch(NumberFormatException ne) {
         System.out.printf("\n %s :", text);
       }
