@@ -156,20 +156,24 @@ public class BSP {
     ArrayList<Segment> d_plus = new ArrayList<>();
 
     data.forEach(seg-> {
-      Point inter = divider.intersect(seg); 
-      PartitionEnum locationStart= divider.relativePosition(seg.getStart());
-      PartitionEnum locationEnd = divider.relativePosition(seg.getEnd());
-      if (locationStart == locationEnd || locationStart == PartitionEnum.BOTH || locationEnd == PartitionEnum.BOTH){
-        switch (locationStart) {
-          case PartitionEnum.HMINUS:
+      if (seg.getLine() == divider){
+        align.add(seg);
+      }
+      else {
+        Point inter = divider.intersect(seg); 
+        PartitionEnum locationStart= divider.relativePosition(seg.getStart());
+        PartitionEnum locationEnd = divider.relativePosition(seg.getEnd());
+        if (locationStart == locationEnd || locationStart == PartitionEnum.BOTH || locationEnd == PartitionEnum.BOTH){
+          switch (locationStart) {
+            case PartitionEnum.HMINUS:
             d_minus.add(seg);
             break;
-          case PartitionEnum.HPLUS:
+            case PartitionEnum.HPLUS:
             d_plus.add(seg);
             break;
-          default:
+            default:
             if (locationEnd == PartitionEnum.BOTH){
-            align.add(seg);
+              align.add(seg);
             }
             else if (locationEnd == PartitionEnum.HPLUS){
               d_plus.add(seg);
@@ -178,15 +182,17 @@ public class BSP {
               d_minus.add(seg);
             }
             break;
+          }
+        }
+
+        else{
+          Segment startSeg = new Segment(seg.getStart(),inter,seg.getColor());
+          Segment endSeg = new Segment(inter,seg.getEnd(),seg.getColor());
+
+          if (locationStart == PartitionEnum.HMINUS){ d_minus.add(startSeg);} else { d_plus.add(startSeg);}
+          if (locationEnd == PartitionEnum.HMINUS){ d_minus.add(endSeg);} else { d_plus.add(endSeg);}
         }
       }
-      else{
-      Segment startSeg = new Segment(seg.getStart(),inter,seg.getColor());
-      Segment endSeg = new Segment(inter,seg.getEnd(),seg.getColor());
-
-      if (locationStart == PartitionEnum.HMINUS){ d_minus.add(startSeg);} else { d_plus.add(startSeg);}
-      if (locationEnd == PartitionEnum.HMINUS){ d_minus.add(endSeg);} else { d_plus.add(endSeg);}
-     }
     });
     return new PartitionedSpace(align,d_minus,d_plus);
   }
