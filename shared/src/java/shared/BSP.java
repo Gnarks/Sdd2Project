@@ -156,10 +156,6 @@ public class BSP {
     ArrayList<Segment> d_plus = new ArrayList<>();
 
     data.forEach(seg-> {
-      if (seg.getLine() == divider){
-        align.add(seg);
-      }
-      else {
         Point inter = divider.intersect(seg); 
         PartitionEnum locationStart= divider.relativePosition(seg.getStart());
         PartitionEnum locationEnd = divider.relativePosition(seg.getEnd());
@@ -192,7 +188,6 @@ public class BSP {
           if (locationStart == PartitionEnum.HMINUS){ d_minus.add(startSeg);} else { d_plus.add(startSeg);}
           if (locationEnd == PartitionEnum.HMINUS){ d_minus.add(endSeg);} else { d_plus.add(endSeg);}
         }
-      }
     });
     return new PartitionedSpace(align,d_minus,d_plus);
   }
